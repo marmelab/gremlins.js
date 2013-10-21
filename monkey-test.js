@@ -5,7 +5,7 @@
 
     "use strict";
 
-    var MoneyTest = {
+    var MonkeyTest = {
         config: {
             urlPattern: /.+/
         },
@@ -48,5 +48,5 @@
     };
 
     // Start the monkey
-    $(window).on('load', MoneyTest.init.bind(MoneyTest));
+    $(window).on('load', MonkeyTest.init.bind(MonkeyTest));
 }(jQuery));
