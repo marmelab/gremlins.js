@@ -9,9 +9,8 @@ var ClickMonkey = (function() {
     };
 
     Monkey.prototype.run = function () {
-        var windowSize = getWindowSize(),
-            posX = Math.floor(Math.random() * windowSize.x),
-            posY = Math.floor(Math.random() * windowSize.y),
+        var posX = Math.floor(Math.random() * document.documentElement.clientWidth),
+            posY = Math.floor(Math.random() * document.documentElement.clientHeight),
             targetElement = document.elementFromPoint(posX, posY);
 
         if (typeof this.config.isElementClickable == 'function' && !this.config.isElementClickable(targetElement)) return;
@@ -53,16 +52,6 @@ var ClickMonkey = (function() {
         if (arr.length === 0) return null;
 
         return arr[Math.floor((Math.random() * arr.length))];
-    };
-
-    var getWindowSize = function() {
-        var w = window,
-            d = document,
-            e = d.documentElement,
-            g = d.getElementsByTagName('body')[0],
-            x = w.innerWidth || e.clientWidth || g.clientWidth,
-            y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-        return { x: x, y: y };
     };
 
     return Monkey;
