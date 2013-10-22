@@ -1,10 +1,11 @@
 var ClickMonkey = (function() {
 
     var Monkey = function(config) {
+        config = config || {};
         this.config = {};
         this.config.isElementClickable = config.isElementClickable;
-        this.config.clickTypes = config.clickTypes || ['click', 'mousedown', 'mouseup', 'mouseover', 'mousemove', 'mouseout'];
-        this.config.showClick = config.showClick;
+        this.config.clickTypes = config.clickTypes || clickTypes;
+        this.config.showAction = config.showAction || showAction;
     };
 
     Monkey.prototype.run = function () {
@@ -15,8 +16,8 @@ var ClickMonkey = (function() {
 
         if (typeof this.config.isElementClickable == 'function' && !this.config.isElementClickable(targetElement)) return;
 
-        if (this.config.showClick) {
-            visualizeEvent(posX, posY);
+        if (typeof this.config.showAction == 'function') {
+            showAction(posX, posY);
         }
 
         var evt = document.createEvent("MouseEvents");
@@ -24,7 +25,9 @@ var ClickMonkey = (function() {
         targetElement.dispatchEvent(evt);
     };
 
-    var visualizeEvent = function(x, y) {
+    var clickTypes = ['click', 'click', 'click', 'click', 'click', 'click', 'mousedown', 'mouseup', 'mouseover', 'mouseover', 'mouseover', 'mousemove', 'mouseout'];
+
+    var showAction = function(x, y) {
         var clickSignal = document.createElement('div');
         clickSignal.style.border = "3px solid red";
         clickSignal.style['border-radius'] = '50%';
@@ -32,12 +35,18 @@ var ClickMonkey = (function() {
         clickSignal.style.height = "40px";
         clickSignal.style['box-sizing'] = 'border-box';
         clickSignal.style.position = "absolute";
+        clickSignal.style.webkitTransition = 'opacity 1s ease-out';
+        clickSignal.style.mozTransition = 'opacity 1s ease-out';
+        clickSignal.style.transition = 'opacity 1s ease-out';
         clickSignal.style.left = x + 'px';
         clickSignal.style.top = y + 'px';
         var element = document.body.appendChild(clickSignal);
         setTimeout(function() {
             document.body.removeChild(element);
         }, 1000);
+        setTimeout(function() {
+            element.style.opacity = 0;
+        }, 50);
     };
 
     var getRandomElementInArray = function(arr) {
