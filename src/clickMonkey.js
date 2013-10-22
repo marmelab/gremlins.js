@@ -15,13 +15,13 @@ var ClickMonkey = (function() {
 
         if (typeof this.config.isElementClickable == 'function' && !this.config.isElementClickable(targetElement)) return;
 
-        if (typeof this.config.showAction == 'function') {
-            showAction(posX, posY);
-        }
-
         var evt = document.createEvent("MouseEvents");
         evt.initMouseEvent(getRandomElementInArray(this.config.clickTypes), true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         targetElement.dispatchEvent(evt);
+
+        if (typeof this.config.showAction == 'function') {
+            showAction(posX, posY);
+        }
     };
 
     var clickTypes = ['click', 'click', 'click', 'click', 'click', 'click', 'mousedown', 'mouseup', 'mouseover', 'mouseover', 'mouseover', 'mousemove', 'mouseout'];
