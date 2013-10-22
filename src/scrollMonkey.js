@@ -1,43 +1,55 @@
-var ScrollMonkey = (function() {
+var MonkeyTest = MonkeyTest || {};
+MonkeyTest.crew = MonkeyTest.crew || {};
 
-    var Monkey = function(config) {
-        config = config || {};
-        this.config = {};
-        this.config.showAction = config.showAction || showAction;
-    };
+MonkeyTest.crew.ScrollMonkey = (function(window) {
 
-    Monkey.prototype.run = function () {
-        var documentWidth = Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth, document.documentElement.clientWidth),
-            documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight, document.documentElement.clientHeight),
-            scrollX = Math.floor(Math.random() * (documentWidth - document.documentElement.clientWidth)),
-            scrollY = Math.floor(Math.random() * documentHeight - document.documentElement.clientHeight);
+    var document = window.document,
+        documentElement = document.documentElement,
+        body = document.body;
 
-        if (typeof this.config.showAction == 'function') {
-            showAction(scrollX, scrollY);
-        }
-
-        window.scrollTo(scrollX, scrollY);
-    };
-
-    var showAction = function(scrollX, scrollY) {
+    var defaultShowAction = function(scrollX, scrollY) {
         var clickSignal = document.createElement('div');
         clickSignal.style.border = "3px solid red";
-        clickSignal.style.width = (document.documentElement.clientWidth - 20) + "px";
-        clickSignal.style.height = (document.documentElement.clientHeight - 20) + "px";
+        clickSignal.style.width = (documentElement.clientWidth - 25) + "px";
+        clickSignal.style.height = (documentElement.clientHeight - 25) + "px";
         clickSignal.style.position = "absolute";
         clickSignal.style.webkitTransition = 'opacity 1s ease-out';
         clickSignal.style.mozTransition = 'opacity 1s ease-out';
         clickSignal.style.transition = 'opacity 1s ease-out';
         clickSignal.style.left = (scrollX + 10) + 'px';
         clickSignal.style.top = (scrollY + 10) + 'px';
-        var element = document.body.appendChild(clickSignal);
+        var element = body.appendChild(clickSignal);
         setTimeout(function() {
-            document.body.removeChild(element);
+            body.removeChild(element);
         }, 1000);
         setTimeout(function() {
             element.style.opacity = 0;
         }, 50);
     };
 
-    return Monkey;
-})();
+    var MonkeyConstructor = function(config) {
+        config = config || {};
+        config.showAction = config.showAction || defaultShowAction;
+
+        var MonkeyRunner = function (callback) {
+            var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
+                documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
+                scrollX = Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
+                scrollY = Math.floor(Math.random() * (documentHeight - documentElement.clientHeight));
+
+            window.scrollTo(scrollX, scrollY);
+
+            if (typeof config.showAction == 'function') {
+                config.showAction(scrollX, scrollY);
+            }
+            if (typeof callback == 'function') {
+                callback(scrollX, scrollY);
+            }
+        };
+
+        return MonkeyRunner;
+    };
+
+    return MonkeyConstructor;
+
+})(window);
