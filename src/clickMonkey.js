@@ -1,7 +1,7 @@
 var MonkeyTest = MonkeyTest || {};
 MonkeyTest.crew = MonkeyTest.crew || {};
 
-MonkeyTest.crew.ClickMonkey = (function(window) {
+MonkeyTest.crew.ClickMonkey = function() {
 
     var document = window.document,
         body = document.body;
@@ -36,35 +36,42 @@ MonkeyTest.crew.ClickMonkey = (function(window) {
         return arr[Math.floor((Math.random() * arr.length))];
     };
 
-    var MonkeyConstructor = function(config) {
-
-        config = config || {};
-        config.clickTypes = config.clickTypes || defaultClickTypes;
-        config.showAction = config.showAction || defaultShowAction;
-
-        var MonkeyRunner = function(callback) {
-            var posX = Math.floor(Math.random() * document.documentElement.clientWidth),
-                posY = Math.floor(Math.random() * document.documentElement.clientHeight),
-                targetElement = document.elementFromPoint(posX, posY);
-
-            if (typeof config.isElementClickable == 'function' && !config.isElementClickable(targetElement)) return;
-
-            var evt = document.createEvent("MouseEvents");
-            var clickType = getRandomElementInArray(config.clickTypes);
-            evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-            targetElement.dispatchEvent(evt);
-
-            if (typeof config.showAction == 'function') {
-                config.showAction(posX, posY, clickType);
-            }
-            if (typeof callback == 'function') {
-                callback(posX, posY, clickType);
-            }
-        };
-
-        return MonkeyRunner;
+    var config = {
+        clickTypes: defaultClickTypes,
+        showAction: defaultShowAction
     };
 
-    return MonkeyConstructor;
+    function monkey(callback) {
+        var posX = Math.floor(Math.random() * document.documentElement.clientWidth),
+            posY = Math.floor(Math.random() * document.documentElement.clientHeight),
+            targetElement = document.elementFromPoint(posX, posY);
 
-})(window);
+        if (typeof config.isElementClickable == 'function' && !config.isElementClickable(targetElement)) return;
+
+        var evt = document.createEvent("MouseEvents");
+        var clickType = getRandomElementInArray(config.clickTypes);
+        evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        targetElement.dispatchEvent(evt);
+
+        if (typeof config.showAction == 'function') {
+            config.showAction(posX, posY, clickType);
+        }
+        if (typeof callback == 'function') {
+            callback(posX, posY, clickType);
+        }
+    }
+
+    monkey.clickTypes = function(clickTypes) {
+        if (!arguments.length) return config.clickTypes;
+        config.clickTypes = clickTypes;
+        return monkey;
+    };
+
+    monkey.showAction = function(showAction) {
+        if (!arguments.length) return config.showAction;
+        config.showAction = showAction;
+        return monkey;
+    };
+
+    return monkey;
+};

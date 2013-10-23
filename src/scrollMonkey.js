@@ -1,7 +1,7 @@
 var MonkeyTest = MonkeyTest || {};
 MonkeyTest.crew = MonkeyTest.crew || {};
 
-MonkeyTest.crew.ScrollMonkey = (function(window) {
+MonkeyTest.crew.ScrollMonkey = function() {
 
     var document = window.document,
         documentElement = document.documentElement,
@@ -27,29 +27,31 @@ MonkeyTest.crew.ScrollMonkey = (function(window) {
         }, 50);
     };
 
-    var MonkeyConstructor = function(config) {
-        config = config || {};
-        config.showAction = config.showAction || defaultShowAction;
-
-        var MonkeyRunner = function (callback) {
-            var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
-                documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
-                scrollX = Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
-                scrollY = Math.floor(Math.random() * (documentHeight - documentElement.clientHeight));
-
-            window.scrollTo(scrollX, scrollY);
-
-            if (typeof config.showAction == 'function') {
-                config.showAction(scrollX, scrollY);
-            }
-            if (typeof callback == 'function') {
-                callback(scrollX, scrollY);
-            }
-        };
-
-        return MonkeyRunner;
+    var config = {
+        showAction: defaultShowAction
     };
 
-    return MonkeyConstructor;
+    function monkey(callback) {
+        var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
+            documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
+            scrollX = Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
+            scrollY = Math.floor(Math.random() * (documentHeight - documentElement.clientHeight));
 
-})(window);
+        window.scrollTo(scrollX, scrollY);
+
+        if (typeof config.showAction == 'function') {
+            config.showAction(scrollX, scrollY);
+        }
+        if (typeof callback == 'function') {
+            callback(scrollX, scrollY);
+        }
+    }
+
+    monkey.showAction = function(showAction) {
+        if (!arguments.length) return config.showAction;
+        config.showAction = showAction;
+        return monkey;
+    };
+
+    return monkey;
+};
