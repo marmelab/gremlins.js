@@ -38,7 +38,8 @@ MonkeyTest.crew.ClickMonkey = function() {
 
     var config = {
         clickTypes: defaultClickTypes,
-        showAction: defaultShowAction
+        showAction: defaultShowAction,
+        canClick: function() { return true; }
     };
 
     function monkey(callback) {
@@ -46,7 +47,7 @@ MonkeyTest.crew.ClickMonkey = function() {
             posY = Math.floor(Math.random() * document.documentElement.clientHeight),
             targetElement = document.elementFromPoint(posX, posY);
 
-        if (typeof config.isElementClickable == 'function' && !config.isElementClickable(targetElement)) return;
+        if (!config.canClick(targetElement)) return;
 
         var evt = document.createEvent("MouseEvents");
         var clickType = getRandomElementInArray(config.clickTypes);
@@ -70,6 +71,12 @@ MonkeyTest.crew.ClickMonkey = function() {
     monkey.showAction = function(showAction) {
         if (!arguments.length) return config.showAction;
         config.showAction = showAction;
+        return monkey;
+    };
+
+    monkey.canClick = function(canClick) {
+        if (!arguments.length) return config.canClick;
+        config.canClick = canClick;
         return monkey;
     };
 
