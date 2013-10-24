@@ -68,7 +68,7 @@ MonkeyTest.crew.TypeMonkey = function() {
         if (typeof config.showAction === 'function') {
             config.showAction(targetElement, posX, posY, key);
         }
-        if (typeof callback == 'function') {
+        if (typeof callback === 'function') {
             callback(posX, posY, key);
         }
     }

@@ -1,13 +1,19 @@
 MonkeyTest.createSuite()
-    .before(function(suite) {
-        console.log('started!');
+    .before(function(done) {
+        setTimeout(function(){
+            console.log('async');
+            done();
+        }, 500);
+    })
+    .before(function() {
+        console.log('sync');
     })
     .monkey(MonkeyTest.crew.ClickMonkey().clickTypes(['click']))
     .monkey(MonkeyTest.crew.ScrollMonkey())
-    .monkey(function(suite) {
+    .monkey(function() {
         console.log('I\'m a monkey!');
     })
-    .after(function(suite) {
+    .after(function() {
         console.log('finished!');
     })
-    .run(100);
+    .run(10);
