@@ -1,4 +1,4 @@
-Gremlins.createHorde()
+gremlins.createHorde()
     .before(function(done) {
         setTimeout(function(){
             console.log('async');
@@ -8,8 +8,8 @@ Gremlins.createHorde()
     .before(function() {
         console.log('sync');
     })
-    .breed(Gremlins.crew.ClickerGremlin().clickTypes(['click']))
-    .breed(Gremlins.crew.ScrollerGremlin())
+    .breed(gremlins.crew.ClickerGremlin().clickTypes(['click']))
+    .breed(gremlins.crew.ScrollerGremlin())
     .breed(function() {
         console.log('I\'m a gremlin!');
     })

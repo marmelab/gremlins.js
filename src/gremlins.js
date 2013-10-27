@@ -1,6 +1,6 @@
-var Gremlins = (function() {
+var gremlins = (function() {
 
-    var Gremlins = {
+    var gremlins = {
         crew: {}
     };
 
@@ -110,9 +110,9 @@ var Gremlins = (function() {
         });
     };
 
-    Gremlins.createHorde = function() {
+    gremlins.createHorde = function() {
         return new GremlinsHorde();
     };
 
-    return Gremlins;
+    return gremlins;
 })();
