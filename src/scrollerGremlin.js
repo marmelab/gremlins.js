@@ -1,7 +1,7 @@
-var MonkeyTest = MonkeyTest || {};
-MonkeyTest.crew = MonkeyTest.crew || {};
+var Gremlins = Gremlins || {};
+Gremlins.crew = Gremlins.crew || {};
 
-MonkeyTest.crew.ScrollMonkey = function() {
+Gremlins.crew.ScrollerGremlin = function() {
 
     var document = window.document,
         documentElement = document.documentElement,
@@ -31,7 +31,7 @@ MonkeyTest.crew.ScrollMonkey = function() {
         showAction: defaultShowAction
     };
 
-    function monkey(callback) {
+    function gremlin(callback) {
         var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
             documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
             scrollX = Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
@@ -47,11 +47,11 @@ MonkeyTest.crew.ScrollMonkey = function() {
         }
     }
 
-    monkey.showAction = function(showAction) {
+    gremlin.showAction = function(showAction) {
         if (!arguments.length) return config.showAction;
         config.showAction = showAction;
-        return monkey;
+        return gremlin;
     };
 
-    return monkey;
+    return gremlin;
 };
