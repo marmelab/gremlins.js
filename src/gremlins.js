@@ -95,20 +95,53 @@ var Gremlins = (function() {
         return this;
     };
 
-    GremlinsHorde.prototype.unleash = function(nb, done) {
-        var i;
-        var self = this;
+    GremlinsHorde.prototype.unleash = (function(){
+        var alert;
+        var confirm;
+        var prompt;
 
-        callCallbacks(this._beforeCallbacks, [], function () {
-            runUnleashers(self._unleashers, self._gremlins, nb, function() {
-                callCallbacks(self._afterCallbacks, [], function () {
-                    if (typeof done === 'function') {
-                        done();
-                    }
+        var cutDownAlarm = function cutDownAlarm() {
+            alert = window.alert;
+            confirm = window.confirm;
+            prompt = window.prompt;
+            window.alert = function () {
+
+            }
+            window.confirm = function () {
+                // Random OK or cancel
+                return Math.random() >= 0.5;
+            }
+
+            window.prompt = function () {
+                // Return a random string
+                return Math.random().toString(36).slice(2);
+            }
+        }
+
+        var restoreAlarm = function restoreAlarm() {
+            window.alert = alert;
+            window.confirm = confirm;
+            window.prompt = prompt;
+        }
+
+        return function(nb, done) {
+            var i;
+            var self = this;
+
+            cutDownAlarm();
+
+            callCallbacks(this._beforeCallbacks, [], function () {
+                runUnleashers(self._unleashers, self._gremlins, nb, function() {
+                    callCallbacks(self._afterCallbacks, [], function () {
+                        restoreAlarm();
+                        if (typeof done === 'function') {
+                            done();
+                        }
+                    });
                 });
             });
-        });
-    };
+        };
+    })()
 
     Gremlins.createHorde = function() {
         return new GremlinsHorde();
