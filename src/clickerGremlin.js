@@ -1,7 +1,7 @@
 var gremlins = gremlins || {};
-gremlins.crew = gremlins.crew || {};
+gremlins.type = gremlins.type || {};
 
-gremlins.crew.ClickerGremlin = function() {
+gremlins.type.clicker = function() {
 
     var document = window.document,
         body = document.body;

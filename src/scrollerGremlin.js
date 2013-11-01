@@ -1,7 +1,7 @@
 var gremlins = gremlins || {};
-gremlins.crew = gremlins.crew || {};
+gremlins.type = gremlins.type || {};
 
-gremlins.crew.ScrollerGremlin = function() {
+gremlins.type.scroller = function() {
 
     var document = window.document,
         documentElement = document.documentElement,

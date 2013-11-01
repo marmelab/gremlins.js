@@ -1,9 +1,9 @@
 /*jslint browser: true*/
 
 var gremlins = gremlins || {};
-gremlins.crew = gremlins.crew || {};
+gremlins.type = gremlins.type || {};
 
-gremlins.crew.TyperGremlin = function() {
+gremlins.type.typer = function() {
     "use strict";
 
     var document = window.document,

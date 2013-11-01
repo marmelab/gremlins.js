@@ -8,8 +8,8 @@ gremlins.createHorde()
     .before(function() {
         console.log('sync');
     })
-    .breed(gremlins.crew.ClickerGremlin().clickTypes(['click']))
-    .breed(gremlins.crew.ScrollerGremlin())
+    .breed(gremlins.crew.clicker().clickTypes(['click']))
+    .breed(gremlins.crew.scroller())
     .breed(function() {
         console.log('I\'m a gremlin!');
     })

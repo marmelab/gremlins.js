@@ -1,7 +1,7 @@
 var gremlins = (function() {
 
     var gremlins = {
-        crew: {}
+        type: {}
     };
 
     var GremlinsHorde = function() {
@@ -50,8 +50,8 @@ var gremlins = (function() {
     };
 
     GremlinsHorde.prototype.breedAll = function() {
-        for (var gremlinName in Gremlins.crew) {
-            this.breed(Gremlins.crew[gremlinName]());
+        for (var gremlinName in Gremlins.type) {
+            this.breed(Gremlins.type[gremlinName]());
         }
         return this;
     };
