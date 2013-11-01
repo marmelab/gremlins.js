@@ -1,4 +1,4 @@
-MonkeyTest.createSuite()
+gremlins.createHorde()
     .before(function(done) {
         setTimeout(function(){
             console.log('async');
@@ -8,12 +8,12 @@ MonkeyTest.createSuite()
     .before(function() {
         console.log('sync');
     })
-    .monkey(MonkeyTest.crew.ClickMonkey().clickTypes(['click']))
-    .monkey(MonkeyTest.crew.ScrollMonkey())
-    .monkey(function() {
-        console.log('I\'m a monkey!');
+    .breed(gremlins.crew.clicker().clickTypes(['click']))
+    .breed(gremlins.crew.scroller())
+    .breed(function() {
+        console.log('I\'m a gremlin!');
     })
     .after(function() {
         console.log('finished!');
     })
-    .run(10);
+    .unleash(10);

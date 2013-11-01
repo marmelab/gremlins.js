@@ -1,9 +1,9 @@
 /*jslint browser: true*/
 
-var MonkeyTest = MonkeyTest || {};
-MonkeyTest.crew = MonkeyTest.crew || {};
+var gremlins = gremlins || {};
+gremlins.type = gremlins.type || {};
 
-MonkeyTest.crew.TypeMonkey = function() {
+gremlins.type.typer = function() {
     "use strict";
 
     var document = window.document,
@@ -51,7 +51,7 @@ MonkeyTest.crew.TypeMonkey = function() {
         showAction: defaultShowAction
     };
 
-    function monkey(callback) {
+    function gremlin(callback) {
         var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
             documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
             keyboardEvent = document.createEvent("KeyboardEvent"),
@@ -73,17 +73,17 @@ MonkeyTest.crew.TypeMonkey = function() {
         }
     }
 
-    monkey.eventTypes = function(eventTypes) {
+    gremlin.eventTypes = function(eventTypes) {
         if (!arguments.length) return config.eventTypes;
         config.eventTypes = eventTypes;
-        return monkey;
+        return gremlin;
     };
 
-    monkey.showAction = function(showAction) {
+    gremlin.showAction = function(showAction) {
         if (!arguments.length) return config.showAction;
         config.showAction = showAction;
-        return monkey;
+        return gremlin;
     };
 
-    return monkey;
+    return gremlin;
 };

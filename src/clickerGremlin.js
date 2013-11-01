@@ -1,7 +1,7 @@
-var MonkeyTest = MonkeyTest || {};
-MonkeyTest.crew = MonkeyTest.crew || {};
+var gremlins = gremlins || {};
+gremlins.type = gremlins.type || {};
 
-MonkeyTest.crew.ClickMonkey = function() {
+gremlins.type.clicker = function() {
 
     var document = window.document,
         body = document.body;
@@ -42,7 +42,7 @@ MonkeyTest.crew.ClickMonkey = function() {
         canClick: function() { return true; }
     };
 
-    function monkey(callback) {
+    function gremlin(callback) {
         var posX = Math.floor(Math.random() * document.documentElement.clientWidth),
             posY = Math.floor(Math.random() * document.documentElement.clientHeight),
             targetElement = document.elementFromPoint(posX, posY);
@@ -62,23 +62,23 @@ MonkeyTest.crew.ClickMonkey = function() {
         }
     }
 
-    monkey.clickTypes = function(clickTypes) {
+    gremlin.clickTypes = function(clickTypes) {
         if (!arguments.length) return config.clickTypes;
         config.clickTypes = clickTypes;
-        return monkey;
+        return gremlin;
     };
 
-    monkey.showAction = function(showAction) {
+    gremlin.showAction = function(showAction) {
         if (!arguments.length) return config.showAction;
         config.showAction = showAction;
-        return monkey;
+        return gremlin;
     };
 
-    monkey.canClick = function(canClick) {
+    gremlin.canClick = function(canClick) {
         if (!arguments.length) return config.canClick;
         config.canClick = canClick;
-        return monkey;
+        return gremlin;
     };
 
-    return monkey;
+    return gremlin;
 };

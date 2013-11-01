@@ -1,14 +1,14 @@
-var MonkeyTest = (function() {
+var gremlins = (function() {
 
-    var MonkeyTest = {
-        crew: {}
+    var gremlins = {
+        type: {}
     };
 
-    var MonkeyTestSuite = function() {
+    var GremlinsHorde = function() {
         this._beforeCallbacks = [];
         this._afterCallbacks = [];
-        this._monkeys = [];
-        this._runners = [];
+        this._gremlins = [];
+        this._unleashers = [];
         this._loggers = [];
     };
 
@@ -34,43 +34,43 @@ var MonkeyTest = (function() {
         })(callbacks, args, done);
     };
 
-    MonkeyTestSuite.prototype.before = function(beforeCallback) {
+    GremlinsHorde.prototype.before = function(beforeCallback) {
         this._beforeCallbacks.push(beforeCallback);
         return this;
     };
 
-    MonkeyTestSuite.prototype.after = function(afterCallback) {
+    GremlinsHorde.prototype.after = function(afterCallback) {
         this._afterCallbacks.push(afterCallback);
         return this;
     };
 
-    MonkeyTestSuite.prototype.monkey = function(monkeyCallback) {
-        this._monkeys.push(monkeyCallback);
+    GremlinsHorde.prototype.breed = function(gremlin) {
+        this._gremlins.push(gremlin);
         return this;
     };
 
-    MonkeyTestSuite.prototype.allMonkeys = function() {
-        for (var monkeyName in MonkeyTest.crew) {
-            this.monkey(MonkeyTest.crew[monkeyName]());
+    GremlinsHorde.prototype.breedAll = function() {
+        for (var gremlinName in Gremlins.type) {
+            this.breed(Gremlins.type[gremlinName]());
         }
         return this;
     };
 
-    MonkeyTestSuite.prototype.runner = function(runnerCallback) {
-        this._runners.push(runnerCallback);
+    GremlinsHorde.prototype.unleasher = function(unleasherCallback) {
+        this._unleashers.push(unleasherCallback);
         return this;
     };
 
-    // run each monkey every 10 milliseconds for nb times
-    var defaultRunner = function(monkeys, nb, done) {
+    // run each gremlin every 10 milliseconds for nb times
+    var defaultUnleasher = function(gremlins, nb, done) {
         var i = 0,
             j,
-            count = monkeys.length;
+            count = gremlins.length;
         while (i < nb) {
             for (j = 0; j < count; j++) {
                 (function(i, j) {
                     setTimeout(function(){
-                        monkeys[j]();
+                        gremlins[j]();
 
                         if (i == nb -1 && j == count - 1){
                             done();
@@ -82,25 +82,25 @@ var MonkeyTest = (function() {
         }
     };
 
-    var runRunners = function(runners, monkeys, nb, done) {
-        if (runners.length === 0) {
-            defaultRunner(monkeys, nb, done);
+    var runUnleashers = function(unleashers, gremlins, nb, done) {
+        if (unleashers.length === 0) {
+            defaultUnleasher(gremlins, nb, done);
         } else {
-            callCallbacks(runners, [monkeys, nb], done);
+            callCallbacks(unleashers, [gremlins, nb], done);
         }
     };
 
-    MonkeyTestSuite.prototype.logger = function(loggerCallback) {
+    GremlinsHorde.prototype.logger = function(loggerCallback) {
         this._loggers.push(loggerCallback);
         return this;
     };
 
-    MonkeyTestSuite.prototype.run = function(nb, done) {
+    GremlinsHorde.prototype.unleash = function(nb, done) {
         var i;
         var self = this;
 
         callCallbacks(this._beforeCallbacks, [], function () {
-            runRunners(self._runners, self._monkeys, nb, function() {
+            runUnleashers(self._unleashers, self._gremlins, nb, function() {
                 callCallbacks(self._afterCallbacks, [], function () {
                     if (typeof done === 'function') {
                         done();
@@ -110,9 +110,9 @@ var MonkeyTest = (function() {
         });
     };
 
-    MonkeyTest.createSuite = function() {
-        return new MonkeyTestSuite();
+    gremlins.createHorde = function() {
+        return new GremlinsHorde();
     };
 
-    return MonkeyTest;
+    return gremlins;
 })();
