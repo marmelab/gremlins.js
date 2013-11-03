@@ -8,6 +8,7 @@ gremlins.createHorde()
     .before(function() {
         console.log('sync');
     })
+    .breed(gremlins.type.formFiller())
     .breed(gremlins.type.clicker().clickTypes(['click']))
     .breed(gremlins.type.scroller())
     .breed(function() {

@@ -15,11 +15,7 @@ var gremlins = (function() {
     var callCallbacks = function (callbacks, args, done) {
         var nbArguments = args.length;
 
-        args.push(function(){
-            iterator(callbacks, args, done)
-        });
-
-        (iterator = function(callbacks, args) {
+        var iterator = function(callbacks, args) {
             if (!callbacks.length) {
                 return typeof done === 'function' ? done() : true;
             }
@@ -31,7 +27,13 @@ var gremlins = (function() {
             if (callback.length === nbArguments) {
                 iterator(callbacks, args, done)
             }
-        })(callbacks, args, done);
+        };
+
+        args.push(function(){
+            iterator(callbacks, args, done)
+        });
+
+        iterator(callbacks, args, done);
     };
 
     GremlinsHorde.prototype.before = function(beforeCallback) {
@@ -105,24 +107,24 @@ var gremlins = (function() {
             confirm = window.confirm;
             prompt = window.prompt;
             window.alert = function () {
+            };
 
-            }
             window.confirm = function () {
                 // Random OK or cancel
                 return Math.random() >= 0.5;
-            }
+            };
 
             window.prompt = function () {
                 // Return a random string
                 return Math.random().toString(36).slice(2);
             }
-        }
+        };
 
         var restoreAlarm = function restoreAlarm() {
             window.alert = alert;
             window.confirm = confirm;
             window.prompt = prompt;
-        }
+        };
 
         return function(nb, done) {
             var i;
@@ -141,7 +143,7 @@ var gremlins = (function() {
                 });
             });
         };
-    })()
+    })();
 
     gremlins.createHorde = function() {
         return new GremlinsHorde();
