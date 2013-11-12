@@ -1,18 +1,20 @@
 var gremlins = (function() {
 
     var gremlins = {
-        type: {}
+        type: {},
+        watcher: {}
     };
 
     var GremlinsHorde = function() {
         this._beforeCallbacks = [];
         this._afterCallbacks = [];
         this._gremlins = [];
+        this._watchers = [];
         this._unleashers = [];
         this._loggers = [];
     };
 
-    var callCallbacks = function (callbacks, args, done) {
+    var callCallbacks = function(callbacks, args, context, done) {
         var nbArguments = args.length;
 
         var iterator = function(callbacks, args) {
@@ -21,16 +23,16 @@ var gremlins = (function() {
             }
 
             var callback = callbacks.shift();
-            callback.apply(callback, args);
+            callback.apply(context, args);
 
             // Is the callback synchronous ?
             if (callback.length === nbArguments) {
-                iterator(callbacks, args, done)
+                iterator(callbacks, args, done);
             }
         };
 
         args.push(function(){
-            iterator(callbacks, args, done)
+            iterator(callbacks, args, done);
         });
 
         iterator(callbacks, args, done);
@@ -52,10 +54,33 @@ var gremlins = (function() {
     };
 
     GremlinsHorde.prototype.breedAll = function() {
-        for (var gremlinName in Gremlins.type) {
-            this.breed(Gremlins.type[gremlinName]());
+        for (var gremlinName in gremlins.type) {
+            this.breed(gremlins.type[gremlinName]());
         }
         return this;
+    };
+
+    GremlinsHorde.prototype.watch = function(watcher) {
+        this._watchers.push(watcher);
+        return this;
+    };
+
+    GremlinsHorde.prototype.watchAll = function() {
+        for (var watcherName in gremlins.watcher) {
+            this.watch(gremlins.watcher[watcherName]());
+        }
+        return this;
+    };
+
+    GremlinsHorde.prototype.logger = function(logger) {
+        this._loggers.push(logger);
+        return this;
+    };
+
+    GremlinsHorde.prototype.log = function() {
+        for (var i in this._loggers) {
+            this._loggers[i].apply(this, arguments);
+        }
     };
 
     GremlinsHorde.prototype.unleasher = function(unleasherCallback) {
@@ -64,15 +89,18 @@ var gremlins = (function() {
     };
 
     // run each gremlin every 10 milliseconds for nb times
-    var defaultUnleasher = function(gremlins, nb, done) {
+    GremlinsHorde.prototype.defaultUnleasher = function(nb, done) {
         var i = 0,
             j,
+            horde = this,
+            gremlins = horde._gremlins,
             count = gremlins.length;
         while (i < nb) {
             for (j = 0; j < count; j++) {
                 (function(i, j) {
                     setTimeout(function(){
-                        gremlins[j]();
+
+                        gremlins[j].apply(horde);
 
                         if (i == nb -1 && j == count - 1){
                             done();
@@ -84,66 +112,34 @@ var gremlins = (function() {
         }
     };
 
-    var runUnleashers = function(unleashers, gremlins, nb, done) {
-        if (unleashers.length === 0) {
-            defaultUnleasher(gremlins, nb, done);
+    GremlinsHorde.prototype.runUnleashers = function(nb, done) {
+        if (this._unleashers.length === 0) {
+            this.defaultUnleasher(nb, done);
         } else {
-            callCallbacks(unleashers, [gremlins, nb], done);
+            callCallbacks(this._unleashers, [this._gremlins, nb], this, done);
         }
     };
 
-    GremlinsHorde.prototype.logger = function(loggerCallback) {
-        this._loggers.push(loggerCallback);
-        return this;
-    };
+    GremlinsHorde.prototype.unleash = function(nb, done) {
+        var i;
+        var horde = this;
+        var beforeCallbacks = this._beforeCallbacks.concat(this._watchers);
+        var afterCallbacks  = this._afterCallbacks;
+        for (var watcherName in this._watchers) {
+            if (typeof this._watchers[watcherName].cleanUp == 'function')
+            afterCallbacks.push(this._watchers[watcherName].cleanUp);
+        }
 
-    GremlinsHorde.prototype.unleash = (function(){
-        var alert;
-        var confirm;
-        var prompt;
-
-        var cutDownAlarm = function cutDownAlarm() {
-            alert = window.alert;
-            confirm = window.confirm;
-            prompt = window.prompt;
-            window.alert = function () {
-            };
-
-            window.confirm = function () {
-                // Random OK or cancel
-                return Math.random() >= 0.5;
-            };
-
-            window.prompt = function () {
-                // Return a random string
-                return Math.random().toString(36).slice(2);
-            }
-        };
-
-        var restoreAlarm = function restoreAlarm() {
-            window.alert = alert;
-            window.confirm = confirm;
-            window.prompt = prompt;
-        };
-
-        return function(nb, done) {
-            var i;
-            var self = this;
-
-            cutDownAlarm();
-
-            callCallbacks(this._beforeCallbacks, [], function () {
-                runUnleashers(self._unleashers, self._gremlins, nb, function() {
-                    callCallbacks(self._afterCallbacks, [], function () {
-                        restoreAlarm();
-                        if (typeof done === 'function') {
-                            done();
-                        }
-                    });
+        callCallbacks(beforeCallbacks, [], horde, function() {
+            horde.runUnleashers(nb, function() {
+                callCallbacks(afterCallbacks, [], horde, function () {
+                    if (typeof done === 'function') {
+                        done();
+                    }
                 });
             });
-        };
-    })();
+        });
+    };
 
     gremlins.createHorde = function() {
         return new GremlinsHorde();
