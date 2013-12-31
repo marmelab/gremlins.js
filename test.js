@@ -13,11 +13,10 @@ gremlins.createHorde()
     .breed(gremlins.type.clicker().clickTypes(['click']))
     .breed(gremlins.type.scroller())
     .breed(function() {
-        this.log('I\'m a gremlin!');
+        alert('here');
     })
     .after(function() {
         this.log('finished!');
     })
-    .logger(function() { console.log.apply(console, arguments); })
     .watch(gremlins.watcher.alert())
     .unleash(10);

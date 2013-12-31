@@ -11,7 +11,7 @@ var gremlins = (function() {
         this._gremlins = [];
         this._watchers = [];
         this._unleashers = [];
-        this._loggers = [];
+        this.loggerService = defaultLoggerService;
     };
 
     var callCallbacks = function(callbacks, args, context, done) {
@@ -38,6 +38,13 @@ var gremlins = (function() {
         iterator(callbacks, args, done);
     };
 
+    var defaultLoggerService = {
+        log:   console.log.bind(console),
+        info:  console.info.bind(console),
+        warn:  console.warn.bind(console),
+        error: console.error.bind(console)
+    };
+
     GremlinsHorde.prototype.before = function(beforeCallback) {
         this._beforeCallbacks.push(beforeCallback);
         return this;
@@ -61,6 +68,7 @@ var gremlins = (function() {
     };
 
     GremlinsHorde.prototype.watch = function(watcher) {
+        watcher.logger(this.loggerService);
         this._watchers.push(watcher);
         return this;
     };
@@ -73,14 +81,13 @@ var gremlins = (function() {
     };
 
     GremlinsHorde.prototype.logger = function(logger) {
-        this._loggers.push(logger);
+        if (!arguments.length) return this.loggerService;
+        this.loggerService = logger;
         return this;
     };
 
-    GremlinsHorde.prototype.log = function() {
-        for (var i in this._loggers) {
-            this._loggers[i].apply(this, arguments);
-        }
+    GremlinsHorde.prototype.log = function(msg) {
+        this.loggerService.log(msg);
     };
 
     GremlinsHorde.prototype.unleasher = function(unleasherCallback) {
@@ -100,7 +107,7 @@ var gremlins = (function() {
                 (function(i, j) {
                     setTimeout(function(){
 
-                        gremlins[j].apply(horde);
+                        gremlins[j].apply(horde, [horde.loggerService.log]);
 
                         if (i == nb -1 && j == count - 1){
                             done();

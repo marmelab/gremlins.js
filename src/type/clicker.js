@@ -43,11 +43,12 @@ gremlins.type.clicker = function() {
     };
 
     function gremlin(callback) {
-        var posX = Math.floor(Math.random() * document.documentElement.clientWidth),
-            posY = Math.floor(Math.random() * document.documentElement.clientHeight),
+        var posX, posY, targetElement;
+        do {
+            posX = Math.floor(Math.random() * document.documentElement.clientWidth);
+            posY = Math.floor(Math.random() * document.documentElement.clientHeight);
             targetElement = document.elementFromPoint(posX, posY);
-
-        if (!config.canClick(targetElement)) return;
+        } while (!config.canClick(targetElement));
 
         var evt = document.createEvent("MouseEvents");
         var clickType = getRandomElementInArray(config.clickTypes);
@@ -58,7 +59,7 @@ gremlins.type.clicker = function() {
             config.showAction(posX, posY, clickType);
         }
         if (typeof callback == 'function') {
-            callback(posX, posY, clickType);
+            callback('clicker    gremlin', clickType, 'at', posX, posY);
         }
     }
 
