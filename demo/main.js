@@ -3,10 +3,9 @@ require.config({
     /*
     // alternative: use the packaged version
     paths: { 
-        gremlins:  '../gremlins'
+        gremlins:  '../gremlins.min'
     }
     */
-
 });
 
 require(['gremlins'], function(gremlins) {

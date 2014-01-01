@@ -1,3 +1,8 @@
+/**
+ * gremlins.js 0.1.0 Copyright (c) 2014, marmelab
+ * Available via the MIT license.
+ * see: http://github.com/marmelab/gremlins.js for details
+ */
 define(function(require) {
     "use strict";
 

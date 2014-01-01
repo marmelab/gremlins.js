@@ -22,10 +22,10 @@ horde.unleash(10);
 
 ## Installation
 
-In the browser, the `gremlins.js` file can be used as a standalone library:
+In the browser, the `gremlins.min.js` file can be used as a standalone library:
 
 ```html
-<script src="path/to/gremlins.js"></script>
+<script src="path/to/gremlins.min.js"></script>
 <script>
 gremlins
   .createHorde()
@@ -34,12 +34,12 @@ gremlins
 </script>
 ```
 
-Alternately, you can include `gremlins.js` as a RequireJS module:
+Alternately, you can include `gremlins.min.js` as a RequireJS module:
 
 ```js
 require.config({
   paths: { 
-	gremlins: 'path/to/gremlins.js'
+	gremlins: 'path/to/gremlins.min'
   }
 });
 
