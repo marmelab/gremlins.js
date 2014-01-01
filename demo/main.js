@@ -1,5 +1,12 @@
 require.config({
     packages: [{ name: 'gremlins', location: '../src' }]
+    /*
+    // alternative: use the packaged version
+    paths: { 
+        gremlins:  '../gremlins'
+    }
+    */
+
 });
 
 require(['gremlins'], function(gremlins) {
