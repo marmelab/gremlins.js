@@ -1,6 +1,3 @@
-var gremlins = gremlins || {};
-gremlins.watcher = gremlins.watcher || {};
-
 /**
  * FPS watcher
  * 
@@ -18,79 +15,82 @@ gremlins.watcher = gremlins.watcher || {};
  *   watcher.logger(customLoggerService);
  *   watcher.levelSelector(function(fps) { /../ }); log level selector according to fps
  */
-gremlins.watcher.fps = function() {
+define(function(require) {
+    "use strict";
+    return function() {
 
-    var defaultLogger = { 
-        log: function() {},
-        warn: function() {},
-        error: function() {}
-    };
+        var defaultLogger = {
+            log: function() {},
+            warn: function() {},
+            error: function() {}
+        };
 
-    var defaultLevelSelector = function(fps) {
-        if (fps < 10) return 'error';
-        if (fps < 20) return 'warn';
-        return 'log';
-    };
+        var defaultLevelSelector = function(fps) {
+            if (fps < 10) return 'error';
+            if (fps < 20) return 'warn';
+            return 'log';
+        };
 
-    var config = {
-        delay: 500, // how often should the fps be measured
-        logger: defaultLogger,
-        levelSelector: defaultLevelSelector
-    };
+        var config = {
+            delay: 500, // how often should the fps be measured
+            logger: defaultLogger,
+            levelSelector: defaultLevelSelector
+        };
 
-    var initialTime = -Infinity; // force initial measure
-    var enabled;
+        var initialTime = -Infinity; // force initial measure
+        var enabled;
 
-    function loop(time) {
-        if ((time - initialTime) > config.delay) {
-            measureFPS(time);
-            initialTime = time;
+        function loop(time) {
+            if ((time - initialTime) > config.delay) {
+                measureFPS(time);
+                initialTime = time;
+            }
+            if (!enabled) return;
+            window.requestAnimationFrame(loop);
         }
-        if (!enabled) return;
-        window.requestAnimationFrame(loop);
-    }
 
-    function measureFPS() {
-        var lastTime;
-        function init(time) {
-            lastTime = time;
-             window.requestAnimationFrame(measure);
+        function measureFPS() {
+            var lastTime;
+            function init(time) {
+                lastTime = time;
+                 window.requestAnimationFrame(measure);
+            }
+            function measure(time) {
+                var fps = (time - lastTime < 16) ? 60 : 1000/(time - lastTime);
+                var level = config.levelSelector(fps);
+                config.logger[level]('fps        watcher', fps);
+            }
+            window.requestAnimationFrame(init);
         }
-        function measure(time) {
-            var fps = (time - lastTime < 16) ? 60 : 1000/(time - lastTime);
-            var level = config.levelSelector(fps);
-            config.logger[level]('fps        watcher', fps);
+
+        function watch() {
+            enabled = true;
+            window.requestAnimationFrame(loop);
         }
-        window.requestAnimationFrame(init);
-    }
 
-    function watch() {
-        enabled = true;
-        window.requestAnimationFrame(loop);
-    }
+        watch.cleanUp = function() {
+            enabled = false;
+            return watch;
+        };
 
-    watch.cleanUp = function() {
-        enabled = false;
+        watch.delay = function(delay) {
+            if (!arguments.length) return config.delay;
+            config.delay = delay;
+            return watch;
+        };
+
+        watch.logger = function(logger) {
+            if (!arguments.length) return config.logger;
+            config.logger = logger;
+            return watch;
+        };
+
+        watch.levelSelector = function(levelSelector) {
+            if (!arguments.length) return config.levelSelector;
+            config.levelSelector = levelSelector;
+            return watch;
+        };
+
         return watch;
     };
-
-    watch.delay = function(delay) {
-        if (!arguments.length) return config.delay;
-        config.delay = delay;
-        return watch;
-    };
-
-    watch.logger = function(logger) {
-        if (!arguments.length) return config.logger;
-        config.logger = logger;
-        return watch;
-    };
-
-    watch.levelSelector = function(levelSelector) {
-        if (!arguments.length) return config.levelSelector;
-        config.levelSelector = levelSelector;
-        return watch;
-    };
-
-    return watch;
-};
+});

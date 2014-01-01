@@ -1,8 +1,17 @@
-var gremlins = (function() {
+define(function(require) {
+    "use strict";
 
     var gremlins = {
-        type: {},
-        watcher: {}
+        type: {
+            clicker:    require('./type/clicker'),
+            formFiller: require('./type/formFiller'),
+            scroller:   require('./type/scroller'),
+            typer:      require('./type/typer')
+        },
+        watcher: {
+            alert:      require('./watcher/alert'),
+            fps:        require('./watcher/fps')
+        }
     };
 
     var GremlinsHorde = function() {
@@ -153,4 +162,5 @@ var gremlins = (function() {
     };
 
     return gremlins;
-})();
+
+});
