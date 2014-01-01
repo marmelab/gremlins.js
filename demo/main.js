@@ -20,16 +20,16 @@ require(['gremlins'], function(gremlins) {
         .before(function() {
             this.log('sync');
         })
-        .breed(gremlins.type.formFiller())
-        .breed(gremlins.type.clicker().clickTypes(['click']))
-        .breed(gremlins.type.scroller())
-        .breed(function() {
+        .gremlin(gremlins.species.formFiller())
+        .gremlin(gremlins.species.clicker().clickTypes(['click']))
+        .gremlin(gremlins.species.scroller())
+        .gremlin(function() {
             alert('here');
         })
         .after(function() {
             this.log('finished!');
         })
-        .watch(gremlins.watcher.alert())
-        .watch(gremlins.watcher.fps())
-        .unleash(10);
+        .mogwai(gremlins.mogwais.alert())
+        .mogwai(gremlins.mogwais.fps())
+        .unleash();
 });

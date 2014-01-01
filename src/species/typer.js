@@ -65,7 +65,7 @@ define(function(require) {
                 config.showAction(targetElement, posX, posY, key);
             }
             if (typeof callback === 'function') {
-                callback('typer      gremlin type', key, 'at', posX, posY);
+                callback('gremlin', 'typer       type', key, 'at', posX, posY);
             }
         }
 

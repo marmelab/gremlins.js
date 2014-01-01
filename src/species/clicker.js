@@ -58,7 +58,7 @@ define(function(require) {
                 config.showAction(posX, posY, clickType);
             }
             if (typeof callback == 'function') {
-                callback('clicker    gremlin', clickType, 'at', posX, posY);
+                callback('gremlin', 'clicker   ', clickType, 'at', posX, posY);
             }
         }
 

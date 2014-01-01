@@ -71,7 +71,7 @@ define(function(require) {
                 config.showAction(element);
             }
             if (typeof callback == 'function') {
-                callback('formFiller gremlin', 'input', character, 'in', element);
+                callback('gremlin', 'formFiller', 'input', character, 'in', element);
             }
         }
 

@@ -42,7 +42,7 @@ define(function(require) {
                 config.showAction(scrollX, scrollY);
             }
             if (typeof callback == 'function') {
-                callback('scroller   gremlin', 'scroll to', scrollX, scrollY);
+                callback('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
             }
         }
 
