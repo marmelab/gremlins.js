@@ -50,10 +50,12 @@ gremlins.type.formFiller = function() {
             }
         }
 
-        // Find a random element within all selectors
-        var element = getRandomElementInArray(document.querySelectorAll(elementTypes.join(',')));
+        var element;
 
-        if (!element || !config.canFillElement(element)) return;
+        do {
+            // Find a random element within all selectors
+            element = getRandomElementInArray(document.querySelectorAll(elementTypes.join(',')));
+        } while (!element || !config.canFillElement(element));
 
         // Retrieve element type
         var elementType = null;
@@ -70,7 +72,7 @@ gremlins.type.formFiller = function() {
             config.showAction(element);
         }
         if (typeof callback == 'function') {
-            callback(element, character);
+            callback('formFiller gremlin', 'input', character, 'in', element);
         }
     }
 

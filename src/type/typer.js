@@ -69,7 +69,7 @@ gremlins.type.typer = function() {
             config.showAction(targetElement, posX, posY, key);
         }
         if (typeof callback === 'function') {
-            callback(posX, posY, key);
+            callback('typer      gremlin type', key, 'at', posX, posY);
         }
     }
 

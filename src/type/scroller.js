@@ -43,7 +43,7 @@ gremlins.type.scroller = function() {
             config.showAction(scrollX, scrollY);
         }
         if (typeof callback == 'function') {
-            callback(scrollX, scrollY);
+            callback('scroller   gremlin', 'scroll to', scrollX, scrollY);
         }
     }
 

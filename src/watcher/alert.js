@@ -4,9 +4,11 @@ gremlins.watcher = gremlins.watcher || {};
 gremlins.watcher.alert = function() {
 
     var defaultWatchEvents = ['alert', 'confirm', 'pronmpt'];
+    var defaultLogger = { log: function() {} };
 
     var config = {
-        watchEvents: defaultWatchEvents
+        watchEvents: defaultWatchEvents,
+        logger: defaultLogger
     };
 
     var alert   = window.alert;
@@ -14,29 +16,28 @@ gremlins.watcher.alert = function() {
     var prompt  = window.prompt;
 
     function watch() {
-        var logger = (typeof this.logger === 'function') ? this.logger : function() {};
         if (config.watchEvents.indexOf('alert') !== -1) {
             window.alert = function (msg) {
-                logger('alert: ' + msg, 'info');
+                config.logger.log('alert      watcher', msg, 'alert');
             };
         }
         if (config.watchEvents.indexOf('confirm') !== -1) {
             window.confirm = function (msg) {
-                logger('confirm: ' + msg, 'info');
+                config.logger.log('alert      watcher', msg, 'confirm');
                 // Random OK or cancel
                 return Math.random() >= 0.5;
             };
         }
         if (config.watchEvents.indexOf('prompt') !== -1) {
             window.prompt = function (msg) {
-                logger('prompt: ' + msg, 'info');
+                config.logger.log('alert         watcher', msg, 'prompt');
                 // Return a random string
                 return Math.random().toString(36).slice(2);
             };
         }
     }
 
-    watch.cleanUp = function(logger) {
+    watch.cleanUp = function() {
         window.alert   = alert;
         window.confirm = confirm;
         window.prompt  = prompt;
@@ -46,6 +47,12 @@ gremlins.watcher.alert = function() {
     watch.watchEvents = function(watchEvents) {
         if (!arguments.length) return config.watchEvents;
         config.watchEvents = watchEvents;
+        return watch;
+    };
+
+    watch.logger = function(logger) {
+        if (!arguments.length) return config.logger;
+        config.logger = logger;
         return watch;
     };
 
