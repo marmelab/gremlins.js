@@ -41,7 +41,7 @@ define(function(require) {
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
-        function gremlin() {
+        function formFillerGremlin() {
             // Retrieve all selectors
             var elementTypes = [],
                 matchFunction = getMatchFunctionName();
@@ -122,39 +122,39 @@ define(function(require) {
                 el.oMatchesSelector   || el.webkitMatchesSelector).name;
         }
 
-        gremlin.elementMapTypes = function(elementMapTypes) {
+        formFillerGremlin.elementMapTypes = function(elementMapTypes) {
             if (!arguments.length) return config.elementMapTypes;
             config.elementMapTypes = elementMapTypes;
 
-            return gremlin;
+            return formFillerGremlin;
         };
 
-        gremlin.setElementMap = function(element, fct) {
+        formFillerGremlin.setElementMap = function(element, fct) {
             config.elementMapTypes[element] = fct;
 
-            return gremlin;
+            return formFillerGremlin;
         };
 
-        gremlin.showAction = function(showAction) {
+        formFillerGremlin.showAction = function(showAction) {
             if (!arguments.length) return config.showAction;
             config.showAction = showAction;
 
-            return gremlin;
+            return formFillerGremlin;
         };
 
-        gremlin.canFillElement = function(canFillElement) {
+        formFillerGremlin.canFillElement = function(canFillElement) {
             if (!arguments.length) return config.canFillElement;
             config.canClick = canFillElement;
 
-            return gremlin;
+            return formFillerGremlin;
         };
 
-        gremlin.logger = function(logger) {
+        formFillerGremlin.logger = function(logger) {
             if (!arguments.length) return config.logger;
             config.logger = logger;
-            return gremlin;
+            return formFillerGremlin;
         };
 
-        return gremlin;
+        return formFillerGremlin;
     };
 });

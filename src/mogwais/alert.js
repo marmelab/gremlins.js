@@ -14,7 +14,7 @@ define(function(require) {
         var confirm = window.confirm;
         var prompt  = window.prompt;
 
-        function watch() {
+        function alertMogwai() {
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {
                     config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
@@ -36,25 +36,25 @@ define(function(require) {
             }
         }
 
-        watch.cleanUp = function() {
+        alertMogwai.cleanUp = function() {
             window.alert   = alert;
             window.confirm = confirm;
             window.prompt  = prompt;
-            return watch;
+            return alertMogwai;
         };
 
-        watch.watchEvents = function(watchEvents) {
+        alertMogwai.watchEvents = function(watchEvents) {
             if (!arguments.length) return config.watchEvents;
             config.watchEvents = watchEvents;
-            return watch;
+            return alertMogwai;
         };
 
-        watch.logger = function(logger) {
+        alertMogwai.logger = function(logger) {
             if (!arguments.length) return config.logger;
             config.logger = logger;
-            return watch;
+            return alertMogwai;
         };
 
-        return watch;
+        return alertMogwai;
     };
 });

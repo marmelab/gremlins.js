@@ -48,7 +48,7 @@ define(function(require) {
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
-        function gremlin() {
+        function typerGremlin() {
             var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
                 keyboardEvent = document.createEvent("KeyboardEvent"),
@@ -71,24 +71,24 @@ define(function(require) {
             }
         }
 
-        gremlin.eventTypes = function(eventTypes) {
+        typerGremlin.eventTypes = function(eventTypes) {
             if (!arguments.length) return config.eventTypes;
             config.eventTypes = eventTypes;
-            return gremlin;
+            return typerGremlin;
         };
 
-        gremlin.showAction = function(showAction) {
+        typerGremlin.showAction = function(showAction) {
             if (!arguments.length) return config.showAction;
             config.showAction = showAction;
-            return gremlin;
+            return typerGremlin;
         };
 
-        gremlin.logger = function(logger) {
+        typerGremlin.logger = function(logger) {
             if (!arguments.length) return config.logger;
             config.logger = logger;
-            return gremlin;
+            return typerGremlin;
         };
 
-        return gremlin;
+        return typerGremlin;
     };
 });

@@ -63,34 +63,34 @@ define(function(require) {
             window.requestAnimationFrame(init);
         }
 
-        function watch() {
+        function fpsMogwai() {
             enabled = true;
             window.requestAnimationFrame(loop);
         }
 
-        watch.cleanUp = function() {
+        fpsMogwai.cleanUp = function() {
             enabled = false;
-            return watch;
+            return fpsMogwai;
         };
 
-        watch.delay = function(delay) {
+        fpsMogwai.delay = function(delay) {
             if (!arguments.length) return config.delay;
             config.delay = delay;
-            return watch;
+            return fpsMogwai;
         };
 
-        watch.logger = function(logger) {
+        fpsMogwai.logger = function(logger) {
             if (!arguments.length) return config.logger;
             config.logger = logger;
-            return watch;
+            return fpsMogwai;
         };
 
-        watch.levelSelector = function(levelSelector) {
+        fpsMogwai.levelSelector = function(levelSelector) {
             if (!arguments.length) return config.levelSelector;
             config.levelSelector = levelSelector;
-            return watch;
+            return fpsMogwai;
         };
 
-        return watch;
+        return fpsMogwai;
     };
 });

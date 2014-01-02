@@ -44,7 +44,7 @@ define(function(require) {
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
-        function gremlin() {
+        function clickerGremlin() {
             var posX, posY, targetElement;
             do {
                 posX = Math.floor(Math.random() * document.documentElement.clientWidth);
@@ -66,30 +66,30 @@ define(function(require) {
             }
         }
 
-        gremlin.clickTypes = function(clickTypes) {
+        clickerGremlin.clickTypes = function(clickTypes) {
             if (!arguments.length) return config.clickTypes;
             config.clickTypes = clickTypes;
-            return gremlin;
+            return clickerGremlin;
         };
 
-        gremlin.showAction = function(showAction) {
+        clickerGremlin.showAction = function(showAction) {
             if (!arguments.length) return config.showAction;
             config.showAction = showAction;
-            return gremlin;
+            return clickerGremlin;
         };
 
-        gremlin.canClick = function(canClick) {
+        clickerGremlin.canClick = function(canClick) {
             if (!arguments.length) return config.canClick;
             config.canClick = canClick;
-            return gremlin;
+            return clickerGremlin;
         };
 
-        gremlin.logger = function(logger) {
+        clickerGremlin.logger = function(logger) {
             if (!arguments.length) return config.logger;
             config.logger = logger;
-            return gremlin;
+            return clickerGremlin;
         };
 
-        return gremlin;
+        return clickerGremlin;
     };
 });

@@ -31,7 +31,7 @@ define(function(require) {
             logger:     {}
         };
 
-        function gremlin() {
+        function scrollerGremlin() {
             var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
                 scrollX = Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
@@ -48,18 +48,18 @@ define(function(require) {
             }
         }
 
-        gremlin.showAction = function(showAction) {
+        scrollerGremlin.showAction = function(showAction) {
             if (!arguments.length) return config.showAction;
             config.showAction = showAction;
-            return gremlin;
+            return scrollerGremlin;
         };
 
-        gremlin.logger = function(logger) {
+        scrollerGremlin.logger = function(logger) {
             if (!arguments.length) return config.logger;
             config.logger = logger;
-            return gremlin;
+            return scrollerGremlin;
         };
 
-        return gremlin;
+        return scrollerGremlin;
     };
 });

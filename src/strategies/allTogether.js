@@ -7,7 +7,7 @@ define(function(require) {
             nb: 100    // number of waves to execute (can be overridden in params)
         };
 
-        // run each Gremlin every 10 milliseconds for 100 times
+        // every 10ms, execute all Gremlins species ; repeat 100 times
         function allTogetherStrategy(gremlins, params, done) {
             var i = 0,
                 j,
