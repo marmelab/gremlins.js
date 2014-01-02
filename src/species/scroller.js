@@ -6,6 +6,16 @@ define(function(require) {
             documentElement = document.documentElement,
             body = document.body;
 
+        var defaultPositionSelector = function() {
+            var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
+                documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight);
+
+            return [
+                Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
+                Math.floor(Math.random() * (documentHeight - documentElement.clientHeight))
+            ];
+        };
+
         var defaultShowAction = function(scrollX, scrollY) {
             var clickSignal = document.createElement('div');
             clickSignal.style.border = "3px solid red";
@@ -27,15 +37,15 @@ define(function(require) {
         };
 
         var config = {
-            showAction: defaultShowAction,
-            logger:     {}
+            positionSelector: defaultPositionSelector,
+            showAction:       defaultShowAction,
+            logger:           {}
         };
 
         function scrollerGremlin() {
-            var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
-                documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
-                scrollX = Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
-                scrollY = Math.floor(Math.random() * (documentHeight - documentElement.clientHeight));
+            var position = config.positionSelector(),
+                scrollX = position[0],
+                scrollY = position[1];
 
             window.scrollTo(scrollX, scrollY);
 
@@ -47,6 +57,12 @@ define(function(require) {
                 config.logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
             }
         }
+
+        scrollerGremlin.positionSelector = function(positionSelector) {
+            if (!arguments.length) return config.positionSelector;
+            config.positionSelector = positionSelector;
+            return scrollerGremlin;
+        };
 
         scrollerGremlin.showAction = function(showAction) {
             if (!arguments.length) return config.showAction;

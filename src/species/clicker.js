@@ -5,7 +5,14 @@ define(function(require) {
         var document = window.document,
             body = document.body;
 
-        var defaultClickTypes = ['click', 'click', 'click', 'click', 'click', 'click', 'mousedown', 'mouseup', 'mouseover', 'mouseover', 'mouseover', 'mousemove', 'mouseout'];
+        var defaultClickTypes = ['click', 'click', 'click', 'click', 'click', 'click', 'dblclick', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mouseover', 'mouseover', 'mousemove', 'mouseout'];
+
+        var defaultPositionSelector = function() {
+            return [
+                Math.floor(Math.random() * document.documentElement.clientWidth),
+                Math.floor(Math.random() * document.documentElement.clientHeight)
+            ];
+        };
 
         var defaultShowAction = function(x, y) {
             var clickSignal = document.createElement('div');
@@ -18,8 +25,8 @@ define(function(require) {
             clickSignal.style.webkitTransition = 'opacity 1s ease-out';
             clickSignal.style.mozTransition = 'opacity 1s ease-out';
             clickSignal.style.transition = 'opacity 1s ease-out';
-            clickSignal.style.left = x + 'px';
-            clickSignal.style.top = y + 'px';
+            clickSignal.style.left = (x - 20 ) + 'px';
+            clickSignal.style.top = (y - 20 )+ 'px';
             var element = body.appendChild(clickSignal);
             setTimeout(function() {
                 body.removeChild(element);
@@ -32,10 +39,12 @@ define(function(require) {
         var defaultCanClick = function() { return true; };
 
         var config = {
-            clickTypes: defaultClickTypes,
-            showAction: defaultShowAction,
-            canClick:   defaultCanClick,
-            logger:     {}
+            clickTypes:       defaultClickTypes,
+            positionSelector: defaultPositionSelector,
+            showAction:       defaultShowAction,
+            canClick:         defaultCanClick,
+            maxNbTries:       10,
+            logger:           {}
         };
 
         var getRandomElementInArray = function(arr) {
@@ -45,12 +54,15 @@ define(function(require) {
         };
 
         function clickerGremlin() {
-            var posX, posY, targetElement;
+            var position, posX, posY, targetElement, nbTries = 0;
             do {
-                posX = Math.floor(Math.random() * document.documentElement.clientWidth);
-                posY = Math.floor(Math.random() * document.documentElement.clientHeight);
+                position = config.positionSelector();
+                posX = position[0];
+                posY = position[1];
                 targetElement = document.elementFromPoint(posX, posY);
-            } while (!config.canClick(targetElement));
+                nbTries++;
+                if (nbTries > config.maxNbTries) return false;
+            } while (!targetElement || !config.canClick(targetElement));
 
             var evt = document.createEvent("MouseEvents");
             var clickType = getRandomElementInArray(config.clickTypes);
@@ -72,6 +84,12 @@ define(function(require) {
             return clickerGremlin;
         };
 
+        clickerGremlin.positionSelector = function(positionSelector) {
+            if (!arguments.length) return config.positionSelector;
+            config.positionSelector = positionSelector;
+            return clickerGremlin;
+        };
+
         clickerGremlin.showAction = function(showAction) {
             if (!arguments.length) return config.showAction;
             config.showAction = showAction;
@@ -81,6 +99,13 @@ define(function(require) {
         clickerGremlin.canClick = function(canClick) {
             if (!arguments.length) return config.canClick;
             config.canClick = canClick;
+            return clickerGremlin;
+        };
+
+        clickerGremlin.maxNbTries = function(maxNbTries) {
+            if (!arguments.length) return config.maxNbTries;
+            config.canClick = maxNbTries;
+
             return clickerGremlin;
         };
 

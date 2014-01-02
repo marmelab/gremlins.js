@@ -10,7 +10,9 @@ define(function(require) {
             'input[type="number"]': fillNumberElement,
             'select': fillSelect,
             'input[type="radio"]': fillRadio,
-            'input[type="email"]': fillEmail
+            'input[type="checkbox"]': fillCheckbox,
+            'input[type="email"]': fillEmail,
+            'input:not([type])': fillTextElement
         };
 
         var defaultShowAction = function(element) {
@@ -32,6 +34,7 @@ define(function(require) {
             elementMapTypes: defaultMapElements,
             showAction:      defaultShowAction,
             canFillElement:  defaultCanFillElemment,
+            maxNbTries:      10,
             logger:          {}
         };
 
@@ -52,11 +55,13 @@ define(function(require) {
                 }
             }
 
-            var element;
+            var element, nbTries = 0;
 
             do {
                 // Find a random element within all selectors
                 element = getRandomElementInArray(document.querySelectorAll(elementTypes.join(',')));
+                nbTries++;
+                if (nbTries > config.maxNbTries) return false;
             } while (!element || !config.canFillElement(element));
 
             // Retrieve element type
@@ -102,11 +107,25 @@ define(function(require) {
                 option.selected = option.value == randomOption.value;
             }
 
-            return option.value;
+            return randomOption.value;
         }
 
         function fillRadio(element) {
-            element.checked = true;
+            // using mouse events to trigger listeners
+            var evt = document.createEvent("MouseEvents");
+            evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            element.dispatchEvent(evt);
+
+            return element.value;
+        }
+
+        function fillCheckbox(element) {
+            // using mouse events to trigger listeners
+            var evt = document.createEvent("MouseEvents");
+            evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            element.dispatchEvent(evt);
+
+            return element.value;
         }
 
         function fillEmail(element) {
@@ -145,6 +164,13 @@ define(function(require) {
         formFillerGremlin.canFillElement = function(canFillElement) {
             if (!arguments.length) return config.canFillElement;
             config.canClick = canFillElement;
+
+            return formFillerGremlin;
+        };
+
+        formFillerGremlin.maxNbTries = function(maxNbTries) {
+            if (!arguments.length) return config.maxNbTries;
+            config.canClick = maxNbTries;
 
             return formFillerGremlin;
         };

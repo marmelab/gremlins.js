@@ -1,9 +1,9 @@
 require.config({
-    packages: [{ name: 'gremlins', location: '../src' }]
+    packages: [{ name: 'gremlins', location: '../../src' }]
     /*
     // alternative: use the packaged version
     paths: { 
-        gremlins:  '../gremlins.min'
+        gremlins:  '../../gremlins.min'
     }
     */
 });
