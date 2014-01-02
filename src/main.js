@@ -16,6 +16,9 @@ define(function(require) {
         mogwais: {
             alert:      require('./mogwais/alert'),
             fps:        require('./mogwais/fps')
+        },
+        strategies: {
+            allTogether: require('./strategies/allTogether')
         }
     };
 
@@ -24,8 +27,8 @@ define(function(require) {
         this._afterCallbacks = [];
         this._gremlins = [];
         this._mogwais = [];
-        this._unleashers = [];
-        this.loggerObject = defaultLoggerObject;
+        this._strategies = [];
+        this._logger = console; // logs to console by default
     };
 
     var callCallbacks = function(callbacks, args, context, done) {
@@ -50,13 +53,6 @@ define(function(require) {
         });
 
         iterator(callbacks, args, done);
-    };
-
-    var defaultLoggerObject = {
-        log:   console.log.bind(console),
-        info:  console.info.bind(console),
-        warn:  console.warn.bind(console),
-        error: console.error.bind(console)
     };
 
     /**
@@ -132,22 +128,36 @@ define(function(require) {
      *
      * A gremlin is nothing more than a function. Gremlins mess up with the
      * application in order to test its robustness. Once unleased, the horde
-     * executes each gremlin function several times (see unleash()). A logger
-     * function is passed as an argument by the unleasher.
+     * executes each gremlin function several times (see unleash()).
      *
-     *   horde.gremlin(function(logger) {
+     *   horde.gremlin(function() {
      *     // do nasty things to the application
-     *     // ...
-     *     logger('Bye-bye, Woof Woof');
      *   });
      * 
      * The gremlins object contains a few gremlin species than you can add:
      *
      *   horde.gremlin(gremlins.species.clicker());
      *
+     * When added, if the gremlin provides a logger() function, the horde
+     * logger object is injected, to allow the gremlin to record activity.
+     *
+     * Here is a more sophisticated gremlin function example:
+     *
+     *   var logger;
+     *   function arrayDestroyer() {
+     *     Array.prototype.indexOf = function() { return 42; };
+     *     if (logger && logger.log) {
+     *       logger.log('All arrays are now equal');
+     *     }
+     *   });
+     *   arrayDestroyer.logger = function(loggerObject) {
+     *     logger = loggerObject;
+     *   };
+     *   horde.gremlin(arrayDestroyer);
+     *
      * Gremlin functions are executed in the context of the horde, however it
      * is a good practice to avoid using "this" inside gremlin functions to
-     * allow direct gremlin execution for easier debugging.
+     * allow standalone gremlin execution, and to ease debugging.
      *
      *   horde.gremlin(function() {
      *     var oldIndexOf = Array.prototype.indexOf;
@@ -164,6 +174,9 @@ define(function(require) {
      * gremlin, all the default gremlin species are added (see allGremlins()).
      */
     GremlinsHorde.prototype.gremlin = function(gremlin) {
+        if (typeof gremlin.logger === "function") {
+            gremlin.logger(this._logger);
+        }
         this._gremlins.push(gremlin);
         return this;
     };
@@ -201,7 +214,7 @@ define(function(require) {
      *
      * The gremlins object contains a few mogwai species than you can add:
      *
-     *   horde.mowai(gremlins.mogwais.alert());
+     *   horde.mogwai(gremlins.mogwais.alert());
      * 
      * Mogwais are called once before the horde is unleashed. Just like a
      * before() callback, a mogwai can be synchronous or asynchronous.
@@ -211,7 +224,8 @@ define(function(require) {
      * once after the gremlins finished their job.
      * 
      * When added, if the mogwai provides a logger() function, the horde
-     * logger object is injected, to allow the watcher to record activity.
+     * logger object is injected, to allow the mogwai to record activity.
+     *
      * Here is a more sophisticated mogwai function example:
      *
      *   var oldAlert = window.alert;
@@ -230,6 +244,7 @@ define(function(require) {
      *   alert.logger = function(loggerObject) {
      *     logger = loggerObject;
      *   };
+     *   horde.mogwai(alert);
      *
      * The cleanUp() and logger() support for mogwais allow to build
      * sophisticated monitoring features without using "this", and make
@@ -237,10 +252,14 @@ define(function(require) {
      *
      * If a horde is unleashed without manually adding at least a single
      * mogwai, all the default mogwai species are added (see allMogwais()).
+     *
+     * If you want to disable default mogwais, just add an empty function.
+     *
+     *   horde.mogwai(function() {});
      */
     GremlinsHorde.prototype.mogwai = function(mogwai) {
         if (typeof mogwai.logger === "function") {
-            mogwai.logger(this.loggerObject);
+            mogwai.logger(this._logger);
         }
         this._mogwais.push(mogwai);
         return this;
@@ -276,12 +295,13 @@ define(function(require) {
      *   };
      *   horde.logger(consoleLogger);
      *
-     * The logger object is injected to mogwais, and the logger log() function
-     * is injected to gremlins.
+     * The logger object is injected to mogwais, and to gremlins.
+     *
+     * By default, a horde uses the console as logger.
      */
-    GremlinsHorde.prototype.logger = function(loggerObject) {
-        if (!arguments.length) return this.loggerObject;
-        this.loggerObject = loggerObject;
+    GremlinsHorde.prototype.logger = function(logger) {
+        if (!arguments.length) return this._logger;
+        this._logger = logger;
         return this;
     };
 
@@ -292,48 +312,32 @@ define(function(require) {
      * single argument.
      */
     GremlinsHorde.prototype.log = function(msg) {
-        this.loggerObject.log(msg);
+        this._logger.log(msg);
     };
 
-    GremlinsHorde.prototype.unleasher = function(unleasherCallback) {
-        this._unleashers.push(unleasherCallback);
+    /**
+     * Add an attack strategy to run gremlins.
+     * 
+     * A strategy is a simple function taking the following arguments:
+     *  - gremlins: array of gremlin species added to the horde
+     *  - params: the parameters passed tas first argument of unleash()
+     *  - done: a callback to execute once the strategy is finished
+     *
+     *   horde.strategy(function(gremlins, params, done) {
+     *     // execute gremlins following the plan
+     *     // ...
+     *     done();
+     *   });
+     *
+     * If a horde is unleashed without manually adding at least a single
+     * strategy, all the default strategy (allTogether) is used.
+     */
+    GremlinsHorde.prototype.strategy = function(strategy) {
+        this._strategies.push(strategy);
         return this;
     };
 
-    // run each gremlin every 10 milliseconds for nb times
-    GremlinsHorde.prototype.defaultUnleasher = function(nb, done) {
-        var i = 0,
-            j,
-            horde = this,
-            gremlins = horde._gremlins,
-            count = gremlins.length;
-        while (i < nb) {
-            for (j = 0; j < count; j++) {
-                (function(i, j) {
-                    setTimeout(function(){
-
-                        gremlins[j].apply(horde, [horde.loggerObject.log]);
-
-                        if (i == nb -1 && j == count - 1){
-                            done();
-                        }
-                    }, i * 10);
-                })(i, j);
-            }
-            i++;
-        }
-    };
-
-    GremlinsHorde.prototype.runUnleashers = function(nb, done) {
-        if (this._unleashers.length === 0) {
-            this.defaultUnleasher(nb, done);
-        } else {
-            callCallbacks(this._unleashers, [this._gremlins, nb], this, done);
-        }
-    };
-
-    GremlinsHorde.prototype.unleash = function(nb, done) {
-        nb = nb || 100;
+    GremlinsHorde.prototype.unleash = function(params, done) {
         if (this._gremlins.length === 0) {
             this.allGremlins();
         }
@@ -350,7 +354,7 @@ define(function(require) {
         }
 
         callCallbacks(beforeCallbacks, [], horde, function() {
-            horde.runUnleashers(nb, function() {
+            horde.runStrategies(params, function() {
                 callCallbacks(afterCallbacks, [], horde, function () {
                     if (typeof done === 'function') {
                         done();
@@ -358,6 +362,15 @@ define(function(require) {
                 });
             });
         });
+    };
+
+    GremlinsHorde.prototype.runStrategies = function(params, done) {
+        if (this._strategies.length === 0) {
+            var strategy = gremlins.strategies.allTogether();
+            strategy.apply(this, [this._gremlins, params, done]);
+        } else {
+            callCallbacks(this._strategies, [this._gremlins, params], this, done);
+        }
     };
 
     gremlins.createHorde = function() {

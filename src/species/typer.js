@@ -34,6 +34,12 @@ define(function(require) {
             }, 50);
         };
 
+        var config = {
+            eventTypes: defaultEventTypes,
+            showAction: defaultShowAction,
+            logger:     {}
+        };
+
         var getRandomElementInArray = function (arr) {
             if (arr.length === 0) {
                 return null;
@@ -42,12 +48,7 @@ define(function(require) {
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
-        var config = {
-            eventTypes: defaultEventTypes,
-            showAction: defaultShowAction
-        };
-
-        function gremlin(callback) {
+        function gremlin() {
             var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
                 keyboardEvent = document.createEvent("KeyboardEvent"),
@@ -64,8 +65,9 @@ define(function(require) {
             if (typeof config.showAction === 'function') {
                 config.showAction(targetElement, posX, posY, key);
             }
-            if (typeof callback === 'function') {
-                callback('gremlin', 'typer       type', key, 'at', posX, posY);
+
+            if (typeof config.logger.log == 'function') {
+                config.logger.log('gremlin', 'typer       type', key, 'at', posX, posY);
             }
         }
 
@@ -78,6 +80,12 @@ define(function(require) {
         gremlin.showAction = function(showAction) {
             if (!arguments.length) return config.showAction;
             config.showAction = showAction;
+            return gremlin;
+        };
+
+        gremlin.logger = function(logger) {
+            if (!arguments.length) return config.logger;
+            config.logger = logger;
             return gremlin;
         };
 
