@@ -32,30 +32,6 @@ define(function(require) {
         this._logger = console; // logs to console by default
     };
 
-    var callCallbacks = function(callbacks, args, context, done) {
-        var nbArguments = args.length;
-
-        var iterator = function(callbacks, args) {
-            if (!callbacks.length) {
-                return typeof done === 'function' ? done() : true;
-            }
-
-            var callback = callbacks.shift();
-            callback.apply(context, args);
-
-            // Is the callback synchronous ?
-            if (callback.length === nbArguments) {
-                iterator(callbacks, args, done);
-            }
-        };
-
-        args.push(function(){
-            iterator(callbacks, args, done);
-        });
-
-        iterator(callbacks, args, done);
-    };
-
     /**
      * Add a callback to be executed before gremlins are unleashed.
      *
@@ -372,6 +348,30 @@ define(function(require) {
         } else {
             callCallbacks(this._strategies, [this._gremlins, params], this, done);
         }
+    };
+
+    var callCallbacks = function(callbacks, args, context, done) {
+        var nbArguments = args.length;
+
+        var iterator = function(callbacks, args) {
+            if (!callbacks.length) {
+                return typeof done === 'function' ? done() : true;
+            }
+
+            var callback = callbacks.shift();
+            callback.apply(context, args);
+
+            // Is the callback synchronous ?
+            if (callback.length === nbArguments) {
+                iterator(callbacks, args, done);
+            }
+        };
+
+        args.push(function(){
+            iterator(callbacks, args, done);
+        });
+
+        iterator(callbacks, args, done);
     };
 
     gremlins.createHorde = function() {
