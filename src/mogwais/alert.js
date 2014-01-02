@@ -2,12 +2,25 @@ define(function(require) {
     "use strict";
     return function() {
 
-        var defaultWatchEvents = ['alert', 'confirm', 'pronmpt'];
+        var defaultWatchEvents = ['alert', 'confirm', 'prompt'];
+
+        var defaultConfirmResponse = function() {
+            // Random OK or cancel
+            return Math.random() >= 0.5;
+        };
+
+        var defaultPromptResponse = function() {
+            // Return a random string
+            return Math.random().toString(36).slice(2);
+        };
+
         var defaultLogger = { warn: function() {} };
 
         var config = {
-            watchEvents: defaultWatchEvents,
-            logger: defaultLogger
+            watchEvents:     defaultWatchEvents,
+            confirmResponse: defaultConfirmResponse,
+            promptResponse:  defaultPromptResponse,
+            logger:          defaultLogger
         };
 
         var alert   = window.alert;
@@ -22,16 +35,14 @@ define(function(require) {
             }
             if (config.watchEvents.indexOf('confirm') !== -1) {
                 window.confirm = function (msg) {
+                    config.confirmResponse();
                     config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
-                    // Random OK or cancel
-                    return Math.random() >= 0.5;
                 };
             }
             if (config.watchEvents.indexOf('prompt') !== -1) {
                 window.prompt = function (msg) {
+                    config.promptResponse();
                     config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
-                    // Return a random string
-                    return Math.random().toString(36).slice(2);
                 };
             }
         }
@@ -46,6 +57,18 @@ define(function(require) {
         alertMogwai.watchEvents = function(watchEvents) {
             if (!arguments.length) return config.watchEvents;
             config.watchEvents = watchEvents;
+            return alertMogwai;
+        };
+
+        alertMogwai.confirmResponse = function(confirmResponse) {
+            if (!arguments.length) return config.confirmResponse;
+            config.confirmResponse = confirmResponse;
+            return alertMogwai;
+        };
+
+        alertMogwai.promptResponse = function(promptResponse) {
+            if (!arguments.length) return config.promptResponse;
+            config.promptResponse = promptResponse;
             return alertMogwai;
         };
 
