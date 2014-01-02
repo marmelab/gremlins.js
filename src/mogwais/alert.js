@@ -3,7 +3,7 @@ define(function(require) {
     return function() {
 
         var defaultWatchEvents = ['alert', 'confirm', 'pronmpt'];
-        var defaultLogger = { log: function() {} };
+        var defaultLogger = { warn: function() {} };
 
         var config = {
             watchEvents: defaultWatchEvents,
@@ -17,19 +17,19 @@ define(function(require) {
         function watch() {
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {
-                    config.logger.log('alert      watcher', msg, 'alert');
+                    config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
                 };
             }
             if (config.watchEvents.indexOf('confirm') !== -1) {
                 window.confirm = function (msg) {
-                    config.logger.log('alert      watcher', msg, 'confirm');
+                    config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
                     // Random OK or cancel
                     return Math.random() >= 0.5;
                 };
             }
             if (config.watchEvents.indexOf('prompt') !== -1) {
                 window.prompt = function (msg) {
-                    config.logger.log('alert         watcher', msg, 'prompt');
+                    config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
                     // Return a random string
                     return Math.random().toString(36).slice(2);
                 };

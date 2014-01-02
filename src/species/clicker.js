@@ -29,19 +29,22 @@ define(function(require) {
             }, 50);
         };
 
+        var defaultCanClick = function() { return true; };
+
+        var config = {
+            clickTypes: defaultClickTypes,
+            showAction: defaultShowAction,
+            canClick:   defaultCanClick,
+            logger:     {}
+        };
+
         var getRandomElementInArray = function(arr) {
             if (arr.length === 0) return null;
 
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
-        var config = {
-            clickTypes: defaultClickTypes,
-            showAction: defaultShowAction,
-            canClick: function() { return true; }
-        };
-
-        function gremlin(callback) {
+        function gremlin() {
             var posX, posY, targetElement;
             do {
                 posX = Math.floor(Math.random() * document.documentElement.clientWidth);
@@ -57,8 +60,9 @@ define(function(require) {
             if (typeof config.showAction == 'function') {
                 config.showAction(posX, posY, clickType);
             }
-            if (typeof callback == 'function') {
-                callback('clicker    gremlin', clickType, 'at', posX, posY);
+
+            if (typeof config.logger.log == 'function') {
+                config.logger.log('gremlin', 'clicker   ', clickType, 'at', posX, posY);
             }
         }
 
@@ -77,6 +81,12 @@ define(function(require) {
         gremlin.canClick = function(canClick) {
             if (!arguments.length) return config.canClick;
             config.canClick = canClick;
+            return gremlin;
+        };
+
+        gremlin.logger = function(logger) {
+            if (!arguments.length) return config.logger;
+            config.logger = logger;
             return gremlin;
         };
 

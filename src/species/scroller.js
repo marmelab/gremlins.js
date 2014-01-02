@@ -27,10 +27,11 @@ define(function(require) {
         };
 
         var config = {
-            showAction: defaultShowAction
+            showAction: defaultShowAction,
+            logger:     {}
         };
 
-        function gremlin(callback) {
+        function gremlin() {
             var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
                 scrollX = Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
@@ -41,14 +42,21 @@ define(function(require) {
             if (typeof config.showAction == 'function') {
                 config.showAction(scrollX, scrollY);
             }
-            if (typeof callback == 'function') {
-                callback('scroller   gremlin', 'scroll to', scrollX, scrollY);
+
+            if (typeof config.logger.log == 'function') {
+                config.logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
             }
         }
 
         gremlin.showAction = function(showAction) {
             if (!arguments.length) return config.showAction;
             config.showAction = showAction;
+            return gremlin;
+        };
+
+        gremlin.logger = function(logger) {
+            if (!arguments.length) return config.logger;
+            config.logger = logger;
             return gremlin;
         };
 

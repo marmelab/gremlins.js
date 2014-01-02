@@ -26,19 +26,22 @@ define(function(require) {
             }, 500);
         };
 
+        var defaultCanFillElemment = function() { return true; };
+
+        var config = {
+            elementMapTypes: defaultMapElements,
+            showAction:      defaultShowAction,
+            canFillElement:  defaultCanFillElemment,
+            logger:          {}
+        };
+
         var getRandomElementInArray = function(arr) {
             if (!arr || arr.length === 0) return null;
 
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
-        var config = {
-            elementMapTypes: defaultMapElements,
-            showAction: defaultShowAction,
-            canFillElement: function() { return true; }
-        };
-
-        function gremlin(callback) {
+        function gremlin() {
             // Retrieve all selectors
             var elementTypes = [],
                 matchFunction = getMatchFunctionName();
@@ -59,7 +62,7 @@ define(function(require) {
             // Retrieve element type
             var elementType = null;
             for (var selector in config.elementMapTypes) {
-                if(element[matchFunction](selector)) {
+                if (element[matchFunction](selector)) {
                     elementType = selector;
                     break;
                 }
@@ -70,8 +73,9 @@ define(function(require) {
             if (typeof config.showAction == 'function') {
                 config.showAction(element);
             }
-            if (typeof callback == 'function') {
-                callback('formFiller gremlin', 'input', character, 'in', element);
+
+            if (typeof config.logger.log == 'function') {
+                config.logger.log('gremlin', 'formFiller', 'input', character, 'in', element);
             }
         }
 
@@ -142,6 +146,12 @@ define(function(require) {
             if (!arguments.length) return config.canFillElement;
             config.canClick = canFillElement;
 
+            return gremlin;
+        };
+
+        gremlin.logger = function(logger) {
+            if (!arguments.length) return config.logger;
+            config.logger = logger;
             return gremlin;
         };
 
