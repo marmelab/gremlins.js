@@ -18,7 +18,8 @@ define(function(require) {
             fps:        require('./mogwais/fps')
         },
         strategies: {
-            allTogether: require('./strategies/allTogether')
+            allTogether: require('./strategies/allTogether'),
+            bySpecies:   require('./strategies/bySpecies')
         }
     };
 
