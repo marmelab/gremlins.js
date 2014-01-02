@@ -24,80 +24,12 @@ define(function(require) {
     };
 
     var GremlinsHorde = function() {
-        this._beforeCallbacks = [];
-        this._afterCallbacks = [];
         this._gremlins = [];
         this._mogwais = [];
         this._strategies = [];
+        this._beforeCallbacks = [];
+        this._afterCallbacks = [];
         this._logger = console; // logs to console by default
-    };
-
-    /**
-     * Add a callback to be executed before gremlins are unleashed.
-     *
-     * Use it to setup the page before the stress test (disable some features, 
-     * set default data, bootstrap your application).
-     * 
-     * If the callback takes no argument, it is executed synchronously.
-     *
-     *   horde.before(function() {
-     *     // do things synchronously
-     *   });
-     *
-     * If the callback takes an argument, it is executed asynchronously.
-     *
-     *   horde.before(function(done) {
-     *     // do things synchronously
-     *     done();
-     *   });
-     *
-     * before() callbacks are executed in the context of the horde.
-     *
-     *   horde.before(function() {
-     *     // "this" is the horde
-     *     this.log('Preparing the attack');
-     *   });
-     *
-     * You can add several callbacks by calling before() more than once.
-     * They will be executed in the order they were registered.
-     */
-    GremlinsHorde.prototype.before = function(beforeCallback) {
-        this._beforeCallbacks.push(beforeCallback);
-        return this;
-    };
-
-    /**
-     * Add a callback to be executed after gremlins finished their job.
-     *
-     * Use it to collect insights of the gremlins activity, or re-enable
-     * features that were disabled for the test).
-     * 
-     * If the callback takes no argument, it is executed synchronously.
-     *
-     *   horde.after(function() {
-     *     // do things synchronously
-     *   });
-     *
-     * If the callback takes an argument, it is executed asynchronously.
-     *
-     *   horde.after(function(done) {
-     *     // do things synchronously
-     *     done();
-     *   });
-     *
-     * after() callbacks are executed in the context of the horde.
-     *
-     *   horde.after(function() {
-     *     // "this" is the horde
-     *     this.log('Cleaning up the mess after the attack');
-     *   });
-     *
-     * You can add several callbacks by calling after() more than once.
-     * They will be executed in the order they were registered.
-     */
-    GremlinsHorde.prototype.after = function(afterCallback) {
-        this._afterCallbacks.push(afterCallback);
-        return this;
     };
 
     /**
@@ -149,6 +81,9 @@ define(function(require) {
      *
      * If a horde is unleashed without manually adding at least a single
      * gremlin, all the default gremlin species are added (see allGremlins()).
+     *
+     * @param {Function} gremlin - A callback to be executed to mess up the app
+     * @return {GremlinsHorde}
      */
     GremlinsHorde.prototype.gremlin = function(gremlin) {
         if (typeof gremlin.logger === "function") {
@@ -165,6 +100,8 @@ define(function(require) {
      * own easily:
      * 
      *   gremlins.species.greenMutant = function(logger) { //... };
+     *
+     * @return {GremlinsHorde}
      */
     GremlinsHorde.prototype.allGremlins = function() {
         for (var gremlinName in gremlins.species) {
@@ -233,6 +170,9 @@ define(function(require) {
      * If you want to disable default mogwais, just add an empty function.
      *
      *   horde.mogwai(function() {});
+     *
+     * @param {Function} mogwai - A callback to be executed when the test starts
+     * @return {GremlinsHorde}
      */
     GremlinsHorde.prototype.mogwai = function(mogwai) {
         if (typeof mogwai.logger === "function") {
@@ -249,11 +189,133 @@ define(function(require) {
      * own easily:
      * 
      *   gremlins.mogwais.gizmo = function() { //... };
+     *
+     * @return {GremlinsHorde}
      */
     GremlinsHorde.prototype.allMogwais = function() {
         for (var mogwaiName in gremlins.mogwais) {
             this.mogwai(gremlins.mogwais[mogwaiName]());
         }
+        return this;
+    };
+
+    /**
+     * Add an attack strategy to run gremlins.
+     *
+     * A strategy is a simple function taking the following arguments:
+     *  - gremlins: array of gremlin species added to the horde
+     *  - params: the parameters passed as first argument of unleash()
+     *  - done: a callback to execute once the strategy is finished
+     * 
+     * A strategy function executes registered gremlins in a certain order,
+     * a certain number of times.
+     *
+     *   horde.strategy(function allAtOnceStrategy(gremlins, params, done) {
+     *     gremlins.forEach(function(gremlin) {
+     *       gremlin.apply(horde);
+     *     });
+     *     done();
+     *   });
+     *
+     * The gremlins object contains a few strategies than you can add:
+     *
+     *   horde.strategy(gremlins.strategies.bySpecies());
+     *
+     * You can add several strategies by calling strategy() more than once.
+     * They will be executed in the order they were registered.
+     *
+     * If a horde is unleashed without manually adding at least a single
+     * strategy, all the default strategy (allTogether) is used.
+     *
+     * @param {Function} strategy - A callback to be executed when the test starts
+     * @return {GremlinsHorde} 
+     */
+    GremlinsHorde.prototype.strategy = function(strategy) {
+        this._strategies.push(strategy);
+        return this;
+    };
+
+    /**
+     * Add a callback to be executed before gremlins are unleashed.
+     *
+     * Use it to setup the page before the stress test (disable some features, 
+     * set default data, bootstrap your application, start a profiler).
+     *
+     *   horde.before(function() {
+     *     console.profile('gremlins'); // start the Chrome profiler
+     *   });
+     * 
+     * If the callback takes no argument, it is executed synchronously.
+     *
+     *   horde.before(function() {
+     *     // do things synchronously
+     *   });
+     *
+     * If the callback takes an argument, it is executed asynchronously, which
+     * means that the horde is paused until the argument is executed.
+     *
+     *   horde.before(function(done) {
+     *     // do things asynchronously
+     *     done();
+     *   });
+     *
+     * before() callbacks are executed in the context of the horde.
+     *
+     *   horde.before(function() {
+     *     // "this" is the horde
+     *     this.log('Preparing the attack');
+     *   });
+     *
+     * You can add several callbacks by calling before() more than once.
+     * They will be executed in the order they were registered.
+     *
+     * @param {Function} beforeCallback - A callback to be executed before the stress test
+     * @return {GremlinsHorde}
+     */
+    GremlinsHorde.prototype.before = function(beforeCallback) {
+        this._beforeCallbacks.push(beforeCallback);
+        return this;
+    };
+
+    /**
+     * Add a callback to be executed after gremlins finished their job.
+     *
+     * Use it to collect insights of the gremlins activity, stop a profiler,
+     * or re-enable features that were disabled for the test.
+     *
+     *   horde.after(function() {
+     *     console.profileEnd(); // stop the Chrome profiler
+     *   });
+     * 
+     * If the callback takes no argument, it is executed synchronously.
+     *
+     *   horde.after(function() {
+     *     // do things synchronously
+     *   });
+     *
+     * If the callback takes an argument, it is executed asynchronously, which
+     * means that the horde is paused until the argument is executed.
+     *
+     *   horde.after(function(done) {
+     *     // do things asynchronously
+     *     done();
+     *   });
+     *
+     * after() callbacks are executed in the context of the horde.
+     *
+     *   horde.after(function() {
+     *     // "this" is the horde
+     *     this.log('Cleaning up the mess after the attack');
+     *   });
+     *
+     * You can add several callbacks by calling after() more than once.
+     * They will be executed in the order they were registered.
+     *
+     * @param {Function} afterCallback - A callback to be executed at the end of the stress test
+     * @return {GremlinsHorde}
+     */
+    GremlinsHorde.prototype.after = function(afterCallback) {
+        this._afterCallbacks.push(afterCallback);
         return this;
     };
 
@@ -274,7 +336,10 @@ define(function(require) {
      *
      * The logger object is injected to mogwais, and to gremlins.
      *
-     * By default, a horde uses the console as logger.
+     * By default, a horde uses the global console object as logger.
+     *
+     * @param {Object} [logger] - A logger object
+     * @return {GremlinsHorde}
      */
     GremlinsHorde.prototype.logger = function(logger) {
         if (!arguments.length) return this._logger;
@@ -285,35 +350,42 @@ define(function(require) {
     /**
      * Shortcut to the logger's log() method.
      *
-     * Mostly usefult for before() and after() callbacks. Only supports a
+     * Mostly useful for before() and after() callbacks. Only supports a
      * single argument.
+     *
+     * @param {String} msg The message to log
      */
     GremlinsHorde.prototype.log = function(msg) {
         this._logger.log(msg);
     };
 
     /**
-     * Add an attack strategy to run gremlins.
+     * Start the stress test by executing gremlins according to the strategies
      * 
-     * A strategy is a simple function taking the following arguments:
-     *  - gremlins: array of gremlin species added to the horde
-     *  - params: the parameters passed tas first argument of unleash()
-     *  - done: a callback to execute once the strategy is finished
+     * Gremlins and mogwais do nothing until the horde is unleashed.
+     * When unleashing, you can pass parameters to the strategies, such as the
+     * number of gremlin waves in the default strategy.
      *
-     *   horde.strategy(function(gremlins, params, done) {
-     *     // execute gremlins following the plan
-     *     // ...
-     *     done();
+     *   horde.unleash({ nb: 50 }); // all gremlins will attack 50 times
+     * 
+     * unleash() executes asynchronously, so you must use the second argument
+     * if you need to execute code after the stress test.
+     *
+     *   horde.unleash({}, function() {
+     *     console.log('Phew! Stress test is over.');
      *   });
      *
-     * If a horde is unleashed without manually adding at least a single
-     * strategy, all the default strategy (allTogether) is used.
+     * Alternately, you can use the after() method.
+     *
+     *   horde
+     *     .after(function() {
+     *       console.log('Phew! Stress test is over.');
+     *     })
+     *     .unleash();
+     *
+     * @param {Object} [params] - A list of parameters passed to each strategy.
+     * @param {Function} [done] - A callback to be executed once the stress test is over
      */
-    GremlinsHorde.prototype.strategy = function(strategy) {
-        this._strategies.push(strategy);
-        return this;
-    };
-
     GremlinsHorde.prototype.unleash = function(params, done) {
         if (this._gremlins.length === 0) {
             this.allGremlins();
@@ -374,6 +446,11 @@ define(function(require) {
         iterator(callbacks, args, done);
     };
 
+    /**
+     * Get a new horde instance
+     *
+     * @return {GremlinsHorde}
+     */
     gremlins.createHorde = function() {
         return new GremlinsHorde();
     };
