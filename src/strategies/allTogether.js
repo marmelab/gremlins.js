@@ -2,6 +2,7 @@ define(function(require) {
     "use strict";
 
     var executeInSeries = require('../utils/executeInSeries');
+    var configurable = require('../utils/configurable');
 
     return function() {
 
@@ -50,17 +51,7 @@ define(function(require) {
             setTimeout(callDone, 4);
         };
 
-        allTogetherStrategy.delay = function(delay) {
-            if (!arguments.length) return config.delay;
-            config.delay = delay;
-            return allTogetherStrategy;
-        };
-
-        allTogetherStrategy.nb = function(nb) {
-            if (!arguments.length) return config.nb;
-            config.nb = nb;
-            return allTogetherStrategy;
-        };
+        configurable(allTogetherStrategy, config);
 
         return allTogetherStrategy;
     };

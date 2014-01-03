@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var document = window.document,
@@ -78,42 +81,7 @@ define(function(require) {
             }
         }
 
-        clickerGremlin.clickTypes = function(clickTypes) {
-            if (!arguments.length) return config.clickTypes;
-            config.clickTypes = clickTypes;
-            return clickerGremlin;
-        };
-
-        clickerGremlin.positionSelector = function(positionSelector) {
-            if (!arguments.length) return config.positionSelector;
-            config.positionSelector = positionSelector;
-            return clickerGremlin;
-        };
-
-        clickerGremlin.showAction = function(showAction) {
-            if (!arguments.length) return config.showAction;
-            config.showAction = showAction;
-            return clickerGremlin;
-        };
-
-        clickerGremlin.canClick = function(canClick) {
-            if (!arguments.length) return config.canClick;
-            config.canClick = canClick;
-            return clickerGremlin;
-        };
-
-        clickerGremlin.maxNbTries = function(maxNbTries) {
-            if (!arguments.length) return config.maxNbTries;
-            config.canClick = maxNbTries;
-
-            return clickerGremlin;
-        };
-
-        clickerGremlin.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return clickerGremlin;
-        };
+        configurable(clickerGremlin, config);
 
         return clickerGremlin;
     };

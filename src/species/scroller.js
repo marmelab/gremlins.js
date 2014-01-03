@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var document = window.document,
@@ -58,23 +61,7 @@ define(function(require) {
             }
         }
 
-        scrollerGremlin.positionSelector = function(positionSelector) {
-            if (!arguments.length) return config.positionSelector;
-            config.positionSelector = positionSelector;
-            return scrollerGremlin;
-        };
-
-        scrollerGremlin.showAction = function(showAction) {
-            if (!arguments.length) return config.showAction;
-            config.showAction = showAction;
-            return scrollerGremlin;
-        };
-
-        scrollerGremlin.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return scrollerGremlin;
-        };
+        configurable(scrollerGremlin, config);
 
         return scrollerGremlin;
     };

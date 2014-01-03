@@ -17,6 +17,9 @@
  */
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var defaultLogger = {
@@ -73,23 +76,7 @@ define(function(require) {
             return fpsMogwai;
         };
 
-        fpsMogwai.delay = function(delay) {
-            if (!arguments.length) return config.delay;
-            config.delay = delay;
-            return fpsMogwai;
-        };
-
-        fpsMogwai.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return fpsMogwai;
-        };
-
-        fpsMogwai.levelSelector = function(levelSelector) {
-            if (!arguments.length) return config.levelSelector;
-            config.levelSelector = levelSelector;
-            return fpsMogwai;
-        };
+        configurable(fpsMogwai, config);
 
         return fpsMogwai;
     };

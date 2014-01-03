@@ -2,6 +2,7 @@ define(function(require) {
     "use strict";
 
     var executeInSeries = require('../utils/executeInSeries');
+    var configurable = require('../utils/configurable');
 
     return function() {
 
@@ -55,17 +56,7 @@ define(function(require) {
             doneCallback = null;
         }
 
-        bySpeciesStrategy.delay = function(delay) {
-            if (!arguments.length) return config.delay;
-            config.delay = delay;
-            return bySpeciesStrategy;
-        };
-
-        bySpeciesStrategy.nb = function(nb) {
-            if (!arguments.length) return config.nb;
-            config.nb = nb;
-            return bySpeciesStrategy;
-        };
+        configurable(bySpeciesStrategy, config);
 
         return bySpeciesStrategy;
     };

@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var defaultLogger = { warn: function() {} };
@@ -49,17 +52,7 @@ define(function(require) {
             return gizmoMogwai;
         };
 
-        gizmoMogwai.maxErrors = function(maxErrors) {
-            if (!arguments.length) return config.maxErrors;
-            config.maxErrors = maxErrors;
-            return gizmoMogwai;
-        };
-
-        gizmoMogwai.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return gizmoMogwai;
-        };
+        configurable(gizmoMogwai, config);
 
         return gizmoMogwai;
     };

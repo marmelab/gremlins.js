@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var defaultWatchEvents = ['alert', 'confirm', 'prompt'];
@@ -54,29 +57,7 @@ define(function(require) {
             return alertMogwai;
         };
 
-        alertMogwai.watchEvents = function(watchEvents) {
-            if (!arguments.length) return config.watchEvents;
-            config.watchEvents = watchEvents;
-            return alertMogwai;
-        };
-
-        alertMogwai.confirmResponse = function(confirmResponse) {
-            if (!arguments.length) return config.confirmResponse;
-            config.confirmResponse = confirmResponse;
-            return alertMogwai;
-        };
-
-        alertMogwai.promptResponse = function(promptResponse) {
-            if (!arguments.length) return config.promptResponse;
-            config.promptResponse = promptResponse;
-            return alertMogwai;
-        };
-
-        alertMogwai.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return alertMogwai;
-        };
+        configurable(alertMogwai, config);
 
         return alertMogwai;
     };

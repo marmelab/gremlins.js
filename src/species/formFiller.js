@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var document = window.document;
@@ -141,45 +144,7 @@ define(function(require) {
                 el.oMatchesSelector   || el.webkitMatchesSelector).name;
         }
 
-        formFillerGremlin.elementMapTypes = function(elementMapTypes) {
-            if (!arguments.length) return config.elementMapTypes;
-            config.elementMapTypes = elementMapTypes;
-
-            return formFillerGremlin;
-        };
-
-        formFillerGremlin.setElementMap = function(element, fct) {
-            config.elementMapTypes[element] = fct;
-
-            return formFillerGremlin;
-        };
-
-        formFillerGremlin.showAction = function(showAction) {
-            if (!arguments.length) return config.showAction;
-            config.showAction = showAction;
-
-            return formFillerGremlin;
-        };
-
-        formFillerGremlin.canFillElement = function(canFillElement) {
-            if (!arguments.length) return config.canFillElement;
-            config.canClick = canFillElement;
-
-            return formFillerGremlin;
-        };
-
-        formFillerGremlin.maxNbTries = function(maxNbTries) {
-            if (!arguments.length) return config.maxNbTries;
-            config.canClick = maxNbTries;
-
-            return formFillerGremlin;
-        };
-
-        formFillerGremlin.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return formFillerGremlin;
-        };
+        configurable(formFillerGremlin, config);
 
         return formFillerGremlin;
     };

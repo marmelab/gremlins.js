@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var document = window.document,
@@ -71,23 +74,7 @@ define(function(require) {
             }
         }
 
-        typerGremlin.eventTypes = function(eventTypes) {
-            if (!arguments.length) return config.eventTypes;
-            config.eventTypes = eventTypes;
-            return typerGremlin;
-        };
-
-        typerGremlin.showAction = function(showAction) {
-            if (!arguments.length) return config.showAction;
-            config.showAction = showAction;
-            return typerGremlin;
-        };
-
-        typerGremlin.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return typerGremlin;
-        };
+        configurable(typerGremlin, config);
 
         return typerGremlin;
     };
