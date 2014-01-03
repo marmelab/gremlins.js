@@ -24,6 +24,8 @@ define(function(require) {
         }
     };
 
+    var executeInSeries = require('./utils/executeInSeries');
+
     var GremlinsHorde = function() {
         this._gremlins = [];
         this._mogwais = [];
@@ -406,40 +408,15 @@ define(function(require) {
             afterCallbacks.push(this._mogwais[watcherName].cleanUp);
         }
 
-        callCallbacks(beforeCallbacks, [], horde, function() {
-            callCallbacks(horde._strategies, [horde._gremlins, params], horde, function() {
-                callCallbacks(afterCallbacks, [], horde, function () {
+        executeInSeries(beforeCallbacks, [], horde, function() {
+            executeInSeries(horde._strategies, [horde._gremlins, params], horde, function() {
+                executeInSeries(afterCallbacks, [], horde, function () {
                     if (typeof done === 'function') {
                         done();
                     }
                 });
             });
         });
-    };
-
-    var callCallbacks = function(callbacks, args, context, done) {
-        var nbArguments = args.length;
-        callbacks = callbacks.slice(0); // clone the array to avoid modifying the original
-
-        var iterator = function(callbacks, args) {
-            if (!callbacks.length) {
-                return typeof done === 'function' ? done() : true;
-            }
-
-            var callback = callbacks.shift();
-            callback.apply(context, args);
-
-            // Is the callback synchronous ?
-            if (callback.length === nbArguments) {
-                iterator(callbacks, args, done);
-            }
-        };
-
-        args.push(function(){
-            iterator(callbacks, args, done);
-        });
-
-        iterator(callbacks, args, done);
     };
 
     /**

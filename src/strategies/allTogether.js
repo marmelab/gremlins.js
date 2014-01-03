@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var executeInSeries = require('../utils/executeInSeries');
+
     return function() {
 
         var config = {
@@ -10,28 +13,36 @@ define(function(require) {
         var timeouts = [];
         var doneCallback;
 
-        // every 10ms, execute all Gremlins species ; repeat 100 times
+        // execute all Gremlins species ; repeat 10ms after for 100 times
         function allTogetherStrategy(gremlins, params, done) {
             var i = 0,
-                j,
-                count = gremlins.length,
-                nb = params && params.nb ? params.nb : config.nb;
+                nb = params && params.nb ? params.nb : config.nb,
+                horde = this;
             doneCallback = done; // done can also be called by stop()
-            while (i < nb) {
-                for (j = 0; j < count; j++) {
-                    (function(i, j) {
-                        timeouts.push(setTimeout(function(){
 
-                            gremlins[j].apply(this);
-
-                            if (i == nb -1 && j == count - 1){
-                                callDone();
-                            }
-                        }, i * config.delay));
-                    })(i, j);
-                }
-                i++;
+            function executeAllGremlins(callback) {
+                executeInSeries(gremlins, [], horde, callback);
             }
+
+            function executeNextWave() {
+                i++;
+                executeAllGremlins(function() {
+                    if (i < nb) {
+                        timeouts.push(setTimeout(executeNextWave, config.delay));
+                    } else {
+                        callDone();
+                    }
+                });
+            }
+
+            executeNextWave();
+        }
+
+        function callDone() {
+            if (typeof doneCallback === 'function') {
+                doneCallback();
+            }
+            doneCallback = null;
         }
 
         allTogetherStrategy.stop = function() {
@@ -41,13 +52,6 @@ define(function(require) {
             timeouts = [];
             callDone();
         };
-
-        function callDone() {
-            if (typeof doneCallback === 'function') {
-                doneCallback();
-            }
-            doneCallback = null;
-        }
 
         allTogetherStrategy.delay = function(delay) {
             if (!arguments.length) return config.delay;
