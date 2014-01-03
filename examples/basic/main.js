@@ -31,5 +31,6 @@ require(['gremlins'], function(gremlins) {
         })
         .mogwai(gremlins.mogwais.alert())
         .mogwai(gremlins.mogwais.fps())
+        .mogwai(gremlins.mogwais.gizmo().maxErrors(2))
         .unleash();
 });

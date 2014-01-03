@@ -53,7 +53,7 @@ define(function(require) {
             var lastTime;
             function init(time) {
                 lastTime = time;
-                 window.requestAnimationFrame(measure);
+                window.requestAnimationFrame(measure);
             }
             function measure(time) {
                 var fps = (time - lastTime < 16) ? 60 : 1000/(time - lastTime);
