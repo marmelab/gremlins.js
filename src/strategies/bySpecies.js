@@ -18,6 +18,7 @@ define(function(require) {
             var nb = params && params.nb ? params.nb : config.nb,
                 gremlins = gremlins.slice(0), // clone the array to avoid modifying the original
                 horde = this;
+
             stopped = false;
             doneCallback = done; // done can also be called by stop()
 

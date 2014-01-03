@@ -17,6 +17,7 @@ define(function(require) {
         function allTogetherStrategy(gremlins, params, done) {
             var nb = params && params.nb ? params.nb : config.nb,
                 horde = this;
+
             stopped = false;
             doneCallback = done; // done can also be called by stop()
 

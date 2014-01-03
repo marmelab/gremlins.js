@@ -50,6 +50,14 @@ define(function(require) {
      *
      *   horde.gremlin(gremlins.species.clicker());
      *
+     * A gremlin can be asynchronous if it takes an argument, which means that
+     * the horde is paused until the argument is executed.
+     *
+     *   horde.gremlin(function(done) {
+     *     // do nasty things to the application asynchronously
+     *     done();
+     *   });
+     *
      * When added, if the gremlin provides a logger() function, the horde
      * logger object is injected, to allow the gremlin to record activity.
      *
@@ -79,8 +87,6 @@ define(function(require) {
      *       array.prototype.indexOf = oldIndexOf;
      *     });
      *   });
-     *
-     * Gremlin functions must be synchronous.
      *
      * If a horde is unleashed without manually adding at least a single
      * gremlin, all the default gremlin species are added (see allGremlins()).
@@ -205,7 +211,7 @@ define(function(require) {
     /**
      * Add an attack strategy to run gremlins.
      *
-     * A strategy is a simple function taking the following arguments:
+     * A strategy is an asynchronous function taking the following arguments:
      *  - gremlins: array of gremlin species added to the horde
      *  - params: the parameters passed as first argument of unleash()
      *  - done: a callback to execute once the strategy is finished
