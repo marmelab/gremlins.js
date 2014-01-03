@@ -10,32 +10,31 @@ define(function(require) {
             nb: 100    // number of waves to execute (can be overridden in params)
         };
 
-        var timeouts = [];
+        var stopped;
         var doneCallback;
 
         // execute all Gremlins species ; repeat 10ms after for 100 times
         function allTogetherStrategy(gremlins, params, done) {
-            var i = 0,
-                nb = params && params.nb ? params.nb : config.nb,
+            var nb = params && params.nb ? params.nb : config.nb,
                 horde = this;
+            stopped = false;
             doneCallback = done; // done can also be called by stop()
 
             function executeAllGremlins(callback) {
                 executeInSeries(gremlins, [], horde, callback);
             }
 
-            function executeNextWave() {
-                i++;
+            function executeNextWave(i) {
+                if (stopped) return;
+                if (i >= nb) return callDone();
                 executeAllGremlins(function() {
-                    if (i < nb) {
-                        timeouts.push(setTimeout(executeNextWave, config.delay));
-                    } else {
-                        callDone();
-                    }
+                    setTimeout(function() {
+                        executeNextWave(++i);
+                    }, config.delay);
                 });
             }
 
-            executeNextWave();
+            executeNextWave(0);
         }
 
         function callDone() {
@@ -46,11 +45,8 @@ define(function(require) {
         }
 
         allTogetherStrategy.stop = function() {
-            for (var i = 0, nb = timeouts.length ; i < nb ; i++) {
-                clearTimeout(timeouts[i]);
-            }
-            timeouts = [];
-            callDone();
+            stopped = true;
+            setTimeout(callDone, 4);
         };
 
         allTogetherStrategy.delay = function(delay) {

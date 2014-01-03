@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var executeInSeries = require('../utils/executeInSeries');
+
     return function() {
 
         var config = {
@@ -7,39 +10,41 @@ define(function(require) {
             nb: 100    // number of attacks to execute (can be overridden in params)
         };
 
-        var timeouts = [];
+        var stopped;
         var doneCallback;
 
         // for each species, execute the gremlin 100 times, separated by a 10ms delay
         function bySpeciesStrategy(gremlins, params, done) {
-            var i, j,
-                count = gremlins.length,
-                nb = params && params.nb ? params.nb : config.nb;
+            var nb = params && params.nb ? params.nb : config.nb,
+                gremlins = gremlins.slice(0), // clone the array to avoid modifying the original
+                horde = this;
+            stopped = false;
             doneCallback = done; // done can also be called by stop()
-            for (j = 0; j < count; j++) {
-                i = 0;
-                while (i < nb) {
-                    (function(i, j) {
-                        timeouts.push(setTimeout(function(){
 
-                            gremlins[j].apply(this);
-
-                            if (i == nb -1 && j == count - 1) {
-                                callDone();
-                            }
-                        }, j * nb * config.delay + i * config.delay));
-                    })(i, j);
-                    i++;
-                }
+            function executeNext(gremlin, i, callback) {
+                if (stopped) return;
+                if (i >= nb) return callback();
+                executeInSeries([gremlin], [], horde, function() {
+                    setTimeout(function() {
+                        executeNext(gremlin, ++i, callback);
+                    }, config.delay);
+                });
             }
+
+            function executeNextGremlin() {
+                if (stopped) return;
+                if (gremlins.length === 0) {
+                    return callDone();
+                }
+                executeNext(gremlins.shift(), 0, executeNextGremlin);
+            }
+
+            executeNextGremlin();
         }
 
         bySpeciesStrategy.stop = function() {
-            for (var i = 0, nb = timeouts.length ; i < nb ; i++) {
-                clearTimeout(timeouts[i]);
-            }
-            timeouts = [];
-            callDone();
+            stopped = true;
+            setTimeout(callDone, 4);
         };
 
         function callDone() {
