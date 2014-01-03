@@ -7,15 +7,25 @@ gremlins.js is a monkey testing library written in JavaScript, for Node.js and t
 >
 > Billy Peltzer: *They're gremlins, Kate, just like Mr. Futterman said.*
 
+## Purpose
+
+While developing a JavaScript application, did you anticipate uncommon user interactions? Did you managed to avoid memory leaks? If not, the application may break sooner or later. If n random actions can make an application fail, it's better to acknowledge it during testing, rather than letting users discover it.
+
+Gremlins simulate random user actions: they click anywhere in the window, enter random data in forms, or move the mouse over elements that don't expect it. Their goal: triggering JavaScript errors, or making the application fail. If gremlins can't break an application, congrats! The application is robust enough to be released to real users.
+
+This practice, also known as Monkey testing, is very common in mobile application development (see for instance the [Android Monkey program](http://developer.android.com/tools/help/monkey.html)). Now that Frontend (MV*) and backend (Node.js) JavaScript development uses persistent JavaScript applications, this technique becomes valuable for web applications.
+
 ## Basic Usage
 
-A gremlins "horde" is an army of specialized gremlins ready to mess with your application. This library provides several gremlin species: some gremlins click everywhere on the page, others enter data in form inputs, others scroll the window in every posible direction, etc. "unleash" the gremlins horde to start the stress test.
+A gremlins *horde* is an army of specialized gremlins ready to mess with your application. *unleash* the gremlins to start the stress test:
 
 ```js
 var horde = gremlins.createHorde()
 horde.unleash();
 // every gremlin will act 100 times, at 10 ms interval
 ```
+ 
+`gremlins.js` provides several gremlins *species*: some click everywhere on the page, others enter data in form inputs, others scroll the window in every possible direction, etc. 
 
 You will see traces of the gremlins actions on the screen (they leave red traces) and in the console log:
 
@@ -27,17 +37,28 @@ gremlin scroller   scroll to 100 25
 ...
 ```
 
-A horde also contains mogwais, which are harmless gremlins (or, you could say that gremlins are harmful mogwais). Mogwais only monitor the activity of the application and record it on the logger. For instance, the "fps" mogwai monitors the number of frame per second every 500ms:
+A horde also contains *mogwais*, which are harmless gremlins (or, you could say that gremlins are harmful mogwais). Mogwais only monitor the activity of the application and record it on the logger. For instance, the "fps" mogwai monitors the number of frame per second, every 500ms:
 
 ```
 mogwai  fps  33.21
 mogwai  fps  59.45
-mogwai  fps  7.5
 mogwai  fps  12.67
 ...
 ```
 
-Gremlins, just like mogwais, are simple JavaScript functions. So you can breed your own species very easily:
+Mogwais also report when gremlins break the application. For instance, if the number of frames per seconds drops below 10, the fps mogwai will log an error:
+
+```
+mogwai  fps  12.67
+mogwai  fps  23.56
+err > mogwai  fps  7.54 < err
+mogwai  fps  15.76
+...
+```
+
+After 10 errors, a special mogwai stops the test. He's called Gizmo, and he prevents gremlins from breaking applications bad. After all, once you have the first 10 errors, you already know what you do to make your application more robust.
+
+Gremlins, just like mogwais, are simple JavaScript functions. If `gremlins.js` doesn't provide the gremlin that can break your application, it's very easy to develop it:
 
 ```js
 // add a new custom gremlin to blur the currently focused element
@@ -46,9 +67,11 @@ horde.gremlin(function() {
 });
 ```
 
+Everything in `gremlins.js` is configurable ; you will find it very easy to extend and adapt to you use cases.
+
 ## Installation
 
-In the browser, the `gremlins.min.js` file can be used as a standalone library and adds `gremlins` to the global namespace:
+In the browser, the `gremlins.min.js` file can be used as a standalone library, and adds `gremlins` to the global namespace:
 
 ```html
 <script src="path/to/gremlins.min.js"></script>

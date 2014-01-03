@@ -7,28 +7,40 @@ define(function(require) {
             nb: 100    // number of waves to execute (can be overridden in params)
         };
 
+        var timeouts = [];
+        var finalDone;
+
         // every 10ms, execute all Gremlins species ; repeat 100 times
         function allTogetherStrategy(gremlins, params, done) {
             var i = 0,
                 j,
                 count = gremlins.length,
                 nb = params && params.nb ? params.nb : config.nb;
+                finalDone = done;
             while (i < nb) {
                 for (j = 0; j < count; j++) {
                     (function(i, j) {
-                        setTimeout(function(){
+                        timeouts.push(setTimeout(function(){
 
                             gremlins[j].apply(this);
 
                             if (i == nb -1 && j == count - 1){
                                 done();
                             }
-                        }, i * config.delay);
+                        }, i * config.delay));
                     })(i, j);
                 }
                 i++;
             }
         }
+
+        allTogetherStrategy.stop = function() {
+            for (var i = 0, nb = timeouts.length ; i < nb ; i++) {
+                clearTimeout(timeouts[i]);
+            }
+            timeouts = [];
+            finalDone();
+        };
 
         allTogetherStrategy.delay = function(delay) {
             if (!arguments.length) return config.delay;

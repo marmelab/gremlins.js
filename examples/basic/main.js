@@ -29,7 +29,5 @@ require(['gremlins'], function(gremlins) {
         .after(function() {
             this.log('finished!');
         })
-        .mogwai(gremlins.mogwais.alert())
-        .mogwai(gremlins.mogwais.fps())
         .unleash();
 });

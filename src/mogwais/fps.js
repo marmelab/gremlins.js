@@ -53,12 +53,16 @@ define(function(require) {
             var lastTime;
             function init(time) {
                 lastTime = time;
-                 window.requestAnimationFrame(measure);
+                window.requestAnimationFrame(measure);
             }
             function measure(time) {
                 var fps = (time - lastTime < 16) ? 60 : 1000/(time - lastTime);
                 var level = config.levelSelector(fps);
-                config.logger[level]('mogwai ', 'fps       ', fps);
+                if (level === 'error') {
+                    throw new Error('mogwai  fps       ' + fps);
+                } else {
+                    config.logger[level]('mogwai ', 'fps       ', fps);
+                }
             }
             window.requestAnimationFrame(init);
         }

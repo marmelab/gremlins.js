@@ -15,7 +15,8 @@ define(function(require) {
         },
         mogwais: {
             alert:      require('./mogwais/alert'),
-            fps:        require('./mogwais/fps')
+            fps:        require('./mogwais/fps'),
+            gizmo:      require('./mogwais/gizmo')
         },
         strategies: {
             allTogether: require('./strategies/allTogether'),
@@ -393,6 +394,9 @@ define(function(require) {
         if (this._mogwais.length === 0) {
             this.allMogwais();
         }
+        if (this._strategies.length === 0) {
+            this.strategy(gremlins.strategies.allTogether());
+        }
         var i;
         var horde = this;
         var beforeCallbacks = this._beforeCallbacks.concat(this._mogwais);
@@ -403,7 +407,7 @@ define(function(require) {
         }
 
         callCallbacks(beforeCallbacks, [], horde, function() {
-            horde.runStrategies(params, function() {
+            callCallbacks(horde._strategies, [horde._gremlins, params], horde, function() {
                 callCallbacks(afterCallbacks, [], horde, function () {
                     if (typeof done === 'function') {
                         done();
@@ -413,17 +417,9 @@ define(function(require) {
         });
     };
 
-    GremlinsHorde.prototype.runStrategies = function(params, done) {
-        if (this._strategies.length === 0) {
-            var strategy = gremlins.strategies.allTogether();
-            strategy.apply(this, [this._gremlins, params, done]);
-        } else {
-            callCallbacks(this._strategies, [this._gremlins, params], this, done);
-        }
-    };
-
     var callCallbacks = function(callbacks, args, context, done) {
         var nbArguments = args.length;
+        callbacks = callbacks.slice(0); // clone the array to avoid modifying the original
 
         var iterator = function(callbacks, args) {
             if (!callbacks.length) {
