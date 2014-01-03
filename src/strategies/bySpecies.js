@@ -8,14 +8,14 @@ define(function(require) {
         };
 
         var timeouts = [];
-        var finalDone;
+        var doneCallback;
 
         // for each species, execute the gremlin 100 times, separated by a 10ms delay
         function bySpeciesStrategy(gremlins, params, done) {
             var i, j,
                 count = gremlins.length,
                 nb = params && params.nb ? params.nb : config.nb;
-            finalDone = done;
+            doneCallback = done; // done can also be called by stop()
             for (j = 0; j < count; j++) {
                 i = 0;
                 while (i < nb) {
@@ -25,7 +25,7 @@ define(function(require) {
                             gremlins[j].apply(this);
 
                             if (i == nb -1 && j == count - 1) {
-                                done();
+                                callDone();
                             }
                         }, j * nb * config.delay + i * config.delay));
                     })(i, j);
@@ -39,8 +39,15 @@ define(function(require) {
                 clearTimeout(timeouts[i]);
             }
             timeouts = [];
-            finalDone();
+            callDone();
         };
+
+        function callDone() {
+            if (typeof doneCallback === 'function') {
+                doneCallback();
+            }
+            doneCallback = null;
+        }
 
         bySpeciesStrategy.delay = function(delay) {
             if (!arguments.length) return config.delay;

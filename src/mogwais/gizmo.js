@@ -9,31 +9,43 @@ define(function(require) {
             logger:    defaultLogger
         };
 
-        var oldOnError;
+        var realOnError, realLoggerError;
 
+        /**
+         * Gizmo is a special mogwai who can stop the gremlins when they go too far
+         */
         function gizmoMogwai() {
             var nbErrors = 0;
             var horde = this; // this is exceptional - don't use 'this' for mogwais in general
-            oldOnError = window.onerror;
-            window.onerror = function(message, url, linenumber) {
+            function incrementNbErrors(){
                 nbErrors++;
                 if (nbErrors == config.maxErrors) {
-                    var strategies = horde._strategies;
-                    for (var i = 0, count = strategies.length; i < count; i++) {
-                        strategies[i].stop();
-                    }
+                    horde.stop();
                     window.setTimeout(function() {
                         // display the mogwai error after the caught error
                         config.logger.warn('mogwai ', 'gizmo     ', 'stopped test execution after ', config.maxErrors, 'errors');
                     }, 4);
                 }
-                return oldOnError ? oldOnError(message, url, linenumber) : false;
+            }
+
+            // general JavaScript errors
+            realOnError = window.onerror;
+            window.onerror = function(message, url, linenumber) {
+                incrementNbErrors();
+                return realOnError ? realOnError(message, url, linenumber) : false;
             };
 
+            // console (or logger) errors
+            realLoggerError = config.logger.error;
+            config.logger.error = function() {
+                incrementNbErrors();
+                realLoggerError.apply(config.logger, arguments);
+            };
         }
 
         gizmoMogwai.cleanUp = function() {
-            window.onerror = oldOnError;
+            window.onerror = realOnError;
+            config.logger.error = realLoggerError.bind(config.logger);
             return gizmoMogwai;
         };
 

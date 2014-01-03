@@ -58,11 +58,7 @@ define(function(require) {
             function measure(time) {
                 var fps = (time - lastTime < 16) ? 60 : 1000/(time - lastTime);
                 var level = config.levelSelector(fps);
-                if (level === 'error') {
-                    throw new Error('mogwai  fps       ' + fps);
-                } else {
-                    config.logger[level]('mogwai ', 'fps       ', fps);
-                }
+                config.logger[level]('mogwai ', 'fps       ', fps);
             }
             window.requestAnimationFrame(init);
         }

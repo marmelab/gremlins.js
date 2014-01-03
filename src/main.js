@@ -443,6 +443,23 @@ define(function(require) {
     };
 
     /**
+     * Stop a running test
+     *
+     * Delegate the stop message to all registered strategies. Calling
+     * this method before starting the test or after it is finished has
+     * no effect.
+     *
+     * stop() will only work properly if strategies implement their own stop()
+     * method.
+     */
+    GremlinsHorde.prototype.stop = function() {
+        var strategies = this._strategies;
+        for (var i = 0, count = strategies.length; i < count; i++) {
+            strategies[i].stop();
+        }
+    };
+
+    /**
      * Get a new horde instance
      *
      * @return {GremlinsHorde}
