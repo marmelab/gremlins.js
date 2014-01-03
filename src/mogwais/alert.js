@@ -1,3 +1,28 @@
+/**
+ * The alert mogwai prevents calls to alert() from blocking the test
+ *
+ * The alert mogwai overrides window.alert, window.confirm, and window.prompt
+ * to avoid stopping the stress test with blocking JavaScript calls. Instead
+ * of displaying a dialog, these methods are simply replaced by a write in the
+ * logger.
+ *
+ *   var alertMogwai = gremlins.mogwais.alert();
+ *   horde.gremlin(alertMogwai);
+ *
+ * The alert mogwai can be customized as follows:
+ *
+ *   alertMogwai.watchEvents(['alert', 'confirm', 'prompt']); // select the events to catch
+ *   alertMogwai.confirmResponse(function() { // what a call to confirm() should return });
+ *   alertMogwai.promptResponse(function() { // what a call to prompt() should return });
+ *   alertMogwai.logger(loggerObject); // inject a logger
+ *
+ * Example usage:
+ *
+ *   horde.gremlin(gremlins.mogwais.alert()
+ *     .watchEvents(['prompt'])
+ *     .promptResponse(function() { return 'I typed garbage'; })
+ *   );
+ */
 define(function(require) {
     "use strict";
 
