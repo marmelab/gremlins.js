@@ -1,3 +1,6 @@
+/**
+ * For each species, execute the gremlin 100 times, separated by a 10ms delay
+ */
 define(function(require) {
     "use strict";
 
@@ -6,6 +9,9 @@ define(function(require) {
 
     return function() {
 
+        /**
+         * @mixin
+         */
         var config = {
             delay: 10, // delay in milliseconds between each attack
             nb: 100    // number of attacks to execute (can be overridden in params)
@@ -14,7 +20,9 @@ define(function(require) {
         var stopped;
         var doneCallback;
 
-        // for each species, execute the gremlin 100 times, separated by a 10ms delay
+        /**
+         * @mixes config
+         */
         function bySpeciesStrategy(gremlins, params, done) {
             var nb = params && params.nb ? params.nb : config.nb,
                 gremlins = gremlins.slice(0), // clone the array to avoid modifying the original

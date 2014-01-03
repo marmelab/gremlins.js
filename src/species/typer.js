@@ -37,6 +37,9 @@ define(function(require) {
             }, 50);
         };
 
+        /**
+         * @mixin
+         */
         var config = {
             eventTypes: defaultEventTypes,
             showAction: defaultShowAction,
@@ -51,6 +54,9 @@ define(function(require) {
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
+        /**
+         * @mixes config
+         */
         function typerGremlin() {
             var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),

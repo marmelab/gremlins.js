@@ -33,6 +33,9 @@ define(function(require) {
 
         var defaultCanFillElemment = function() { return true; };
 
+        /**
+         * @mixin
+         */
         var config = {
             elementMapTypes: defaultMapElements,
             showAction:      defaultShowAction,
@@ -47,6 +50,9 @@ define(function(require) {
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
+        /**
+         * @mixes config
+         */
         function formFillerGremlin() {
             // Retrieve all selectors
             var elementTypes = [],

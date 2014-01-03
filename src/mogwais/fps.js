@@ -45,6 +45,9 @@ define(function(require) {
             return 'log';
         };
 
+        /**
+         * @mixin
+         */
         var config = {
             delay: 500, // how often should the fps be measured
             levelSelector: defaultLevelSelector,
@@ -77,6 +80,9 @@ define(function(require) {
             window.requestAnimationFrame(init);
         }
 
+        /**
+         * @mixes config
+         */
         function fpsMogwai() {
             enabled = true;
             window.requestAnimationFrame(loop);

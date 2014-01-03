@@ -7,7 +7,7 @@
  * logger.
  *
  *   var alertMogwai = gremlins.mogwais.alert();
- *   horde.gremlin(alertMogwai);
+ *   horde.mogwai(alertMogwai);
  *
  * The alert mogwai can be customized as follows:
  *
@@ -44,6 +44,9 @@ define(function(require) {
 
         var defaultLogger = { warn: function() {} };
 
+        /**
+         * @mixin
+         */
         var config = {
             watchEvents:     defaultWatchEvents,
             confirmResponse: defaultConfirmResponse,
@@ -55,6 +58,9 @@ define(function(require) {
         var confirm = window.confirm;
         var prompt  = window.prompt;
 
+        /**
+         * @mixes config
+         */
         function alertMogwai() {
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {

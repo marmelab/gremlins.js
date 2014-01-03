@@ -1,3 +1,48 @@
+/**
+ * The clicker gremlin clicks anywhere on the visible area of the document
+ *
+ * The clicker gremlin trigges mouse events (click, dblclick, mousedown,
+ * mouseup, mouseover, mouseover, mouseover, mousemove, and mouseout) on 
+ * random targets displayed on the viewport.
+ *
+ * By default, the clicker gremlin activity is showed by a red circle.
+ *
+ *   var clickerGremlin = gremlins.gremlins.clicker();
+ *   horde.gremlin(clickerGremlin);
+ *
+ * The clicker gremlin can be customized as follows:
+ *
+ *   clickerGremlin.clickTypes(['click', 'mouseover']); // the mouse event types to trigger
+ *   clickerGremlin.positionSelector(function() { // find a random pair of coordinates to click });
+ *   clickerGremlin.showAction(function(x, y) { // show the gremlin activity on screen });
+ *   clickerGremlin.canClick(function(element) { return true }); // to limit where the gremlin can click
+ *   clickerGremlin.maxNbTries(5); // How many times the gremlin must look for a clickable element before quitting
+ *   clickerGremlin.logger(loggerObject); // inject a logger
+ *
+ * Example usage:
+ *
+ *   horde.gremlin(gremlins.gremlins.clicker()
+ *     .clickTypes(['click'])
+ *     .positionSelector(function() {
+ *        // only click inside the foo element area
+ *        var $el = $('#foo');
+ *        var offset = $el.offset();
+ *        return [
+ *          parseInt(Math.random() * $el.outerWidth() + offset.left),
+ *          parseInt(Math.random() * $el.outerHeight() + offset.top)
+ *        ];
+ *     })
+ *     .canClick(function(element) {
+ *       // only click elements in bar
+ *       return $(element).parents('#bar').length;
+ *       // when canClick returns false, the gremlin will look for another
+ *       // element to click on until maxNbTries is reached
+ *     })
+ *     . showAction(function(x, y) {
+ *       // do nothing (hide the gremlin action on screen)
+ *     })
+ *   );
+ */
 define(function(require) {
     "use strict";
 
@@ -41,6 +86,9 @@ define(function(require) {
 
         var defaultCanClick = function() { return true; };
 
+        /**
+         * @mixin
+         */
         var config = {
             clickTypes:       defaultClickTypes,
             positionSelector: defaultPositionSelector,
@@ -56,6 +104,9 @@ define(function(require) {
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
+        /**
+         * @mixes config
+         */
         function clickerGremlin() {
             var position, posX, posY, targetElement, nbTries = 0;
             do {

@@ -39,12 +39,18 @@ define(function(require) {
             }, 50);
         };
 
+        /**
+         * @mixin
+         */
         var config = {
             positionSelector: defaultPositionSelector,
             showAction:       defaultShowAction,
             logger:           {}
         };
 
+        /**
+         * @mixes config
+         */
         function scrollerGremlin() {
             var position = config.positionSelector(),
                 scrollX = position[0],

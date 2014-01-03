@@ -28,6 +28,9 @@ define(function(require) {
 
         var defaultLogger = { warn: function() {} };
 
+        /**
+         * @mixin
+         */
         var config = {
             maxErrors: 10,
             logger:    defaultLogger
@@ -35,6 +38,9 @@ define(function(require) {
 
         var realOnError, realLoggerError;
 
+        /**
+         * @mixes config
+         */
         function gizmoMogwai() {
             var nbErrors = 0;
             var horde = this; // this is exceptional - don't use 'this' for mogwais in general

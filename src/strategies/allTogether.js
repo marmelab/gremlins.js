@@ -1,3 +1,6 @@
+/**
+ * Execute all Gremlins species ; repeat 10ms after for 100 times
+ */
 define(function(require) {
     "use strict";
 
@@ -6,6 +9,9 @@ define(function(require) {
 
     return function() {
 
+        /**
+         * @mixin
+         */
         var config = {
             delay: 10, // delay in milliseconds between each wave
             nb: 100    // number of waves to execute (can be overridden in params)
@@ -14,7 +20,9 @@ define(function(require) {
         var stopped;
         var doneCallback;
 
-        // execute all Gremlins species ; repeat 10ms after for 100 times
+        /**
+         * @mixes config
+         */
         function allTogetherStrategy(gremlins, params, done) {
             var nb = params && params.nb ? params.nb : config.nb,
                 horde = this;
