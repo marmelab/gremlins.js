@@ -1,46 +1,51 @@
+/**
+ * Execute all Gremlins species ; repeat 10ms after for 100 times
+ */
 define(function(require) {
     "use strict";
+
+    var executeInSeries = require('../utils/executeInSeries');
+    var configurable = require('../utils/configurable');
+
     return function() {
 
+        /**
+         * @mixin
+         */
         var config = {
             delay: 10, // delay in milliseconds between each wave
             nb: 100    // number of waves to execute (can be overridden in params)
         };
 
-        var timeouts = [];
+        var stopped;
         var doneCallback;
 
-        // every 10ms, execute all Gremlins species ; repeat 100 times
+        /**
+         * @mixes config
+         */
         function allTogetherStrategy(gremlins, params, done) {
-            var i = 0,
-                j,
-                count = gremlins.length,
-                nb = params && params.nb ? params.nb : config.nb;
+            var nb = params && params.nb ? params.nb : config.nb,
+                horde = this;
+
+            stopped = false;
             doneCallback = done; // done can also be called by stop()
-            while (i < nb) {
-                for (j = 0; j < count; j++) {
-                    (function(i, j) {
-                        timeouts.push(setTimeout(function(){
 
-                            gremlins[j].apply(this);
-
-                            if (i == nb -1 && j == count - 1){
-                                callDone();
-                            }
-                        }, i * config.delay));
-                    })(i, j);
-                }
-                i++;
+            function executeAllGremlins(callback) {
+                executeInSeries(gremlins, [], horde, callback);
             }
+
+            function executeNextWave(i) {
+                if (stopped) return;
+                if (i >= nb) return callDone();
+                executeAllGremlins(function() {
+                    setTimeout(function() {
+                        executeNextWave(++i);
+                    }, config.delay);
+                });
+            }
+
+            executeNextWave(0);
         }
-
-        allTogetherStrategy.stop = function() {
-            for (var i = 0, nb = timeouts.length ; i < nb ; i++) {
-                clearTimeout(timeouts[i]);
-            }
-            timeouts = [];
-            callDone();
-        };
 
         function callDone() {
             if (typeof doneCallback === 'function') {
@@ -49,17 +54,12 @@ define(function(require) {
             doneCallback = null;
         }
 
-        allTogetherStrategy.delay = function(delay) {
-            if (!arguments.length) return config.delay;
-            config.delay = delay;
-            return allTogetherStrategy;
+        allTogetherStrategy.stop = function() {
+            stopped = true;
+            setTimeout(callDone, 4);
         };
 
-        allTogetherStrategy.nb = function(nb) {
-            if (!arguments.length) return config.nb;
-            config.nb = nb;
-            return allTogetherStrategy;
-        };
+        configurable(allTogetherStrategy, config);
 
         return allTogetherStrategy;
     };

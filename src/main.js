@@ -24,6 +24,8 @@ define(function(require) {
         }
     };
 
+    var executeInSeries = require('./utils/executeInSeries');
+
     var GremlinsHorde = function() {
         this._gremlins = [];
         this._mogwais = [];
@@ -47,6 +49,14 @@ define(function(require) {
      * The gremlins object contains a few gremlin species than you can add:
      *
      *   horde.gremlin(gremlins.species.clicker());
+     *
+     * A gremlin can be asynchronous if it takes an argument, which means that
+     * the horde is paused until the argument is executed.
+     *
+     *   horde.gremlin(function(done) {
+     *     // do nasty things to the application asynchronously
+     *     done();
+     *   });
      *
      * When added, if the gremlin provides a logger() function, the horde
      * logger object is injected, to allow the gremlin to record activity.
@@ -77,8 +87,6 @@ define(function(require) {
      *       array.prototype.indexOf = oldIndexOf;
      *     });
      *   });
-     *
-     * Gremlin functions must be synchronous.
      *
      * If a horde is unleashed without manually adding at least a single
      * gremlin, all the default gremlin species are added (see allGremlins()).
@@ -203,7 +211,7 @@ define(function(require) {
     /**
      * Add an attack strategy to run gremlins.
      *
-     * A strategy is a simple function taking the following arguments:
+     * A strategy is an asynchronous function taking the following arguments:
      *  - gremlins: array of gremlin species added to the horde
      *  - params: the parameters passed as first argument of unleash()
      *  - done: a callback to execute once the strategy is finished
@@ -406,40 +414,15 @@ define(function(require) {
             afterCallbacks.push(this._mogwais[watcherName].cleanUp);
         }
 
-        callCallbacks(beforeCallbacks, [], horde, function() {
-            callCallbacks(horde._strategies, [horde._gremlins, params], horde, function() {
-                callCallbacks(afterCallbacks, [], horde, function () {
+        executeInSeries(beforeCallbacks, [], horde, function() {
+            executeInSeries(horde._strategies, [horde._gremlins, params], horde, function() {
+                executeInSeries(afterCallbacks, [], horde, function () {
                     if (typeof done === 'function') {
                         done();
                     }
                 });
             });
         });
-    };
-
-    var callCallbacks = function(callbacks, args, context, done) {
-        var nbArguments = args.length;
-        callbacks = callbacks.slice(0); // clone the array to avoid modifying the original
-
-        var iterator = function(callbacks, args) {
-            if (!callbacks.length) {
-                return typeof done === 'function' ? done() : true;
-            }
-
-            var callback = callbacks.shift();
-            callback.apply(context, args);
-
-            // Is the callback synchronous ?
-            if (callback.length === nbArguments) {
-                iterator(callbacks, args, done);
-            }
-        };
-
-        args.push(function(){
-            iterator(callbacks, args, done);
-        });
-
-        iterator(callbacks, args, done);
     };
 
     /**

@@ -1,5 +1,8 @@
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var document = window.document,
@@ -34,6 +37,9 @@ define(function(require) {
             }, 50);
         };
 
+        /**
+         * @mixin
+         */
         var config = {
             eventTypes: defaultEventTypes,
             showAction: defaultShowAction,
@@ -48,6 +54,9 @@ define(function(require) {
             return arr[Math.floor((Math.random() * arr.length))];
         };
 
+        /**
+         * @mixes config
+         */
         function typerGremlin() {
             var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
@@ -71,23 +80,7 @@ define(function(require) {
             }
         }
 
-        typerGremlin.eventTypes = function(eventTypes) {
-            if (!arguments.length) return config.eventTypes;
-            config.eventTypes = eventTypes;
-            return typerGremlin;
-        };
-
-        typerGremlin.showAction = function(showAction) {
-            if (!arguments.length) return config.showAction;
-            config.showAction = showAction;
-            return typerGremlin;
-        };
-
-        typerGremlin.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return typerGremlin;
-        };
+        configurable(typerGremlin, config);
 
         return typerGremlin;
     };

@@ -1,22 +1,36 @@
 /**
- * FPS watcher
+ * The fps mogwai logs the number of frames per seconds (FPS) of the browser
  * 
- * Logs the number of frames per seconds (FPS) of the browser window.
  * The normal (and maximal) FPS rate is 60. It decreases when the browser is
  * busy refreshing the layout, or executing JavaScript.
- * This watcher logs with the error level once the FPS rate drops below 10.
  *
- * Usage:
- *   var watcher = gremlins.watcher.fps();
- *   horde.watch(watcher);
+ * This mogwai logs with the error level once the FPS rate drops below 10.
  *
- * Configuration:
- *   watcher.delay(500); // the interval for FPS measurements
- *   watcher.logger(customLoggerService);
- *   watcher.levelSelector(function(fps) { /../ }); log level selector according to fps
+ *   var fpsMogwai = gremlins.mogwais.fps();
+ *   horde.mogwai(fpsMogwai);
+ *
+ * The fps mogwai can be customized as follows:
+ *
+ *   fpsMogwai.delay(500); // the interval for FPS measurements
+ *   fpsMogwai.levelSelector(function(fps) { // select logging level according to fps value });
+ *   fpsMogwai.logger(loggerObject); // inject a logger
+ *
+ * Example usage:
+ *
+ *   horde.gremlin(gremlins.mogwais.fps()
+ *     .delay(250)
+ *     .levelSelector(function(fps) {
+ *       if (fps < 5) return 'error';
+ *       if (fps < 10) return 'warn';
+ *       return 'log';
+ *     })
+ *   );
  */
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var defaultLogger = {
@@ -31,10 +45,13 @@ define(function(require) {
             return 'log';
         };
 
+        /**
+         * @mixin
+         */
         var config = {
             delay: 500, // how often should the fps be measured
-            logger: defaultLogger,
-            levelSelector: defaultLevelSelector
+            levelSelector: defaultLevelSelector,
+            logger: defaultLogger
         };
 
         var initialTime = -Infinity; // force initial measure
@@ -63,6 +80,9 @@ define(function(require) {
             window.requestAnimationFrame(init);
         }
 
+        /**
+         * @mixes config
+         */
         function fpsMogwai() {
             enabled = true;
             window.requestAnimationFrame(loop);
@@ -73,23 +93,7 @@ define(function(require) {
             return fpsMogwai;
         };
 
-        fpsMogwai.delay = function(delay) {
-            if (!arguments.length) return config.delay;
-            config.delay = delay;
-            return fpsMogwai;
-        };
-
-        fpsMogwai.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return fpsMogwai;
-        };
-
-        fpsMogwai.levelSelector = function(levelSelector) {
-            if (!arguments.length) return config.levelSelector;
-            config.levelSelector = levelSelector;
-            return fpsMogwai;
-        };
+        configurable(fpsMogwai, config);
 
         return fpsMogwai;
     };

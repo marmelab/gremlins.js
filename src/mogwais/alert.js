@@ -1,5 +1,33 @@
+/**
+ * The alert mogwai prevents calls to alert() from blocking the test
+ *
+ * The alert mogwai overrides window.alert, window.confirm, and window.prompt
+ * to avoid stopping the stress test with blocking JavaScript calls. Instead
+ * of displaying a dialog, these methods are simply replaced by a write in the
+ * logger.
+ *
+ *   var alertMogwai = gremlins.mogwais.alert();
+ *   horde.mogwai(alertMogwai);
+ *
+ * The alert mogwai can be customized as follows:
+ *
+ *   alertMogwai.watchEvents(['alert', 'confirm', 'prompt']); // select the events to catch
+ *   alertMogwai.confirmResponse(function() { // what a call to confirm() should return });
+ *   alertMogwai.promptResponse(function() { // what a call to prompt() should return });
+ *   alertMogwai.logger(loggerObject); // inject a logger
+ *
+ * Example usage:
+ *
+ *   horde.gremlin(gremlins.mogwais.alert()
+ *     .watchEvents(['prompt'])
+ *     .promptResponse(function() { return 'I typed garbage'; })
+ *   );
+ */
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var defaultWatchEvents = ['alert', 'confirm', 'prompt'];
@@ -16,6 +44,9 @@ define(function(require) {
 
         var defaultLogger = { warn: function() {} };
 
+        /**
+         * @mixin
+         */
         var config = {
             watchEvents:     defaultWatchEvents,
             confirmResponse: defaultConfirmResponse,
@@ -27,6 +58,9 @@ define(function(require) {
         var confirm = window.confirm;
         var prompt  = window.prompt;
 
+        /**
+         * @mixes config
+         */
         function alertMogwai() {
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {
@@ -54,29 +88,7 @@ define(function(require) {
             return alertMogwai;
         };
 
-        alertMogwai.watchEvents = function(watchEvents) {
-            if (!arguments.length) return config.watchEvents;
-            config.watchEvents = watchEvents;
-            return alertMogwai;
-        };
-
-        alertMogwai.confirmResponse = function(confirmResponse) {
-            if (!arguments.length) return config.confirmResponse;
-            config.confirmResponse = confirmResponse;
-            return alertMogwai;
-        };
-
-        alertMogwai.promptResponse = function(promptResponse) {
-            if (!arguments.length) return config.promptResponse;
-            config.promptResponse = promptResponse;
-            return alertMogwai;
-        };
-
-        alertMogwai.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return alertMogwai;
-        };
+        configurable(alertMogwai, config);
 
         return alertMogwai;
     };

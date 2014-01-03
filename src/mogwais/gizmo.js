@@ -1,9 +1,36 @@
+/**
+ * Gizmo is a special mogwai who can stop the gremlins when they go too far
+ *
+ * The gizom mogwai monitors the JavaScript alerts and the calls to
+ * console.alert(), and stops the stress test exectution once the number of
+ * errors pass a certain treshold (10 errors by default).
+ *
+ *   var gizmoMogwai = gremlins.mogwais.gizmo();
+ *   horde.mogwai(gizmoMogwai);
+ *
+ * The gizmo mogwai can be customized as follows:
+ *
+ *   gizmoMogwai.maxErrors(10); // the number of errors after which the test stops
+ *   gizmoMogwai.logger(loggerObject); // inject a logger
+ *
+ * Example usage:
+ *
+ *   horde.gremlin(gremlins.mogwais.gizmo()
+ *     .maxErrors(5)
+ *   );
+ */
 define(function(require) {
     "use strict";
+
+    var configurable = require('../utils/configurable');
+
     return function() {
 
         var defaultLogger = { warn: function() {} };
 
+        /**
+         * @mixin
+         */
         var config = {
             maxErrors: 10,
             logger:    defaultLogger
@@ -12,7 +39,7 @@ define(function(require) {
         var realOnError, realLoggerError;
 
         /**
-         * Gizmo is a special mogwai who can stop the gremlins when they go too far
+         * @mixes config
          */
         function gizmoMogwai() {
             var nbErrors = 0;
@@ -49,17 +76,7 @@ define(function(require) {
             return gizmoMogwai;
         };
 
-        gizmoMogwai.maxErrors = function(maxErrors) {
-            if (!arguments.length) return config.maxErrors;
-            config.maxErrors = maxErrors;
-            return gizmoMogwai;
-        };
-
-        gizmoMogwai.logger = function(logger) {
-            if (!arguments.length) return config.logger;
-            config.logger = logger;
-            return gizmoMogwai;
-        };
+        configurable(gizmoMogwai, config);
 
         return gizmoMogwai;
     };

@@ -80,6 +80,7 @@
 				var e = $.Event( "keypress", { which: 13 } );
 				$(document.activeElement).trigger(e);
 			})
+			.mogwai(gremlins.mogwais.gizmo())
 			.mogwai(gremlins.mogwais.fps())
 			.strategy(gremlins.strategies.allTogether()
 				.delay(50)
