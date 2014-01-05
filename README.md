@@ -143,7 +143,7 @@ To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method t
 
 ### Configuring Gremlins
 
-All the gremlins and mogwais provided by `gremlins.js` and *configurable functions*. this means that you can alter the way they work by calling methods on them. 
+All the gremlins and mogwais provided by `gremlins.js` are *configurable functions*, i.e. you can alter the way they work by calling methods on them. 
 
 For instance, the clicker gremlin is a function that you can execute it directly:
 
@@ -171,7 +171,7 @@ gremlins.gremlins.clicker()
 
 Each particular gremlin or mogwai has its own customization methods, check the documentation for details.
 
-For more information on configurable functions check [this blog post about service closures](http://redotheweb.com/2013/11/13/from-objects-to-functions-service-closures.html).
+**Tip**: For more information on configurable functions check [this blog post about service closures](http://redotheweb.com/2013/11/13/from-objects-to-functions-service-closures.html).
 
 ### Setting Up a Strategy
 
@@ -196,3 +196,5 @@ horde.logger(customLogger);
 ## Contributing
 
 ## License
+
+gremlins.js is licensed under the [MIT Licence](LICENSE), courtesy of [marmelab](http://marmelab.com).
