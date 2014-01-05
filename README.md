@@ -7,6 +7,8 @@ gremlins.js is a monkey testing library written in JavaScript, for Node.js and t
 >
 > Billy Peltzer: *They're gremlins, Kate, just like Mr. Futterman said.*
 
+![TodoMVC attacked by gremlins](http://marmelab.com/gremlins.js/img/todo.gif)
+
 ## Purpose
 
 While developing a JavaScript application, did you anticipate uncommon user interactions? Did you managed to avoid memory leaks? If not, the application may break sooner or later. If n random actions can make an application fail, it's better to acknowledge it during testing, rather than letting users discover it.
@@ -56,7 +58,7 @@ mogwai  fps  15.76
 ...
 ```
 
-After 10 errors, a special mogwai stops the test. He's called Gizmo, and he prevents gremlins from breaking applications bad. After all, once you have the first 10 errors, you already know what you do to make your application more robust.
+After 10 errors, a special mogwai stops the test. He's called *Gizmo*, and he prevents gremlins from breaking applications bad. After all, once gremlins have found the first 10 errors, you already know what you do to make your application more robust.
 
 Gremlins, just like mogwais, are simple JavaScript functions. If `gremlins.js` doesn't provide the gremlin that can break your application, it's very easy to develop it:
 
@@ -66,6 +68,8 @@ horde.gremlin(function() {
   document.activeElement.blur();
 });
 ```
+
+Check the [examples](examples) directory for examples.
 
 Everything in `gremlins.js` is configurable ; you will find it very easy to extend and adapt to you use cases.
 
@@ -96,7 +100,7 @@ require(['gremlins'], function(gremlins) {
 
 ## Advanced Usage
 
-### Adding Gremlins and Mogwais
+### Setting Gremlins and Mogwais To Use In A Test
 
 By default, all gremlins and mogwais species are added to the horde. 
 
@@ -126,6 +130,53 @@ gremlins.createHorde()
 
 To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method the same way.
 
+`gremlins.js` currently provides a few gremlins and mogwais:
+
+* [clickerGremlin](src/species/clicker.js) clicks anywhere on the visible area of the document
+* [formFillerGremlin](src/species/formFiller.js) fills forms by entering data, selecting options, clicking checkboxes, etc
+* [scrollerGremlin](src/species/scroller.js) scrolls the viewport to reveal another part of the document
+* [typerGremlin](src/species/typer.js) types keys on the keyboard
+
+* [alertMogwai](src/mogwais/alert.js) prevents calls to alert() from blocking the test
+* [fpsMogwai](src/mogwais/fps.js) logs the number of frames per seconds (FPS) of the browser
+* [gizmoMogwai](src/mogwais/gizmo.js) can stop the gremlins when they go too far
+
+### Configuring Gremlins
+
+All the gremlins and mogwais provided by `gremlins.js` and *configurable functions*. this means that you can alter the way they work by calling methods on them. 
+
+For instance, the clicker gremlin is a function that you can execute it directly:
+
+```js
+var clickerGremlin = gremlins.gremlins.clicker();
+clickerGremin(); // trigger a random mouse even in the screen:
+```
+
+In JavaScript, functions are objects, and as such can have methods. The clicker gremlin function offers customizing methods:
+
+```js
+gremlins.gremlins.clicker()
+  .clickTypes(['click']) // which mouse event types will be triggered
+  .canClick(function(element) {
+    // only click elements in bar
+    return $(element).parents('#bar').length;
+    // when canClick returns false, the gremlin will look for another
+    // element to click on until maxNbTries is reached
+  })
+  .showAction(function(x, y) {
+    // by default, the clicker gremlin shows its action by a red circle
+    // overriding showAction() with an empty function makes the gremlin action invisible
+  })
+```
+
+Each particular gremlin or mogwai has its own customization methods, check the documentation for details.
+
+For more information on configurable functions check [this blog post about service closures](http://redotheweb.com/2013/11/13/from-objects-to-functions-service-closures.html).
+
+### Setting Up a Strategy
+
+### Executing Code Before or After the attack
+
 ### Customizing The Logger
 
 By default, gremlins.js logs all gremlin actions and mogwai observations in the console. If you prefer using an alternative logging method (for instance, storing gremlins activity in LocalStorage and sending it in Ajax once every 10 seconds), just provide a logger object with 4 methods (log, info, warn, and error) to the `logger()` method:
@@ -140,4 +191,8 @@ var customLogger = {
 horde.logger(customLogger);
 ```
 
-**Tip**: instead of reimplementing your custom logger, you may want to look at [Minilog](https://github.com/mixu/minilog).
+**Tip**: Instead of reimplementing your custom logger, you may want to look at [Minilog](https://github.com/mixu/minilog).
+
+## Contributing
+
+## License

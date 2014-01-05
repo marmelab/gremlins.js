@@ -1,7 +1,7 @@
 /**
  * The clicker gremlin clicks anywhere on the visible area of the document
  *
- * The clicker gremlin trigges mouse events (click, dblclick, mousedown,
+ * The clicker gremlin triggers mouse events (click, dblclick, mousedown,
  * mouseup, mouseover, mouseover, mouseover, mousemove, and mouseout) on 
  * random targets displayed on the viewport.
  *
