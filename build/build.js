@@ -1,6 +1,6 @@
 ({
     baseUrl: "../src",
-    name: "../build/almond.js",
+    name: "../src/vendor/almond.js",
     include: ['main'],
     insertRequire: ['main'],
     wrap: {
