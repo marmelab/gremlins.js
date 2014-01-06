@@ -147,14 +147,14 @@ All the gremlins and mogwais provided by `gremlins.js` are *configurable functio
 For instance, the clicker gremlin is a function that you can execute it directly:
 
 ```js
-var clickerGremlin = gremlins.gremlins.clicker();
+var clickerGremlin = gremlins.species.clicker();
 clickerGremin(); // trigger a random mouse even in the screen:
 ```
 
 In JavaScript, functions are objects, and as such can have methods. The clicker gremlin function offers customizing methods:
 
 ```js
-gremlins.gremlins.clicker()
+gremlins.species.clicker()
   .clickTypes(['click']) // which mouse event types will be triggered
   .canClick(function(element) {
     // only click elements in bar
@@ -168,7 +168,7 @@ gremlins.gremlins.clicker()
   })
 ```
 
-Each particular gremlin or mogwai has its own customization methods, check the documentation for details.
+Each particular gremlin or mogwai has its own customization methods, check the source for details.
 
 **Tip**: For more information on configurable functions check [this blog post about service closures](http://redotheweb.com/2013/11/13/from-objects-to-functions-service-closures.html).
 
