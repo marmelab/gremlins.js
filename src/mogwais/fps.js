@@ -17,7 +17,7 @@
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.mogwais.fps()
+ *   horde.mogwai(gremlins.mogwais.fps()
  *     .delay(250)
  *     .levelSelector(function(fps) {
  *       if (fps < 5) return 'error';

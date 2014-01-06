@@ -15,7 +15,7 @@
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.mogwais.gizmo()
+ *   horde.mogwai(gremlins.mogwais.gizmo()
  *     .maxErrors(5)
  *   );
  */

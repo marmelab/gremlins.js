@@ -1,24 +1,24 @@
 /**
- * The alert mogwai prevents calls to alert() from blocking the test
+ * The alert gremlin answers calls to alert()
  *
- * The alert mogwai overrides window.alert, window.confirm, and window.prompt
+ * The alert gremlin overrides window.alert, window.confirm, and window.prompt
  * to avoid stopping the stress test with blocking JavaScript calls. Instead
  * of displaying a dialog, these methods are simply replaced by a write in the
  * logger.
  *
- *   var alertMogwai = gremlins.mogwais.alert();
- *   horde.mogwai(alertMogwai);
+ *   var alertGremlin = gremlins.species.alert();
+ *   horde.gremlin(alertGremlin);
  *
  * The alert mogwai can be customized as follows:
  *
- *   alertMogwai.watchEvents(['alert', 'confirm', 'prompt']); // select the events to catch
- *   alertMogwai.confirmResponse(function() { // what a call to confirm() should return });
- *   alertMogwai.promptResponse(function() { // what a call to prompt() should return });
- *   alertMogwai.logger(loggerObject); // inject a logger
+ *   alertGremlin.watchEvents(['alert', 'confirm', 'prompt']); // select the events to catch
+ *   alertGremlin.confirmResponse(function() { // what a call to confirm() should return });
+ *   alertGremlin.promptResponse(function() { // what a call to prompt() should return });
+ *   alertGremlin.logger(loggerObject); // inject a logger
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.mogwais.alert()
+ *   horde.gremlin(gremlins.species.alert()
  *     .watchEvents(['prompt'])
  *     .promptResponse(function() { return 'I typed garbage'; })
  *   );
@@ -27,6 +27,7 @@ define(function(require) {
     "use strict";
 
     var configurable = require('../utils/configurable');
+    var Chance = require('../vendor/chance');
 
     return function() {
 
@@ -34,12 +35,12 @@ define(function(require) {
 
         var defaultConfirmResponse = function() {
             // Random OK or cancel
-            return Math.random() >= 0.5;
+            return config.randomizer.bool();
         };
 
         var defaultPromptResponse = function() {
             // Return a random string
-            return Math.random().toString(36).slice(2);
+            return config.randomizer.sentence();
         };
 
         var defaultLogger = { warn: function() {} };
@@ -51,7 +52,8 @@ define(function(require) {
             watchEvents:     defaultWatchEvents,
             confirmResponse: defaultConfirmResponse,
             promptResponse:  defaultPromptResponse,
-            logger:          defaultLogger
+            logger:          defaultLogger,
+            randomizer:      new Chance()
         };
 
         var alert   = window.alert;
@@ -61,35 +63,35 @@ define(function(require) {
         /**
          * @mixes config
          */
-        function alertMogwai() {
+        function alertGremlin() {
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
+                    config.logger.warn('gremlin', 'alert     ', msg, 'alert');
                 };
             }
             if (config.watchEvents.indexOf('confirm') !== -1) {
                 window.confirm = function (msg) {
                     config.confirmResponse();
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
+                    config.logger.warn('gremlin', 'alert     ', msg, 'confirm');
                 };
             }
             if (config.watchEvents.indexOf('prompt') !== -1) {
                 window.prompt = function (msg) {
                     config.promptResponse();
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
+                    config.logger.warn('gremlin', 'alert     ', msg, 'prompt');
                 };
             }
         }
 
-        alertMogwai.cleanUp = function() {
+        alertGremlin.cleanUp = function() {
             window.alert   = alert;
             window.confirm = confirm;
             window.prompt  = prompt;
-            return alertMogwai;
+            return alertGremlin;
         };
 
-        configurable(alertMogwai, config);
+        configurable(alertGremlin, config);
 
-        return alertMogwai;
+        return alertGremlin;
     };
 });

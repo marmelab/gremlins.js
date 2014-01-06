@@ -47,6 +47,7 @@ define(function(require) {
     "use strict";
 
     var configurable = require('../utils/configurable');
+    var Chance = require('../vendor/chance');
 
     return function() {
 
@@ -57,8 +58,8 @@ define(function(require) {
 
         var defaultPositionSelector = function() {
             return [
-                Math.floor(Math.random() * document.documentElement.clientWidth),
-                Math.floor(Math.random() * document.documentElement.clientHeight)
+                config.randomizer.natural({ max: document.documentElement.clientWidth - 1 }),
+                config.randomizer.natural({ max: document.documentElement.clientHeight - 1 })
             ];
         };
 
@@ -95,13 +96,8 @@ define(function(require) {
             showAction:       defaultShowAction,
             canClick:         defaultCanClick,
             maxNbTries:       10,
-            logger:           {}
-        };
-
-        var getRandomElementInArray = function(arr) {
-            if (arr.length === 0) return null;
-
-            return arr[Math.floor((Math.random() * arr.length))];
+            logger:           {},
+            randomizer:       new Chance()
         };
 
         /**
@@ -119,7 +115,7 @@ define(function(require) {
             } while (!targetElement || !config.canClick(targetElement));
 
             var evt = document.createEvent("MouseEvents");
-            var clickType = getRandomElementInArray(config.clickTypes);
+            var clickType = config.randomizer.pick(config.clickTypes);
             evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
             targetElement.dispatchEvent(evt);
 

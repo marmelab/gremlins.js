@@ -6,15 +6,17 @@
 define(function(require) {
     "use strict";
 
+    var Chance = require('./vendor/chance');
+
     var gremlins = {
         species: {
+            alert:      require('./species/alert'),
             clicker:    require('./species/clicker'),
             formFiller: require('./species/formFiller'),
             scroller:   require('./species/scroller'),
             typer:      require('./species/typer')
         },
         mogwais: {
-            alert:      require('./mogwais/alert'),
             fps:        require('./mogwais/fps'),
             gizmo:      require('./mogwais/gizmo')
         },
@@ -33,6 +35,7 @@ define(function(require) {
         this._beforeCallbacks = [];
         this._afterCallbacks = [];
         this._logger = console; // logs to console by default
+        this._randomizer = new Chance();
     };
 
     /**
@@ -58,8 +61,13 @@ define(function(require) {
      *     done();
      *   });
      *
-     * When added, if the gremlin provides a logger() function, the horde
-     * logger object is injected, to allow the gremlin to record activity.
+     * If the gremlin provides a logger() function, the horde logger object is
+     * injected, to allow the gremlin to record activity.
+     *
+     *
+     * If the gremlin provides a randomizer() function, the horde randomizer
+     * object is injected, to allow the gremlin to generate random data in a
+     * repeatable way.
      *
      * Here is a more sophisticated gremlin function example:
      *
@@ -95,9 +103,6 @@ define(function(require) {
      * @return {GremlinsHorde}
      */
     GremlinsHorde.prototype.gremlin = function(gremlin) {
-        if (typeof gremlin.logger === "function") {
-            gremlin.logger(this._logger);
-        }
         this._gremlins.push(gremlin);
         return this;
     };
@@ -184,9 +189,6 @@ define(function(require) {
      * @return {GremlinsHorde}
      */
     GremlinsHorde.prototype.mogwai = function(mogwai) {
-        if (typeof mogwai.logger === "function") {
-            mogwai.logger(this._logger);
-        }
         this._mogwais.push(mogwai);
         return this;
     };
@@ -247,8 +249,8 @@ define(function(require) {
     /**
      * Add a callback to be executed before gremlins are unleashed.
      *
-     * Use it to setup the page before the stress test (disable some features, 
-     * set default data, bootstrap your application, start a profiler).
+     * Use it to setup the page before the stress test (disable some features,
+     * set default data, bootstrap the application, start a profiler).
      *
      *   horde.before(function() {
      *     console.profile('gremlins'); // start the Chrome profiler
@@ -369,6 +371,40 @@ define(function(require) {
     };
 
     /**
+     * Set the randomizer object to use for generating random data.
+     *
+     * When called with no parameter, return the current randomizer.
+     *
+     * The randomizer object must be compatible with chance.js.
+     *
+     * The randomizer object is injected to mogwais, and to gremlins.
+     *
+     * By default, a horde uses a new Chance object as logger.
+     *
+     * @param {Object} [randomizer] - A randomizer object
+     * @return {GremlinsHorde}
+     */
+    GremlinsHorde.prototype.randomizer = function(randomizer) {
+        if (!arguments.length) return this._randomizer;
+        this._randomizer = randomizer;
+        return this;
+    };
+
+    /**
+     * Seed the random number generator
+     *
+     * Useful to generate repeatable random results actions.
+     *
+     * You can pass either an integer, or a random data generator callback
+     *
+     * @see Chance() constructor
+     */
+    GremlinsHorde.prototype.seed = function(seed) {
+        this._randomizer = new Chance(seed);
+        return this;
+    };
+
+    /**
      * Start the stress test by executing gremlins according to the strategies
      * 
      * Gremlins and mogwais do nothing until the horde is unleashed.
@@ -405,14 +441,20 @@ define(function(require) {
         if (this._strategies.length === 0) {
             this.strategy(gremlins.strategies.allTogether());
         }
-        var i;
-        var horde = this;
-        var beforeCallbacks = this._beforeCallbacks.concat(this._mogwais);
+
+        var gremlinsAndMogwais = [].concat(this._gremlins, this._mogwais);
+        var allCallbacks = gremlinsAndMogwais.concat(this._strategies, this._beforeCallbacks, this._afterCallbacks);
+        inject({'logger': this._logger, 'randomizer': this._randomizer}, allCallbacks);
+        var beforeCallbacks = this._beforeCallbacks;
+        beforeCallbacks = beforeCallbacks.concat(this._mogwais);
         var afterCallbacks  = this._afterCallbacks;
-        for (var watcherName in this._mogwais) {
-            if (typeof this._mogwais[watcherName].cleanUp == 'function')
-            afterCallbacks.push(this._mogwais[watcherName].cleanUp);
+        for (var i = 0, count = gremlinsAndMogwais.length; i < count; i++) {
+            if (typeof gremlinsAndMogwais[i].cleanUp == 'function') {
+                afterCallbacks.push(gremlinsAndMogwais[i].cleanUp);
+            }
         }
+
+        var horde = this;
 
         executeInSeries(beforeCallbacks, [], horde, function() {
             executeInSeries(horde._strategies, [horde._gremlins, params], horde, function() {
@@ -424,6 +466,16 @@ define(function(require) {
             });
         });
     };
+
+    function inject(services, objects) {
+        for (var i = 0, count = objects.length; i < count; i++) {
+            for (var name in services) {
+                if (typeof objects[i][name] === "function") {
+                    objects[i][name](services[name]);
+                }
+            }
+        }
+    }
 
     /**
      * Stop a running test

@@ -23,13 +23,13 @@ require(['gremlins'], function(gremlins) {
         .gremlin(gremlins.species.formFiller())
         .gremlin(gremlins.species.clicker().clickTypes(['click']))
         .gremlin(gremlins.species.scroller())
+        .mogwai(gremlins.species.alert())
         .gremlin(function() {
             alert('here');
         })
         .after(function() {
             this.log('finished!');
         })
-        .mogwai(gremlins.mogwais.alert())
         .mogwai(gremlins.mogwais.fps())
         .mogwai(gremlins.mogwais.gizmo().maxErrors(2))
         .unleash();

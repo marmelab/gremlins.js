@@ -2,6 +2,7 @@ define(function(require) {
     "use strict";
 
     var configurable = require('../utils/configurable');
+    var Chance = require('../vendor/chance');
 
     return function() {
 
@@ -41,13 +42,8 @@ define(function(require) {
             showAction:      defaultShowAction,
             canFillElement:  defaultCanFillElemment,
             maxNbTries:      10,
-            logger:          {}
-        };
-
-        var getRandomElementInArray = function(arr) {
-            if (!arr || arr.length === 0) return null;
-
-            return arr[Math.floor((Math.random() * arr.length))];
+            logger:          {},
+            randomizer:      new Chance()
         };
 
         /**
@@ -68,7 +64,7 @@ define(function(require) {
 
             do {
                 // Find a random element within all selectors
-                element = getRandomElementInArray(document.querySelectorAll(elementTypes.join(',')));
+                element = config.randomizer.pick(document.querySelectorAll(elementTypes.join(',')));
                 nbTries++;
                 if (nbTries > config.maxNbTries) return false;
             } while (!element || !config.canFillElement(element));
@@ -94,14 +90,14 @@ define(function(require) {
         }
 
         function fillTextElement(element) {
-            var character = Math.random().toString(36).substring(5, 6);
+            var character = config.randomizer.character();
             element.value += character;
 
             return character;
         }
 
         function fillNumberElement(element) {
-            var number = Math.floor(Math.random() * 10);
+            var number = config.randomizer.character({pool: '0123456789'});
             element.value += number;
 
             return number;
@@ -109,7 +105,7 @@ define(function(require) {
 
         function fillSelect(element) {
             var options = element.querySelectorAll('option');
-            var randomOption = getRandomElementInArray(options);
+            var randomOption = config.randomizer.pick(options);
 
             for (var i = 0, c = options.length; i < c; i++) {
                 var option = options[i];
@@ -138,7 +134,7 @@ define(function(require) {
         }
 
         function fillEmail(element) {
-            var email = Math.random().toString(36).substring(5)+"@"+Math.random().toString(36).substring(5)+"."+Math.random().toString(36).substring(5, 8);
+            var email = config.randomizer.email();
             element.value = email;
 
             return email;

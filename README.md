@@ -173,9 +173,48 @@ Each particular gremlin or mogwai has its own customization methods, check the d
 
 **Tip**: For more information on configurable functions check [this blog post about service closures](http://redotheweb.com/2013/11/13/from-objects-to-functions-service-closures.html).
 
-### Setting Up a Strategy
+### Seeding The Randomizer
+
+If you want the attack to be repeatable, you need to seed the random number generator. Gremlins.js depends on [Chance.js](http://chancejs.com/) for random data generation, so it supports seeding:
+
+```js
+// seed the randomizer
+horde.seed(1234);
+```
 
 ### Executing Code Before or After the attack
+
+Before starting the attack, you may want to execute custom code. This is especially useful to:
+
+* Start a profiler
+* Disable some features to better target the test
+* Bootstrap the application
+
+For this usage, the `horde` object provides a `before()` method, which accepts a callback:
+
+```js
+horde.before(function startProfiler() {
+  console.profile('gremlins');
+});
+```
+
+To clean up the test environment, the `horde` object also provides an `after()` method.
+
+```js
+horde.after(function stopProfiler() {
+  console.profileEnd();
+});
+```
+
+Both `before()` and `after()` support asynchronous callbacks:
+
+```js
+horde.before(function waitFiveSeconds(done) {
+  window.setTimeout(done, 5000);
+});
+```
+
+### Setting Up a Strategy
 
 ### Customizing The Logger
 

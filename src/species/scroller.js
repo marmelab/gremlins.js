@@ -2,6 +2,7 @@ define(function(require) {
     "use strict";
 
     var configurable = require('../utils/configurable');
+    var Chance = require('../vendor/chance');
 
     return function() {
 
@@ -14,8 +15,8 @@ define(function(require) {
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight);
 
             return [
-                Math.floor(Math.random() * (documentWidth  - documentElement.clientWidth )),
-                Math.floor(Math.random() * (documentHeight - documentElement.clientHeight))
+                config.randomizer.natural({ max: documentWidth  - documentElement.clientWidth }),
+                config.randomizer.natural({ max: documentHeight  - documentElement.clientHeight })
             ];
         };
 
@@ -45,7 +46,8 @@ define(function(require) {
         var config = {
             positionSelector: defaultPositionSelector,
             showAction:       defaultShowAction,
-            logger:           {}
+            logger:           {},
+            randomizer:       new Chance()
         };
 
         /**

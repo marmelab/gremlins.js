@@ -2,6 +2,7 @@ define(function(require) {
     "use strict";
 
     var configurable = require('../utils/configurable');
+    var Chance = require('../vendor/chance');
 
     return function() {
 
@@ -43,15 +44,8 @@ define(function(require) {
         var config = {
             eventTypes: defaultEventTypes,
             showAction: defaultShowAction,
-            logger:     {}
-        };
-
-        var getRandomElementInArray = function (arr) {
-            if (arr.length === 0) {
-                return null;
-            }
-
-            return arr[Math.floor((Math.random() * arr.length))];
+            logger:     {},
+            randomizer: new Chance()
         };
 
         /**
@@ -62,12 +56,12 @@ define(function(require) {
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
                 keyboardEvent = document.createEvent("KeyboardEvent"),
                 initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent",
-                key = Math.floor(Math.random() * 360),
-                posX = Math.floor(Math.random() * documentElement.clientWidth),
-                posY = Math.floor(Math.random() * documentElement.clientHeight),
+                key = config.randomizer.natural({ max: 360}),
+                posX = config.randomizer.natural({ max: documentElement.clientWidth - 1 }),
+                posY = config.randomizer.natural({ max: documentElement.clientHeight - 1 }),
                 targetElement = document.elementFromPoint(posX, posY);
 
-            keyboardEvent[initMethod](getRandomElementInArray(config.eventTypes), true, true, targetElement, false, false,  false,  false,  key, 0);
+            keyboardEvent[initMethod](config.randomizer.pick(config.eventTypes), true, true, targetElement, false, false,  false,  false,  key, 0);
 
             targetElement.dispatchEvent(keyboardEvent);
 
