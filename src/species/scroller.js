@@ -1,3 +1,30 @@
+/**
+ * The scroller gremlin scrolls the viewport to reveal another part of the document
+ *
+ *   var scrollerGremlin = gremlins.species.scroller();
+ *   horde.gremlin(scrollerGremlin);
+ *
+ * The scrollerGremlin gremlin can be customized as follows:
+ *
+ *   scrollerGremlin.positionSelector(function() { // return a random position to scroll to });
+ *   scrollerGremlin.showAction(function(element) { // show the gremlin activity on screen });
+ *   scrollerGremlin.logger(loggerObject); // inject a logger
+ *   scrollerGremlin.randomizer(randomizerObject); // inject a randomizer
+ *
+ * Example usage:
+ *
+ *   horde.gremlin(gremlins.species.clicker()
+ *     .positionSelector(function() {
+ *       // only click in the app
+ *       var $list = $('#todoapp');
+ *       var offset = $list.offset();
+ *       return [
+ *         parseInt(Math.random() * $list.outerWidth() + offset.left),
+ *         parseInt(Math.random() * ($list.outerHeight() + $('#info').outerHeight()) + offset.top)
+ *       ];
+ *     })
+ *   )
+ */
 define(function(require) {
     "use strict";
 

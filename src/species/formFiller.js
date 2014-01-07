@@ -1,3 +1,24 @@
+/**
+ * The formFiller gremlin fills forms by entering data, selecting options, clicking checkboxes, etc
+ *
+ * As much as possible, the form filling is done using mouse and keyboard
+ * events, to trigger any listener bound to it.
+ *
+ * By default, the formFiller gremlin activity is showed by changing the 
+ * element border to solid red.
+ *
+ *   var formFillerGremlin = gremlins.species.formFiller();
+ *   horde.gremlin(formFillerGremlin);
+ *
+ * The formFiller gremlin can be customized as follows:
+ *
+ *   formFillerGremlin.elementMapTypes({'select': function selectFiller(element) {} }); // form element filler functions
+ *   formFillerGremlin.showAction(function(element) { // show the gremlin activity on screen });
+ *   formFillerGremlin.canFillElement(function(element) { return true }); // to limit where the gremlin can fill
+ *   formFillerGremlin.maxNbTries(5); // How many times the gremlin must look for a fillable element before quitting
+ *   formFillerGremlin.logger(loggerObject); // inject a logger
+ *   formFillerGremlin.randomizer(randomizerObject); // inject a randomizer
+ */
 define(function(require) {
     "use strict";
 

@@ -7,7 +7,7 @@
  *
  * By default, the clicker gremlin activity is showed by a red circle.
  *
- *   var clickerGremlin = gremlins.gremlins.clicker();
+ *   var clickerGremlin = gremlins.species.clicker();
  *   horde.gremlin(clickerGremlin);
  *
  * The clicker gremlin can be customized as follows:
@@ -22,7 +22,7 @@
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.gremlins.clicker()
+ *   horde.gremlin(gremlins.species.clicker()
  *     .clickTypes(['click'])
  *     .positionSelector(function() {
  *        // only click inside the foo element area

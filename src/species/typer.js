@@ -1,3 +1,23 @@
+/**
+ * The typer gremlin types keys on the keyboard
+ *
+ * Note that keyboard events must be localized somewhere on screen, so this
+ * gremlins picks a random screen location first.
+ *
+ * By default, the typer gremlin activity is showed by a letter surrounded by
+ * a red circle.
+ *
+ *   var typerGremlin = gremlins.species.typer();
+ *   horde.gremlin(typerGremlin);
+ *
+ * The typerGremlin gremlin can be customized as follows:
+ *
+ *   typerGremlin.eventTypes(['keypress', 'keyup', 'keydown']); // types of events to trigger
+ *   typerGremlin.showAction(function(element) { // show the gremlin activity on screen });
+ *   typerGremlin.logger(loggerObject); // inject a logger
+ *   typerGremlin.randomizer(randomizerObject); // inject a randomizer
+ *
+ */
 define(function(require) {
     "use strict";
 
