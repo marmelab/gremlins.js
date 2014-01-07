@@ -18,6 +18,7 @@
  *   clickerGremlin.canClick(function(element) { return true }); // to limit where the gremlin can click
  *   clickerGremlin.maxNbTries(5); // How many times the gremlin must look for a clickable element before quitting
  *   clickerGremlin.logger(loggerObject); // inject a logger
+ *   clickerGremlin.randomizer(randomizerObject); // inject a randomizer
  *
  * Example usage:
  *

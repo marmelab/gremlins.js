@@ -1,24 +1,25 @@
 /**
- * The alert gremlin answers calls to alert()
+ * The alert mogwai answers calls to alert()
  *
- * The alert gremlin overrides window.alert, window.confirm, and window.prompt
+ * The alert mogwai overrides window.alert, window.confirm, and window.prompt
  * to avoid stopping the stress test with blocking JavaScript calls. Instead
  * of displaying a dialog, these methods are simply replaced by a write in the
  * logger.
  *
- *   var alertGremlin = gremlins.species.alert();
- *   horde.gremlin(alertGremlin);
+ *   var alertMogwai = gremlins.mogwais.alert();
+ *   horde.mogwai(alertMogwai);
  *
  * The alert mogwai can be customized as follows:
  *
- *   alertGremlin.watchEvents(['alert', 'confirm', 'prompt']); // select the events to catch
- *   alertGremlin.confirmResponse(function() { // what a call to confirm() should return });
- *   alertGremlin.promptResponse(function() { // what a call to prompt() should return });
- *   alertGremlin.logger(loggerObject); // inject a logger
+ *   alertMogwai.watchEvents(['alert', 'confirm', 'prompt']); // select the events to catch
+ *   alertMogwai.confirmResponse(function() { // what a call to confirm() should return });
+ *   alertMogwai.promptResponse(function() { // what a call to prompt() should return });
+ *   alertMogwai.logger(loggerObject); // inject a logger
+ *   alertMogwai.randomizer(randomizerObject); // inject a randomizer
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.species.alert()
+ *   horde.mogwai(gremlins.mogwais.alert()
  *     .watchEvents(['prompt'])
  *     .promptResponse(function() { return 'I typed garbage'; })
  *   );
@@ -63,35 +64,36 @@ define(function(require) {
         /**
          * @mixes config
          */
-        function alertGremlin() {
+        function alertMogwai() {
+            console.log('here');
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {
-                    config.logger.warn('gremlin', 'alert     ', msg, 'alert');
+                    config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
                 };
             }
             if (config.watchEvents.indexOf('confirm') !== -1) {
                 window.confirm = function (msg) {
                     config.confirmResponse();
-                    config.logger.warn('gremlin', 'alert     ', msg, 'confirm');
+                    config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
                 };
             }
             if (config.watchEvents.indexOf('prompt') !== -1) {
                 window.prompt = function (msg) {
                     config.promptResponse();
-                    config.logger.warn('gremlin', 'alert     ', msg, 'prompt');
+                    config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
                 };
             }
         }
 
-        alertGremlin.cleanUp = function() {
+        alertMogwai.cleanUp = function() {
             window.alert   = alert;
             window.confirm = confirm;
             window.prompt  = prompt;
-            return alertGremlin;
+            return alertMogwai;
         };
 
-        configurable(alertGremlin, config);
+        configurable(alertMogwai, config);
 
-        return alertGremlin;
+        return alertMogwai;
     };
 });

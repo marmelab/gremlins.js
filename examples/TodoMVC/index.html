@@ -80,10 +80,17 @@
 				var e = $.Event( "keypress", { which: 13 } );
 				$(document.activeElement).trigger(e);
 			})
+			.gremlin(gremlins.species.scroller())
 			.mogwai(gremlins.mogwais.gizmo())
 			.mogwai(gremlins.mogwais.fps())
-			.strategy(gremlins.strategies.allTogether()
+			.strategy(gremlins.strategies.distribution()
 				.delay(50)
+				.distribution([
+					0.3, // clicker
+					0.3, // formFiller
+					0.3, // todoCreator
+					0.1, // scroller
+				])
 			)
 			.before(function() {
 				console.profile('gremlins');

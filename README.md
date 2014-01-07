@@ -132,11 +132,11 @@ To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method t
 
 `gremlins.js` currently provides a few gremlins and mogwais:
 
-* [alertGremlin](src/species/alert.js) prevents calls to alert() from blocking the test
 * [clickerGremlin](src/species/clicker.js) clicks anywhere on the visible area of the document
 * [formFillerGremlin](src/species/formFiller.js) fills forms by entering data, selecting options, clicking checkboxes, etc
 * [scrollerGremlin](src/species/scroller.js) scrolls the viewport to reveal another part of the document
 * [typerGremlin](src/species/typer.js) types keys on the keyboard
+* [alertMogwai](src/mogwais/alert.js) prevents calls to alert() from blocking the test
 * [fpsMogwai](src/mogwais/fps.js) logs the number of frames per seconds (FPS) of the browser
 * [gizmoMogwai](src/mogwais/gizmo.js) can stop the gremlins when they go too far
 
@@ -181,7 +181,7 @@ If you want the attack to be repeatable, you need to seed the random number gene
 horde.seed(1234);
 ```
 
-### Executing Code Before or After the attack
+### Executing Code Before or After The Attack
 
 Before starting the attack, you may want to execute custom code. This is especially useful to:
 
@@ -215,6 +215,21 @@ horde.before(function waitFiveSeconds(done) {
 
 ### Setting Up a Strategy
 
+By default, gremlins will attack in random order, in a uniform distribution, separated by a delay of 10ms. This attack strategy is called the [distribution](src/strategies/distribution.js) strategy. You can customize it using the `horde.strategy()` method:
+
+```js
+horde.strategy(gremlins.strategies.distribution()
+  .delay(50) // wait 50 ms between each action
+  .distribution([0.3, 0.3, 0.3, 0.1]) // the first three gremlins have more chances to be executed than the last
+)
+```
+
+You can also use another strategy. A strategy is just a callback expecting three parameters: an array of gremlins, a parameter object (the one passed to `unleash()`), and a final callback. Two other strategies are bundled ([allTogether](src/strategies/allTogether.js) and [bySpecies](src/strategies/bySpecies.js)), and it should be fairly easy to implement a custom strategy for more sophisticated attack scenarios.
+
+### Stopping The Attack
+
+The horde can stop the attack in case of emmergency using the `horde.stop()` method. Gizmo uses this method to prevent further damages to the application after 10 errors, and you can use it, too, if you don't want the attack to continue.
+
 ### Customizing The Logger
 
 By default, gremlins.js logs all gremlin actions and mogwai observations in the console. If you prefer using an alternative logging method (for instance, storing gremlins activity in LocalStorage and sending it in Ajax once every 10 seconds), just provide a logger object with 4 methods (log, info, warn, and error) to the `logger()` method:
@@ -232,6 +247,10 @@ horde.logger(customLogger);
 **Tip**: Instead of reimplementing your custom logger, you may want to look at [Minilog](https://github.com/mixu/minilog).
 
 ## Contributing
+
+Your feedback about the usage of gremlins.js in your specific context is valuable, don't hesitate to open GitHub Issues for any problem or question you may have.
+
+All contributions are welcome. New gremlins, new mogwais, new strategies, should all be tested against the two examples bundled in the application. Don't forget to rebuild the minified version of the library using `make`.
 
 ## License
 

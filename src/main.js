@@ -10,19 +10,20 @@ define(function(require) {
 
     var gremlins = {
         species: {
-            alert:      require('./species/alert'),
             clicker:    require('./species/clicker'),
             formFiller: require('./species/formFiller'),
             scroller:   require('./species/scroller'),
             typer:      require('./species/typer')
         },
         mogwais: {
+            alert:      require('./mogwais/alert'),
             fps:        require('./mogwais/fps'),
             gizmo:      require('./mogwais/gizmo')
         },
         strategies: {
-            allTogether: require('./strategies/allTogether'),
-            bySpecies:   require('./strategies/bySpecies')
+            allTogether:  require('./strategies/allTogether'),
+            bySpecies:    require('./strategies/bySpecies'),
+            distribution: require('./strategies/distribution')
         }
     };
 
@@ -439,7 +440,7 @@ define(function(require) {
             this.allMogwais();
         }
         if (this._strategies.length === 0) {
-            this.strategy(gremlins.strategies.allTogether());
+            this.strategy(gremlins.strategies.distribution());
         }
 
         var gremlinsAndMogwais = [].concat(this._gremlins, this._mogwais);
