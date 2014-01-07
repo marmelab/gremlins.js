@@ -11,23 +11,23 @@ gremlins.js is a monkey testing library written in JavaScript, for Node.js and t
 
 ## Purpose
 
-While developing a JavaScript application, did you anticipate uncommon user interactions? Did you managed to avoid memory leaks? If not, the application may break sooner or later. If n random actions can make an application fail, it's better to acknowledge it during testing, rather than letting users discover it.
+While developing an HTML5 application, did you anticipate uncommon user interactions? Did you manage to detect and patch all memory leaks? If not, the application may break sooner or later. If n random actions can make an application fail, it's better to acknowledge it during testing, rather than letting users discover it.
 
-Gremlins simulate random user actions: they click anywhere in the window, enter random data in forms, or move the mouse over elements that don't expect it. Their goal: triggering JavaScript errors, or making the application fail. If gremlins can't break an application, congrats! The application is robust enough to be released to real users.
+Gremlins.js simulates random user actions: gremlins click anywhere in the window, enter random data in forms, or move the mouse over elements that don't expect it. Their goal: triggering JavaScript errors, or making the application fail. If gremlins can't break an application, congrats! The application is robust enough to be released to real users.
 
-This practice, also known as Monkey testing, is very common in mobile application development (see for instance the [Android Monkey program](http://developer.android.com/tools/help/monkey.html)). Now that Frontend (MV*) and backend (Node.js) JavaScript development uses persistent JavaScript applications, this technique becomes valuable for web applications.
+This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monkey_test), is very common in mobile application development (see for instance the [Android Monkey program](http://developer.android.com/tools/help/monkey.html)). Now that frontend (MV*, d3.js, Backbone.js, Angular.js, etc.) and backend (Node.js) development uses persistent JavaScript applications, this technique becomes valuable for web applications.
 
 ## Basic Usage
 
-A gremlins *horde* is an army of specialized gremlins ready to mess with your application. *unleash* the gremlins to start the stress test:
+A gremlins *horde* is an army of specialized gremlins ready to mess up your application. *unleash* the gremlins to start the stress test:
 
 ```js
 var horde = gremlins.createHorde()
 horde.unleash();
-// every gremlin will act 100 times, at 10 ms interval
+// gremlins will act randomly, at 10 ms interval, 100 times
 ```
  
-`gremlins.js` provides several gremlins *species*: some click everywhere on the page, others enter data in form inputs, others scroll the window in every possible direction, etc. 
+`gremlins.js` provides several gremlin *species*: some click everywhere on the page, others enter data in form inputs, others scroll the window in every possible direction, etc. 
 
 You will see traces of the gremlins actions on the screen (they leave red traces) and in the console log:
 
@@ -248,9 +248,9 @@ horde.logger(customLogger);
 
 ## Contributing
 
-Your feedback about the usage of gremlins.js in your specific context is valuable, don't hesitate to open GitHub Issues for any problem or question you may have.
+Your feedback about the usage of gremlins.js in your specific context is valuable, don't hesitate to [open GitHub Issues](https://github.com/marmelab/gremlins.js/issues) for any problem or question you may have.
 
-All contributions are welcome. New gremlins, new mogwais, new strategies, should all be tested against the two examples bundled in the application. Don't forget to rebuild the minified version of the library using `make`.
+All contributions are welcome. New gremlins, new mogwais, new strategies, should all be tested against the two examples bundled in the application. Try to follow the functional programming style. Also, don't forget to rebuild the minified version of the library using `make`.
 
 ## License
 
