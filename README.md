@@ -7,7 +7,7 @@ gremlins.js is a monkey testing library written in JavaScript, for Node.js and t
 >
 > Billy Peltzer: *They're gremlins, Kate, just like Mr. Futterman said.*
 
-![TodoMVC attacked by gremlins](http://marmelab.com/gremlins.js/img/todo.gif)
+![TodoMVC attacked by gremlins](http://static.marmelab.com/todo.gif)
 
 ## Purpose
 
