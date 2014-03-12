@@ -65,7 +65,6 @@ define(function(require) {
          * @mixes config
          */
         function alertMogwai() {
-            console.log('here');
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {
                     config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
