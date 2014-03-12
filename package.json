@@ -20,7 +20,7 @@
     "stress",
     "gremlin"
   ],
-  "author": "Francois Zaninotto <fzaninotto@gmail.com>",
+  "author": "Francois Zaninotto",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/marmelab/gremlins.js/issues"
