@@ -1,0 +1,28 @@
+{
+  "name": "gremlins.js",
+  "version": "0.1.0",
+  "description": "A monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.",
+  "main": "gremlins.min.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/marmelab/gremlins.js.git"
+  },
+  "keywords": [
+    "monkey",
+    "test",
+    "testing",
+    "stress",
+    "gremlin"
+  ],
+  "author": "Francois Zaninotto <fzaninotto@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marmelab/gremlins.js/issues"
+  }
+}
