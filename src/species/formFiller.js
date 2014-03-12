@@ -85,7 +85,9 @@ define(function(require) {
 
             do {
                 // Find a random element within all selectors
-                element = config.randomizer.pick(document.querySelectorAll(elementTypes.join(',')));
+                var elements = document.querySelectorAll(elementTypes.join(','));
+                if (elements.length === 0) return false;
+                element = config.randomizer.pick(elements);
                 nbTries++;
                 if (nbTries > config.maxNbTries) return false;
             } while (!element || !config.canFillElement(element));
