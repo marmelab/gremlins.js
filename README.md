@@ -228,7 +228,7 @@ You can also use another strategy. A strategy is just a callback expecting three
 
 ### Stopping The Attack
 
-The horde can stop the attack in case of emmergency using the `horde.stop()` method. Gizmo uses this method to prevent further damages to the application after 10 errors, and you can use it, too, if you don't want the attack to continue.
+The horde can stop the attack in case of emergency using the `horde.stop()` method. Gizmo uses this method to prevent further damages to the application after 10 errors, and you can use it, too, if you don't want the attack to continue.
 
 ### Customizing The Logger
 
