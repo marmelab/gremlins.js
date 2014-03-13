@@ -15,7 +15,7 @@ While developing an HTML5 application, did you anticipate uncommon user interact
 
 Gremlins.js simulates random user actions: gremlins click anywhere in the window, enter random data in forms, or move the mouse over elements that don't expect it. Their goal: triggering JavaScript errors, or making the application fail. If gremlins can't break an application, congrats! The application is robust enough to be released to real users.
 
-This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monkey_test), is very common in mobile application development (see for instance the [Android Monkey program](http://developer.android.com/tools/help/monkey.html)). Now that frontend (MV*, d3.js, Backbone.js, Angular.js, etc.) and backend (Node.js) development use persistent JavaScript applications, this technique becomes valuable for web applications.
+This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monkey_test) or [Fuzz testing](http://en.wikipedia.org/wiki/Fuzz_testing), is very common in mobile application development (see for instance the [Android Monkey program](http://developer.android.com/tools/help/monkey.html)). Now that frontend (MV*, d3.js, Backbone.js, Angular.js, etc.) and backend (Node.js) development use persistent JavaScript applications, this technique becomes valuable for web applications.
 
 ## Basic Usage
 
