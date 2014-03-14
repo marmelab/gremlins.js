@@ -43,7 +43,7 @@ define(function(require) {
      * Add a gremlin to the horde.
      *
      * A gremlin is nothing more than a function. Gremlins mess up with the
-     * application in order to test its robustness. Once unleased, the horde
+     * application in order to test its robustness. Once unleashed, the horde
      * executes each gremlin function several times (see unleash()).
      *
      *   horde.gremlin(function() {

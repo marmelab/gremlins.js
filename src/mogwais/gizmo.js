@@ -2,8 +2,8 @@
  * Gizmo is a special mogwai who can stop the gremlins when they go too far
  *
  * The gizom mogwai monitors the JavaScript alerts and the calls to
- * console.alert(), and stops the stress test exectution once the number of
- * errors pass a certain treshold (10 errors by default).
+ * console.alert(), and stops the stress test execution once the number of
+ * errors pass a certain threshold (10 errors by default).
  *
  *   var gizmoMogwai = gremlins.mogwais.gizmo();
  *   horde.mogwai(gizmoMogwai);
