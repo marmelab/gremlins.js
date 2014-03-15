@@ -53,7 +53,7 @@ define(function(require) {
             }, 500);
         };
 
-        var defaultCanFillElemment = function() { return true; };
+        var defaultCanFillElement = function() { return true; };
 
         /**
          * @mixin
@@ -61,7 +61,7 @@ define(function(require) {
         var config = {
             elementMapTypes: defaultMapElements,
             showAction:      defaultShowAction,
-            canFillElement:  defaultCanFillElemment,
+            canFillElement:  defaultCanFillElement,
             maxNbTries:      10,
             logger:          {},
             randomizer:      new Chance()

@@ -18,9 +18,9 @@ define(function(require) {
      *   bar(); // 'foo value is 3'
      *
      * The configurable behavior modifies the function object, adding one
-     * method for each item in the configuratton. 
+     * method for each item in the configuration.
      * 
-     * The added methods use the same name as the configuraiton items. The 
+     * The added methods use the same name as the configuration items. The
      * added methods are both setters and getters, which means that they return
      * the config value when called without argument, and they modify the 
      * config value when called with an argument.
