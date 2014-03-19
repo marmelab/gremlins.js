@@ -35,7 +35,8 @@ define(function(require) {
         var defaultShowAction = function (targetElement, x, y, key) {
             var typeSignal = document.createElement('div');
             typeSignal.style.border = "3px solid orange";
-            typeSignal.style['border-radius'] = '50%';
+            typeSignal.style['border-radius'] = '50%'; // Chrome
+            typeSignal.style.borderRadius = '50%';     // Mozilla
             typeSignal.style.width = "40px";
             typeSignal.style.height = "40px";
             typeSignal.style['box-sizing'] = 'border-box';
@@ -81,7 +82,7 @@ define(function(require) {
                 posY = config.randomizer.natural({ max: documentElement.clientHeight - 1 }),
                 targetElement = document.elementFromPoint(posX, posY);
 
-            keyboardEvent[initMethod](config.randomizer.pick(config.eventTypes), true, true, targetElement, false, false,  false,  false,  key, 0);
+            keyboardEvent[initMethod](config.randomizer.pick(config.eventTypes), true, true, window, false, false,  false,  false,  key, 0);
 
             targetElement.dispatchEvent(keyboardEvent);
 
