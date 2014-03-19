@@ -30,6 +30,7 @@ define(function(require) {
         var document = window.document;
 
         var defaultMapElements = {
+            'textarea': fillTextElement,
             'input[type="text"]': fillTextElement,
             'input[type="password"]': fillTextElement,
             'input[type="number"]': fillNumberElement,
