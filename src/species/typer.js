@@ -32,6 +32,14 @@ define(function(require) {
 
         var defaultEventTypes = ['keypress', 'keyup', 'keydown'];
 
+        var defaultKeyGenerator = function() {
+            return this.randomizer.natural({ max: 360});
+        };
+
+        var defaultTargetElement = function(x, y) {
+            return document.elementFromPoint(x, y);
+        };
+
         var defaultShowAction = function (targetElement, x, y, key) {
             var typeSignal = document.createElement('div');
             typeSignal.style.border = "3px solid orange";
@@ -65,6 +73,8 @@ define(function(require) {
         var config = {
             eventTypes: defaultEventTypes,
             showAction: defaultShowAction,
+            keyGenerator: defaultKeyGenerator,
+            targetElement: defaultTargetElement,
             logger:     {},
             randomizer: new Chance()
         };
@@ -73,18 +83,22 @@ define(function(require) {
          * @mixes config
          */
         function typerGremlin() {
-            var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
-                documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight),
-                keyboardEvent = document.createEvent("KeyboardEvent"),
-                initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent",
-                key = config.randomizer.natural({ max: 360}),
+            var keyboardEvent = document.createEventObject ? document.createEventObject() : document.createEvent("Events"),
+                eventType = config.randomizer.pick(config.eventTypes),
+                key = config.keyGenerator(),
                 posX = config.randomizer.natural({ max: documentElement.clientWidth - 1 }),
                 posY = config.randomizer.natural({ max: documentElement.clientHeight - 1 }),
-                targetElement = document.elementFromPoint(posX, posY);
+                targetElement = config.targetElement(posX, posY);
 
-            keyboardEvent[initMethod](config.randomizer.pick(config.eventTypes), true, true, window, false, false,  false,  false,  key, 0);
+            if(keyboardEvent.initEvent){
+                keyboardEvent.initEvent(eventType, true, true);
+            }
 
-            targetElement.dispatchEvent(keyboardEvent);
+            keyboardEvent.keyCode = key;
+            keyboardEvent.which = key;
+            keyboardEvent.keyCodeVal = key;
+
+            targetElement.dispatchEvent ? targetElement.dispatchEvent(keyboardEvent) : targetElement.fireEvent("on" + eventType, keyboardEvent);
 
             if (typeof config.showAction === 'function') {
                 config.showAction(targetElement, posX, posY, key);
