@@ -73,8 +73,7 @@ define(function(require) {
          */
         function formFillerGremlin() {
             // Retrieve all selectors
-            var elementTypes = [],
-                matchFunction = getMatchFunctionName();
+            var elementTypes = [];
 
             for(var key in config.elementMapTypes) {
                 if(config.elementMapTypes.hasOwnProperty(key)) {
@@ -96,7 +95,7 @@ define(function(require) {
             // Retrieve element type
             var elementType = null;
             for (var selector in config.elementMapTypes) {
-                if (element[matchFunction](selector)) {
+                if (matchesSelector(element, selector)) {
                     elementType = selector;
                     break;
                 }
@@ -164,10 +163,27 @@ define(function(require) {
             return email;
         }
 
-        function getMatchFunctionName() {
-            var el = document.querySelector('body');
-            return ( el.mozMatchesSelector || el.msMatchesSelector ||
-                el.oMatchesSelector   || el.webkitMatchesSelector).name;
+        function matchesSelector(el, selector) {
+            if (el.webkitMatchesSelector) {
+                matchesSelector = function(el, selector) {
+                    return el.webkitMatchesSelector(selector);
+                };
+            } else if (el.mozMatchesSelector) {
+                matchesSelector = function(el, selector) {
+                    return el.mozMatchesSelector(selector);
+                };
+            } else if (el.msMatchesSelector) {
+                matchesSelector = function(el, selector) {
+                    return el.msMatchesSelector(selector);
+                };
+            } else if (el.oMatchesSelector) {
+                matchesSelector = function(el, selector) {
+                    return el.oMatchesSelector(selector);
+                };
+            } else {
+                throw new Error('Unsupported browser');
+            }
+            return matchesSelector(el, selector);
         }
 
         configurable(formFillerGremlin, config);
