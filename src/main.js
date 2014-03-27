@@ -11,6 +11,7 @@ define(function(require) {
     var gremlins = {
         species: {
             clicker:    require('./species/clicker'),
+            toucher:    require('./species/toucher'),
             formFiller: require('./species/formFiller'),
             scroller:   require('./species/scroller'),
             typer:      require('./species/typer')
@@ -49,7 +50,7 @@ define(function(require) {
      *   horde.gremlin(function() {
      *     // do nasty things to the application
      *   });
-     * 
+     *
      * The gremlins object contains a few gremlin species than you can add:
      *
      *   horde.gremlin(gremlins.species.clicker());
@@ -110,10 +111,10 @@ define(function(require) {
 
     /**
      * Add all the registered gremlin species to the horde.
-     * 
+     *
      * The gremlin species are available in gremlins.species. You can add your
      * own easily:
-     * 
+     *
      *   gremlins.species.greenMutant = function(logger) { //... };
      *
      * @return {GremlinsHorde}
@@ -129,7 +130,7 @@ define(function(require) {
      * Add a mogwai to the horde.
      *
      * A mogwai is nothing more than a function. Mogwais monitor application
-     * activity in order to detect when gremlins do damages. Contrary to 
+     * activity in order to detect when gremlins do damages. Contrary to
      * gremlins, mogwais should do no harm to the current application.
      *
      *   // this example mogwai monitors javascript alerts
@@ -138,20 +139,20 @@ define(function(require) {
      *     window.alert = function(message) {
      *       // do stuff
      *       oldAlert(message);
-     *     }      
+     *     }
      *   });
      *
      * The gremlins object contains a few mogwai species than you can add:
      *
      *   horde.mogwai(gremlins.mogwais.alert());
-     * 
+     *
      * Mogwais are called once before the horde is unleashed. Just like a
      * before() callback, a mogwai can be synchronous or asynchronous.
      *
      * What distinguishes a mogwai function from a simple before() function
      * is that mogwai functions can provide a cleanUp() function to be called
      * once after the gremlins finished their job.
-     * 
+     *
      * When added, if the mogwai provides a logger() function, the horde
      * logger object is injected, to allow the mogwai to record activity.
      *
@@ -165,7 +166,7 @@ define(function(require) {
      *       if (logger && logger.log) {
      *         logger.log('alert', msg);
      *       }
-     *     }      
+     *     }
      *   });
      *   alert.cleanUp = function() {
      *     window.alert = oldAlert;
@@ -196,10 +197,10 @@ define(function(require) {
 
     /**
      * Add all the registered mogwai species to the horde.
-     * 
+     *
      * The mogwai species are available in gremlins.mogwais. You can add your
      * own easily:
-     * 
+     *
      *   gremlins.mogwais.gizmo = function() { //... };
      *
      * @return {GremlinsHorde}
@@ -218,7 +219,7 @@ define(function(require) {
      *  - gremlins: array of gremlin species added to the horde
      *  - params: the parameters passed as first argument of unleash()
      *  - done: a callback to execute once the strategy is finished
-     * 
+     *
      * A strategy function executes registered gremlins in a certain order,
      * a certain number of times.
      *
@@ -240,7 +241,7 @@ define(function(require) {
      * strategy, all the default strategy (allTogether) is used.
      *
      * @param {Function} strategy - A callback to be executed when the test starts
-     * @return {GremlinsHorde} 
+     * @return {GremlinsHorde}
      */
     GremlinsHorde.prototype.strategy = function(strategy) {
         this._strategies.push(strategy);
@@ -256,7 +257,7 @@ define(function(require) {
      *   horde.before(function() {
      *     console.profile('gremlins'); // start the Chrome profiler
      *   });
-     * 
+     *
      * If the callback takes no argument, it is executed synchronously.
      *
      *   horde.before(function() {
@@ -298,7 +299,7 @@ define(function(require) {
      *   horde.after(function() {
      *     console.profileEnd(); // stop the Chrome profiler
      *   });
-     * 
+     *
      * If the callback takes no argument, it is executed synchronously.
      *
      *   horde.after(function() {
@@ -335,9 +336,9 @@ define(function(require) {
      * Set the logger object to use for logging.
      *
      * When called with no parameter, return the current logger.
-     * 
+     *
      * The logger object must provide 4 functions: log, info, warn, and error.
-     * 
+     *
      *   var consoleLogger = {
      *       log:   console.log.bind(console),
      *       info:  console.info.bind(console),
@@ -407,13 +408,13 @@ define(function(require) {
 
     /**
      * Start the stress test by executing gremlins according to the strategies
-     * 
+     *
      * Gremlins and mogwais do nothing until the horde is unleashed.
      * When unleashing, you can pass parameters to the strategies, such as the
      * number of gremlin waves in the default strategy.
      *
      *   horde.unleash({ nb: 50 }); // all gremlins will attack 50 times
-     * 
+     *
      * unleash() executes asynchronously, so you must use the second argument
      * if you need to execute code after the stress test.
      *
