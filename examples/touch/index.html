@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>touch gremlins</title>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <style>
+
+        body {
+            padding: 15px;
+        }
+
+
+        .hitarea {
+            position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,.05);
+          text-align: center;
+          border: dashed 3px red;
+        }
+
+
+        .log li {
+            display: inline-block;
+            width: 49%;
+          overflow: hidden;
+        }
+
+        @media screen and (min-width: 640px) {
+          .log li { width: 30%; }
+        }
+
+        .properties li { white-space: nowrap; }
+        .properties span { margin-left: 5px; }
+
+        .log li.active { background: lightgreen; }
+
+        .log li.property-gesture {
+            position: fixed;
+            right: 0;
+            top: 0;
+            background: lightgreen;
+            padding: 1px 4px;
+            width: auto;
+        }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div class="log well well-small">
+      <h3>Hammer.js gestures</h3>
+      <h4>Events</h4>
+      <ul class="unstyled events" id="events-list">
+          <li>touch</li>
+          <li>release</li>
+          <li>hold</li>
+          <li>tap</li>
+          <li>doubletap</li>
+
+          <li>dragstart</li>
+          <li>drag</li>
+          <li>dragend</li>
+          <li>dragleft</li>
+          <li>dragright</li>
+          <li>dragup</li>
+          <li>dragdown</li>
+
+          <li>swipe</li>
+          <li>swipeleft</li>
+          <li>swiperight</li>
+          <li>swipeup</li>
+          <li>swipedown</li>
+
+          <li>transformstart</li>
+          <li>transform</li>
+          <li>transformend</li>
+          <li>rotate</li>
+          <li>pinch</li>
+          <li>pinchin</li>
+          <li>pinchout</li>
+      </ul>
+      <h4>EventData</h4>
+      <ul class="unstyled properties">
+          <li class="property-gesture"><strong>gesture</strong> <span id="log-prop-gesture"></span></li>
+          <li><strong>touches</strong> <span id="log-prop-touches"></span></li>
+          <li><strong>pointerType</strong> <span id="log-prop-pointerType"></span></li>
+          <li><strong>center</strong> <span id="log-prop-center"></span></li>
+          <li><strong>angle</strong> <span id="log-prop-angle"></span>&deg;</li>
+          <li><strong>direction</strong> <span id="log-prop-direction"></span></li>
+          <li><strong>distance</strong> <span id="log-prop-distance"></span>px</li>
+
+          <li><strong>deltaTime</strong> <span id="log-prop-deltaTime"></span>ms</li>
+          <li><strong>deltaX</strong> <span id="log-prop-deltaX"></span>px</li>
+          <li><strong>deltaY</strong> <span id="log-prop-deltaY"></span>px</li>
+
+          <li><strong>velocityX</strong> <span id="log-prop-velocityX"></span></li>
+          <li><strong>velocityY</strong> <span id="log-prop-velocityY"></span></li>
+
+          <li><strong>scale</strong>  <span id="log-prop-scale"></span></li>
+          <li><strong>rotation</strong> <span id="log-prop-rotation"></span>&deg;</li>
+
+          <li><strong>interimDirection</strong>  <span id="log-prop-interimDirection"></span></li>
+          <li><strong>interimAngle</strong> <span id="log-prop-interimAngle"></span>&deg;</li>
+
+          <li><strong>target</strong> <span id="log-prop-target"></span></li>
+      </ul>
+  </div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="http://rawgithub.com/EightMedia/hammer.js/master/hammer.js"></script>
+  <script>
+
+      function getEl(id) {
+          return document.getElementById(id);
+      }
+
+
+      var hammertime;
+      var log_elements = {};
+      var prevent_scroll_drag = true;
+
+
+      function getLogElement(type, name) {
+          var el = log_elements[type + name];
+          if(!el) {
+              return log_elements[type + name] = getEl("log-"+ type +"-"+ name);
+          }
+          return el;
+      }
+
+      // log properties
+      var properties = ['gesture','center','deltaTime','angle','direction',
+          'distance','deltaX','deltaY','velocityX','velocityY', 'pointerType',
+          'interimDirection','interimAngle',
+          'scale','rotation','touches','target'];
+
+      function logEvent(ev) {
+          if(!ev.gesture) {
+              return;
+          }
+
+          if(ev.gesture.velocityX > 0.7) {
+            console.log(ev);
+          }
+
+          // highlight gesture
+          var event_el = getLogElement('gesture', ev.type);
+          event_el.className = "active";
+
+
+          for(var i= 0,len=properties.length; i<len; i++) {
+              var prop = properties[i];
+              var value = ev.gesture[prop];
+              switch(prop) {
+                  case 'center':
+                      value = value.pageX +"x"+ value.pageY;
+                      break;
+                  case 'gesture':
+                      value = ev.type;
+                      break;
+                  case 'target':
+                      value = ev.gesture.target.tagName;
+                      break;
+                  case 'touches':
+                      value = ev.gesture.touches.length;
+                      break;
+              }
+              getLogElement('prop', prop).innerHTML = value;
+          }
+      }
+
+
+      // get all the events
+      var all_events = [];
+      [].forEach.call(document.querySelectorAll("#events-list li"), function(li) {
+          var type = li.textContent;
+          li.setAttribute("id", "log-gesture-"+type);
+          all_events.push(type);
+      });
+
+      // start!
+      hammertime = Hammer(document.body, {
+            prevent_default: true,
+            no_mouseevents: true
+        })
+        .on(all_events.join(" "), logEvent);
+
+  </script>
+  <script data-main="main.js" src="require.js"></script>
+</body>
+</html>

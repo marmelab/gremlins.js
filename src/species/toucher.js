@@ -48,7 +48,7 @@ define(function(require) {
         var document = window.document,
             body = document.body;
 
-        var defaultTouchTypes = ['tap','gesture'];
+        var defaultTouchTypes = ['tap','gesture','tap','gesture','gesture','gesture','multitouch','multitouch'];
 
         var defaultPositionSelector = function() {
             return [
@@ -158,16 +158,14 @@ define(function(require) {
 					posX = startPosition[0] + (gesture.distanceX/loops * loop),
 					posY = startPosition[1] + (gesture.distanceY/loops * loop),
 					touches = getTouches([posX, posY], startTouches.length, scale, rotation),
-					is_last = (loop === loops);
-
-				triggerTouch(touches, element, is_last ? 'end' : 'move');
-
-				config.showAction(touches);
+					is_last = (loop === loops-1);
 
 				if(!is_last) {
+					triggerTouch(touches, element, 'move');
 					setTimeout(gestureLoop, 10);
 				}
 				else {
+					triggerTouch(touches, element, 'end');
 					cb(touches)
 				}
 			}
@@ -186,8 +184,26 @@ define(function(require) {
 		function triggerTouch(touches, element, type) {
 			var event = document.createEvent('Event');
 			event.initEvent('touch' + type, true, true);
-			event.touches = touches;
+
+			var touchlist = [];
+
+			// just like the mobile browsers, on touchend we dont include a touchlist
+			if(type != 'end') {
+				touches.forEach(function(touch, i) {
+					touchlist.push({
+						pageX: touch.x,
+						pageY: touch.y,
+						clientX: touch.x,
+						clientY: touch.y,
+						target: element,
+						identifier: i
+					})
+				});
+			}
+			event.touches = touchlist;
 			element.dispatchEvent(event);
+
+			config.showAction(touches);
 		}
 
 
@@ -196,22 +212,43 @@ define(function(require) {
          */
 		var touchTypes = {
 			/**
-			 * single tap, like a click event
+			 * single tap, like a click event, only 1 touch
+			 * could also be a slow tap, that could turn out to be a hold
 			 */
 			tap: function(position, element, cb) {
 				var touches = getTouches(position, 1);
-
 				triggerTouch(touches, element, 'start');
-				triggerTouch(touches, element, 'end');
 
-				cb(touches, {});
+				setTimeout(function() {
+					triggerTouch(touches, element, 'end');
+					cb(touches, {});
+				}, config.randomizer.natural({ min: 4, max: 700 }))
 			},
 
 			/**
-			 * gesture, could be a drag, swipe, pinch, rotate, with 1 or more points
+			 * single touch gesture, could be a drag, swipe, with 1 points
 			 */
 			gesture: function(position, element, cb) {
-				var points = config.randomizer.natural({min: config.minTouches, max: config.maxTouches}),
+				var points = 1,
+					gesture = {
+						radius: config.randomizer.natural({ min: 100, max: 200 }),
+						distanceX: config.randomizer.natural({ min: -100, max: 200 }),
+						distanceY: config.randomizer.natural({ min: -100, max: 200 }),
+						angle: config.randomizer.natural({ min: -200, max: 200 }),
+						duration: config.randomizer.natural({ min: 30, max: 500 })
+					},
+					touches = getTouches(position, points, gesture.radius);
+
+				triggerGesture(element, position, touches, gesture, function(touches) {
+					cb(touches, gesture);
+				});
+			},
+
+			/**
+			 * multitouch gesture, could be a drag, swipe, pinch, rotate, with 2 or more points
+			 */
+			multitouch: function(position, element, cb) {
+				var points = config.randomizer.natural({min: 2, max: config.maxTouches}),
 					scale = (points === 1) ? 1 : config.randomizer.floating({ min: 0.1, max: 2 }),
 					rotate = (points === 1) ? 0 : config.randomizer.floating({ min: -300, max: 300 }),
 					gesture = {
@@ -252,6 +289,9 @@ define(function(require) {
 
 
             var touchType = config.randomizer.pick(config.touchTypes);
+			if(!touchTypes[touchType]) {
+				throw(touchType +" is an invalid touchtype");
+			}
 			touchTypes[touchType](position, targetElement, logGremlin);
 
 			function logGremlin(touches, details) {
