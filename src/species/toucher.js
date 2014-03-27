@@ -99,7 +99,7 @@ define(function(require) {
 			logger: {},
 			randomizer: new Chance(),
 			minTouches: 1,
-			maxTouches: 4
+			maxTouches: 2
 		};
 
 
@@ -128,7 +128,7 @@ define(function(require) {
 			}
 
 			for(i = 0; i < points; i++) {
-				angle = slice * i + rotation;
+				angle = (slice * i) - rotation;
 				touches.push({
 					x: (cx + radius * Math.cos(angle)),
 					y: (cy + radius * Math.sin(angle))
@@ -157,7 +157,7 @@ define(function(require) {
 				loop++;
 
 				var scale = gesture.radius * (gesture.scale / loops * loop),
-					rotation = (gesture.scale / loops * loop),
+					rotation = (gesture.rotation / loops * loop),
 					posX = startPosition[0] + (gesture.distanceX / loops * loop),
 					posY = startPosition[1] + (gesture.distanceY / loops * loop),
 					touches = getTouches([posX, posY], startTouches.length, scale, rotation),
@@ -274,11 +274,11 @@ define(function(require) {
 			 */
 			multitouch: function(position, element, done) {
 				var points = config.randomizer.natural({min: 2, max: config.maxTouches}),
-					scale = (points === 1) ? 1 : config.randomizer.floating({ min: 0.1, max: 2 }),
-					rotate = (points === 1) ? 0 : config.randomizer.floating({ min: -300, max: 300 }),
+					scale = (points === 1) ? 1 : config.randomizer.natural({ min: 0.1, max: 2 }),
+					rotation = (points === 1) ? 0 : config.randomizer.natural({ min: -100, max: 100 }),
 					gesture = {
 						scale: scale,
-						rotate: rotate,
+						rotation: rotation,
 						radius: config.randomizer.natural({ min: 100, max: 200 }),
 						distanceX: config.randomizer.natural({ min: -100, max: 200 }),
 						distanceY: config.randomizer.natural({ min: -100, max: 200 }),
@@ -321,7 +321,11 @@ define(function(require) {
 					config.showAction(touches);
 				}
 				if(typeof config.logger.log == 'function') {
-					config.logger.log('gremlin', 'toucher', touchType, 'at', posX, posY, details);
+					config.logger.log('gremlin', 'toucher', {
+						position: position,
+						touchType: touchType,
+						gesture: details
+					});
 				}
 				done();
 			}
