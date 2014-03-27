@@ -11,32 +11,26 @@
  *
  * The toucher gremlin can be customized as follows:
  *
- *   toucherGremlin.clickTypes(['click', 'mouseover']); // the mouse event types to trigger
- *   toucherGremlin.positionSelector(function() { // find a random pair of coordinates to click });
+ *   toucherGremlin.touchTypes(['tap', 'gesture']); // the mouse event types to trigger
+ *   toucherGremlin.positionSelector(function() { // find a random pair of coordinates to touch });
  *   toucherGremlin.showAction(function(x, y) { // show the gremlin activity on screen });
- *   toucherGremlin.canClick(function(element) { return true }); // to limit where the gremlin can click
- *   toucherGremlin.maxNbTries(5); // How many times the gremlin must look for a clickable element before quitting
+ *   toucherGremlin.canTouch(function(element) { return true }); // to limit where the gremlin can touch
+ *   toucherGremlin.maxNbTries(5); // How many times the gremlin must look for a touchable element before quitting
  *   toucherGremlin.logger(loggerObject); // inject a logger
  *   toucherGremlin.randomizer(randomizerObject); // inject a randomizer
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.species.clicker()
- *     .clickTypes(['click'])
+ *   horde.gremlin(gremlins.species.toucher()
+ *     .touchTypes(['gesture'])
  *     .positionSelector(function() {
- *        // only click inside the foo element area
+ *        // only touch inside the foo element area
  *        var $el = $('#foo');
  *        var offset = $el.offset();
  *        return [
  *          parseInt(Math.random() * $el.outerWidth() + offset.left),
  *          parseInt(Math.random() * $el.outerHeight() + offset.top)
  *        ];
- *     })
- *     .canClick(function(element) {
- *       // only click elements in bar
- *       return $(element).parents('#bar').length;
- *       // when canClick returns false, the gremlin will look for another
- *       // element to click on until maxNbTries is reached
  *     })
  *     . showAction(function(x, y) {
  *       // do nothing (hide the gremlin action on screen)
