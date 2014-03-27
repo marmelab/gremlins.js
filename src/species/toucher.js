@@ -255,7 +255,7 @@ define(function(require) {
 			gesture: function(position, element, done) {
 				var points = 1,
 					gesture = {
-						radius: config.randomizer.integer({ min: 100, max: 200 }),
+						radius: config.randomizer.integer({ min: -1, max: 1 }),
 						distanceX: config.randomizer.integer({ min: -100, max: 200 }),
 						distanceY: config.randomizer.integer({ min: -100, max: 200 }),
 						angle: config.randomizer.integer({ min: -200, max: 200 }),
@@ -278,7 +278,7 @@ define(function(require) {
 					gesture = {
 						scale: scale,
 						rotation: rotation,
-						radius: config.randomizer.integer({ min: 100, max: 200 }),
+						radius: config.randomizer.integer({ min: -1, max: 1 }),
 						distanceX: config.randomizer.integer({ min: -100, max: 200 }),
 						distanceY: config.randomizer.integer({ min: -100, max: 200 }),
 						angle: config.randomizer.integer({ min: -200, max: 200 }),
