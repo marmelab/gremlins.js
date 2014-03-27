@@ -225,7 +225,7 @@ define(function(require) {
 			tap: function(position, element, done) {
 				var touches = getTouches(position, 1),
 					gesture = {
-						duration: config.randomizer.natural({ min: 4, max: 700 })
+						duration: config.randomizer.natural({ min: 20, max: 700 })
 					};
 
 				triggerTouch(touches, element, 'start');
@@ -243,7 +243,9 @@ define(function(require) {
 			 */
 			doubletap: function(position, element, done) {
 				touchTypes.tap(position, element, function() {
-					touchTypes.tap(position, element, done);
+					setTimeout(function() {
+						touchTypes.tap(position, element, done);
+					}, 30);
 				});
 			},
 
@@ -258,7 +260,7 @@ define(function(require) {
 						distanceX: config.randomizer.natural({ min: -100, max: 200 }),
 						distanceY: config.randomizer.natural({ min: -100, max: 200 }),
 						angle: config.randomizer.natural({ min: -200, max: 200 }),
-						duration: config.randomizer.natural({ min: 30, max: 500 })
+						duration: config.randomizer.natural({ min: 20, max: 500 })
 					},
 					touches = getTouches(position, points, gesture.radius);
 

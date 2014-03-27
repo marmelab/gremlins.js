@@ -26,8 +26,8 @@ var horde = gremlins.createHorde()
 horde.unleash();
 // gremlins will act randomly, at 10 ms interval, 100 times
 ```
- 
-`gremlins.js` provides several gremlin *species*: some click everywhere on the page, others enter data in form inputs, others scroll the window in every possible direction, etc. 
+
+`gremlins.js` provides several gremlin *species*: some click everywhere on the page, others enter data in form inputs, others scroll the window in every possible direction, etc.
 
 You will see traces of the gremlins actions on the screen (they leave red traces) and in the console log:
 
@@ -35,7 +35,7 @@ You will see traces of the gremlins actions on the screen (they leave red traces
 gremlin formFiller input 5 in <input type=​"number" name=​"age">​
 gremlin formFiller input pzdoyzshh0k9@o8cpskdb73nmi.r7r in <input type=​"email" name=​"email">​
 gremlin clicker    click at 1219 301
-gremlin scroller   scroll to 100 25 
+gremlin scroller   scroll to 100 25
 ...
 ```
 
@@ -88,7 +88,7 @@ Alternately, you can include `gremlins.min.js` as a RequireJS module, leaving th
 
 ```js
 require.config({
-  paths: { 
+  paths: {
 	gremlins: 'path/to/gremlins.min'
   }
 });
@@ -102,7 +102,7 @@ require(['gremlins'], function(gremlins) {
 
 ### Setting Gremlins and Mogwais To Use In A Test
 
-By default, all gremlins and mogwais species are added to the horde. 
+By default, all gremlins and mogwais species are added to the horde.
 
 You can also choose to add only the gremlins species you want, using the `gremlin()` function of the `horde` object:
 
@@ -110,6 +110,7 @@ You can also choose to add only the gremlins species you want, using the `gremli
 gremlins.createHorde()
   .gremlin(gremlins.species.formFiller())
   .gremlin(gremlins.species.clicker().clickTypes(['click']))
+  .gremlin(gremlins.species.toucher())
   .gremlin(gremlins.species.scroller())
   .gremlin(function() {
     window.$ = function() {};
@@ -133,6 +134,7 @@ To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method t
 `gremlins.js` currently provides a few gremlins and mogwais:
 
 * [clickerGremlin](src/species/clicker.js) clicks anywhere on the visible area of the document
+* [toucherGremlin](src/species/toucher.js) clicks anywhere on the visible area of the document
 * [formFillerGremlin](src/species/formFiller.js) fills forms by entering data, selecting options, clicking checkboxes, etc
 * [scrollerGremlin](src/species/scroller.js) scrolls the viewport to reveal another part of the document
 * [typerGremlin](src/species/typer.js) types keys on the keyboard
@@ -142,7 +144,7 @@ To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method t
 
 ### Configuring Gremlins
 
-All the gremlins and mogwais provided by `gremlins.js` are *configurable functions*, i.e. you can alter the way they work by calling methods on them. 
+All the gremlins and mogwais provided by `gremlins.js` are *configurable functions*, i.e. you can alter the way they work by calling methods on them.
 
 For instance, the clicker gremlin is a function that you can execute it directly:
 
