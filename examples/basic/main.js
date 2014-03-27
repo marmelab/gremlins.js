@@ -2,7 +2,7 @@ require.config({
     packages: [{ name: 'gremlins', location: '../../src' }]
     /*
     // alternative: use the packaged version
-    paths: { 
+    paths: {
         gremlins:  '../../gremlins.min'
     }
     */
@@ -22,6 +22,7 @@ require(['gremlins'], function(gremlins) {
         })
         .gremlin(gremlins.species.formFiller())
         .gremlin(gremlins.species.clicker().clickTypes(['click']))
+        .gremlin(gremlins.species.toucher())
         .gremlin(gremlins.species.scroller())
         .gremlin(function() {
             alert('here');
