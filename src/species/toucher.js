@@ -38,68 +38,69 @@
  *   );
  */
 define(function(require) {
-    "use strict";
+	"use strict";
 
-    var configurable = require('../utils/configurable');
-    var Chance = require('../vendor/chance');
+	var configurable = require('../utils/configurable');
+	var Chance = require('../vendor/chance');
 
-    return function() {
+	return function() {
 
-        var document = window.document,
-            body = document.body;
+		var document = window.document,
+			body = document.body;
 
-        var defaultTouchTypes = ['tap','gesture','tap','gesture','gesture','gesture','multitouch','multitouch'];
+		var defaultTouchTypes = ['tap', 'gesture', 'doubletap', 'tap', 'gesture', 'gesture', 'gesture', 'multitouch', 'multitouch'];
 
-        var defaultPositionSelector = function() {
-            return [
-                config.randomizer.natural({ max: document.documentElement.clientWidth - 1 }),
-                config.randomizer.natural({ max: document.documentElement.clientHeight - 1 })
-            ];
-        };
+		var defaultPositionSelector = function() {
+			return [
+				config.randomizer.natural({ max: document.documentElement.clientWidth - 1 }),
+				config.randomizer.natural({ max: document.documentElement.clientHeight - 1 })
+			];
+		};
 
-        var defaultShowAction = function(touches) {
-            touches.forEach(function(touch) {
-                var touchSignal = document.createElement('div');
-                touchSignal.style.border = "3px solid blue";
-                touchSignal.style['border-radius'] = '50%'; // Chrome
-                touchSignal.style.borderRadius = '50%';     // Mozilla
-                touchSignal.style.width = "40px";
-                touchSignal.style.height = "40px";
-                touchSignal.style['box-sizing'] = 'border-box';
-                touchSignal.style.position = "absolute";
-                touchSignal.style.webkitTransition = 'opacity .5s ease-out';
-                touchSignal.style.mozTransition = 'opacity .5s ease-out';
-                touchSignal.style.transition = 'opacity .5s ease-out';
-                touchSignal.style.left = (touch.x - 20 ) + 'px';
-                touchSignal.style.top = (touch.y - 20 )+ 'px';
+		var defaultShowAction = function(touches) {
+			touches.forEach(function(touch) {
+				var touchSignal = document.createElement('div');
+				touchSignal.style.border = "3px solid blue";
+				touchSignal.style['border-radius'] = '50%'; // Chrome
+				touchSignal.style.borderRadius = '50%';     // Mozilla
+				touchSignal.style.width = "40px";
+				touchSignal.style.height = "40px";
+				touchSignal.style['box-sizing'] = 'border-box';
+				touchSignal.style.position = "absolute";
+				touchSignal.style.webkitTransition = 'opacity .5s ease-out';
+				touchSignal.style.mozTransition = 'opacity .5s ease-out';
+				touchSignal.style.transition = 'opacity .5s ease-out';
+				touchSignal.style.left = (touch.x - 20 ) + 'px';
+				touchSignal.style.top = (touch.y - 20 ) + 'px';
 
-                var element = body.appendChild(touchSignal);
-                setTimeout(function() {
-                    body.removeChild(element);
-                }, 500);
-                setTimeout(function() {
-                    element.style.opacity = 0;
-                }, 50);
-            });
-        };
+				var element = body.appendChild(touchSignal);
+				setTimeout(function() {
+					body.removeChild(element);
+				}, 500);
+				setTimeout(function() {
+					element.style.opacity = 0;
+				}, 50);
+			});
+		};
 
-        var defaultCanTouch = function() { return true; };
+		var defaultCanTouch = function() {
+			return true;
+		};
 
-        /**
-         * @mixin
-         */
-        var config = {
-            touchTypes:       defaultTouchTypes,
-            positionSelector: defaultPositionSelector,
-            showAction:       defaultShowAction,
-            canTouch:         defaultCanTouch,
-            maxNbTries:       10,
-            logger:           {},
-            randomizer:       new Chance(),
-
-			minTouches:		  1,
-			maxTouches:		  4
-        };
+		/**
+		 * @mixin
+		 */
+		var config = {
+			touchTypes: defaultTouchTypes,
+			positionSelector: defaultPositionSelector,
+			showAction: defaultShowAction,
+			canTouch: defaultCanTouch,
+			maxNbTries: 10,
+			logger: {},
+			randomizer: new Chance(),
+			minTouches: 1,
+			maxTouches: 4
+		};
 
 
 		/**
@@ -121,10 +122,12 @@ define(function(require) {
 
 			// just one touch, at the center
 			if(points === 1) {
-				return [{x:cx, y:cy}];
+				return [
+					{x: cx, y: cy}
+				];
 			}
 
-			for (i=0; i<points; i++) {
+			for(i = 0; i < points; i++) {
 				angle = slice * i + rotation;
 				touches.push({
 					x: (cx + radius * Math.cos(angle)),
@@ -143,7 +146,7 @@ define(function(require) {
 		 * @param gesture
 		 * @param cb
 		 */
-		function triggerGesture(element, startPosition, startTouches, gesture, cb) {
+		function triggerGesture(element, startPosition, startTouches, gesture, done) {
 			var interval = 10,
 				loops = Math.floor(gesture.duration / interval),
 				loop = 0;
@@ -153,12 +156,12 @@ define(function(require) {
 			function gestureLoop() {
 				loop++;
 
-				var scale = gesture.radius * (gesture.scale/loops * loop),
-					rotation = (gesture.scale/loops * loop),
-					posX = startPosition[0] + (gesture.distanceX/loops * loop),
-					posY = startPosition[1] + (gesture.distanceY/loops * loop),
+				var scale = gesture.radius * (gesture.scale / loops * loop),
+					rotation = (gesture.scale / loops * loop),
+					posX = startPosition[0] + (gesture.distanceX / loops * loop),
+					posY = startPosition[1] + (gesture.distanceY / loops * loop),
 					touches = getTouches([posX, posY], startTouches.length, scale, rotation),
-					is_last = (loop === loops-1);
+					is_last = (loop === loops - 1);
 
 				if(!is_last) {
 					triggerTouch(touches, element, 'move');
@@ -166,9 +169,10 @@ define(function(require) {
 				}
 				else {
 					triggerTouch(touches, element, 'end');
-					cb(touches)
+					done(touches)
 				}
 			}
+
 			setTimeout(gestureLoop, 10);
 
 
@@ -200,35 +204,54 @@ define(function(require) {
 					})
 				});
 			}
+
 			event.touches = touchlist;
+			event.changedTouches = touchlist;
+
 			element.dispatchEvent(event);
 
 			config.showAction(touches);
 		}
 
 
-        /**
-         * diffent kind of gestures
-         */
+		/**
+		 * diffent kind of gestures
+		 */
 		var touchTypes = {
 			/**
-			 * single tap, like a click event, only 1 touch
+			 * tap, like a click event, only 1 touch
 			 * could also be a slow tap, that could turn out to be a hold
 			 */
-			tap: function(position, element, cb) {
-				var touches = getTouches(position, 1);
+			tap: function(position, element, done) {
+				var touches = getTouches(position, 1),
+					gesture = {
+						duration: config.randomizer.natural({ min: 4, max: 700 })
+					};
+
 				triggerTouch(touches, element, 'start');
 
 				setTimeout(function() {
 					triggerTouch(touches, element, 'end');
-					cb(touches, {});
-				}, config.randomizer.natural({ min: 4, max: 700 }))
+					done(touches, gesture);
+				}, gesture.duration);
 			},
 
+
 			/**
-			 * single touch gesture, could be a drag, swipe, with 1 points
+			 * doubletap, like a dblclick event, only 1 touch
+			 * could also be a slow doubletap, that could turn out to be a hold
 			 */
-			gesture: function(position, element, cb) {
+			doubletap: function(position, element, done) {
+				touchTypes.tap(position, element, function() {
+					touchTypes.tap(position, element, done);
+				});
+			},
+
+
+			/**
+			 * single touch gesture, could be a drag and swipe, with 1 points
+			 */
+			gesture: function(position, element, done) {
 				var points = 1,
 					gesture = {
 						radius: config.randomizer.natural({ min: 100, max: 200 }),
@@ -240,14 +263,14 @@ define(function(require) {
 					touches = getTouches(position, points, gesture.radius);
 
 				triggerGesture(element, position, touches, gesture, function(touches) {
-					cb(touches, gesture);
+					done(touches, gesture);
 				});
 			},
 
 			/**
-			 * multitouch gesture, could be a drag, swipe, pinch, rotate, with 2 or more points
+			 * multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
 			 */
-			multitouch: function(position, element, cb) {
+			multitouch: function(position, element, done) {
 				var points = config.randomizer.natural({min: 2, max: config.maxTouches}),
 					scale = (points === 1) ? 1 : config.randomizer.floating({ min: 0.1, max: 2 }),
 					rotate = (points === 1) ? 0 : config.randomizer.floating({ min: -300, max: 300 }),
@@ -263,53 +286,47 @@ define(function(require) {
 					touches = getTouches(position, points, gesture.radius);
 
 				triggerGesture(element, position, touches, gesture, function(touches) {
-					cb(touches, gesture);
+					done(touches, gesture);
 				});
 			}
 		};
 
 
-        /**
-         * @mixes config
-         */
-        function toucherGremlin(next) {
-            var position,
+		/**
+		 * @mixes config
+		 */
+		function toucherGremlin(done) {
+			var position,
 				posX, posY,
 				targetElement,
 				nbTries = 0;
 
-            do {
-                position = config.positionSelector();
-                posX = position[0];
-                posY = position[1];
-                targetElement = document.elementFromPoint(posX, posY);
-                nbTries++;
-                if (nbTries > config.maxNbTries) return false;
-            } while (!targetElement || !config.canTouch(targetElement));
+			do {
+				position = config.positionSelector();
+				posX = position[0];
+				posY = position[1];
+				targetElement = document.elementFromPoint(posX, posY);
+				nbTries++;
+				if(nbTries > config.maxNbTries) return false;
+			} while(!targetElement || !config.canTouch(targetElement));
 
 
-            var touchType = config.randomizer.pick(config.touchTypes);
-			if(!touchTypes[touchType]) {
-				throw(touchType +" is an invalid touchtype");
-			}
+			var touchType = config.randomizer.pick(config.touchTypes);
 			touchTypes[touchType](position, targetElement, logGremlin);
 
 			function logGremlin(touches, details) {
-				if (typeof config.showAction == 'function') {
+				if(typeof config.showAction == 'function') {
 					config.showAction(touches);
 				}
-
-				if (typeof config.logger.log == 'function') {
+				if(typeof config.logger.log == 'function') {
 					config.logger.log('gremlin', 'toucher', touchType, 'at', posX, posY, details);
 				}
-
-				// continue to the next gremlin
-				next();
+				done();
 			}
-        }
+		}
 
-        configurable(toucherGremlin, config);
+		configurable(toucherGremlin, config);
 
-        return toucherGremlin;
-    };
+		return toucherGremlin;
+	};
 });

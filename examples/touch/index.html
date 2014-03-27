@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>touch gremlins</title>
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <style>
@@ -11,23 +11,10 @@
             padding: 15px;
         }
 
-
-        .hitarea {
-            position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,.05);
-          text-align: center;
-          border: dashed 3px red;
-        }
-
-
         .log li {
             display: inline-block;
             width: 49%;
-          overflow: hidden;
+            overflow: hidden;
         }
 
         @media screen and (min-width: 640px) {
@@ -112,19 +99,14 @@
       </ul>
   </div>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-  <script src="http://rawgithub.com/EightMedia/hammer.js/master/hammer.js"></script>
+  <script src="//rawgithub.com/EightMedia/hammer.js/master/hammer.js"></script>
   <script>
+
+      var log_elements = {};
 
       function getEl(id) {
           return document.getElementById(id);
       }
-
-
-      var hammertime;
-      var log_elements = {};
-      var prevent_scroll_drag = true;
-
 
       function getLogElement(type, name) {
           var el = log_elements[type + name];
@@ -134,19 +116,17 @@
           return el;
       }
 
+
       // log properties
       var properties = ['gesture','center','deltaTime','angle','direction',
           'distance','deltaX','deltaY','velocityX','velocityY', 'pointerType',
           'interimDirection','interimAngle',
           'scale','rotation','touches','target'];
 
+
       function logEvent(ev) {
           if(!ev.gesture) {
               return;
-          }
-
-          if(ev.gesture.velocityX > 0.7) {
-            console.log(ev);
           }
 
           // highlight gesture
@@ -185,7 +165,7 @@
       });
 
       // start!
-      hammertime = Hammer(document.body, {
+      var hammertime = Hammer(document.body, {
             prevent_default: true,
             no_mouseevents: true
         })
