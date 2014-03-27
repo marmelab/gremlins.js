@@ -101,14 +101,14 @@ define(function(require) {
                 }
             }
 
-            var character = config.elementMapTypes[elementType](element);
+            var value = config.elementMapTypes[elementType](element);
 
             if (typeof config.showAction == 'function') {
                 config.showAction(element);
             }
 
             if (typeof config.logger.log == 'function') {
-                config.logger.log('gremlin', 'formFiller', 'input', character, 'in', element);
+                config.logger.log('gremlin', 'formFiller', 'input', value, 'in', element);
             }
         }
 
@@ -128,6 +128,7 @@ define(function(require) {
 
         function fillSelect(element) {
             var options = element.querySelectorAll('option');
+            if (options.length === 0) return;
             var randomOption = config.randomizer.pick(options);
 
             for (var i = 0, c = options.length; i < c; i++) {
