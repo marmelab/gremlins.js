@@ -1,5 +1,5 @@
 /**
- * The toucher gremlin touches anywhere on the visible area of the document
+ * The toucher gremlin touches anywhere on the visible area of the document.
  *
  * The toucher gremlin triggers touch events (touchstart, touchmove, touchcancel
  * and touchend), by doing gestures on random targets displayed on the viewport.
@@ -140,12 +140,12 @@ define(function(require) {
 		/**
 		 * trigger a gesture
 		 * @param element
-		 * @param startPosition
+		 * @param startPos
 		 * @param startTouches
 		 * @param gesture
 		 * @param cb
 		 */
-		function triggerGesture(element, startPosition, startTouches, gesture, done) {
+		function triggerGesture(element, startPos, startTouches, gesture, done) {
 			var interval = 10,
 				loops = Math.floor(gesture.duration / interval),
 				loop = 0;
@@ -157,8 +157,8 @@ define(function(require) {
 
 				var scale = gesture.radius * (gesture.scale / loops * loop),
 					rotation = (gesture.rotation / loops * loop),
-					posX = startPosition[0] + (gesture.distanceX / loops * loop),
-					posY = startPosition[1] + (gesture.distanceY / loops * loop),
+					posX = startPos[0] + (gesture.distanceX / loops * loop),
+					posY = startPos[1] + (gesture.distanceY / loops * loop),
 					touches = getTouches([posX, posY], startTouches.length, scale, rotation),
 					is_last = (loop > loops);
 
@@ -173,8 +173,6 @@ define(function(require) {
 			}
 
 			setTimeout(gestureLoop, 10);
-
-
 		}
 
 
@@ -308,7 +306,6 @@ define(function(require) {
 				nbTries++;
 				if(nbTries > config.maxNbTries) return false;
 			} while(!targetElement || !config.canTouch(targetElement));
-
 
 			var touchType = config.randomizer.pick(config.touchTypes);
 			touchTypes[touchType](position, targetElement, logGremlin);

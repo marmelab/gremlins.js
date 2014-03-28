@@ -1,105 +1,116 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>touch gremlins</title>
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <style>
+<head>
+	<title>touch gremlins</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<style type="text/css">
 
-        body {
-            padding: 15px;
-        }
+		body {
+			padding: 10px;
+			margin: 0;
+			font: 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif;
+		}
 
-        .log li {
-            display: inline-block;
-            width: 49%;
-            overflow: hidden;
-        }
+		h1 { font-size: 24px; }
 
-        @media screen and (min-width: 640px) {
-          .log li { width: 30%; }
-        }
+		h2 { font-size: 20px; }
 
-        .properties li { white-space: nowrap; }
-        .properties span { margin-left: 5px; }
+		ul, ol {
+			padding: 0;
+			margin: 0 0 10px 0;
+			list-style: none;
+		}
 
-        .log li.active { background: lightgreen; }
+		.log {
+			min-height: 20px;
+			padding: 9px;
+			margin-bottom: 20px;
+			background-color: #f5f5f5;
+			border: 1px solid #e3e3e3;
+		}
 
-        .log li.property-gesture {
-            position: fixed;
-            right: 0;
-            top: 0;
-            background: lightgreen;
-            padding: 1px 4px;
-            width: auto;
-        }
+		.log li {
+			display: inline-block;
+			width: 49%;
+			overflow: hidden;
+		}
 
-    </style>
-  </head>
+		@media screen and (min-width: 640px) {
+			.log li { width: 30%; }
+		}
 
-  <body>
+		.properties li { white-space: nowrap; }
 
-    <div class="log well well-small">
-      <h3>Hammer.js gestures</h3>
-      <h4>Events</h4>
-      <ul class="unstyled events" id="events-list">
-          <li>touch</li>
-          <li>release</li>
-          <li>hold</li>
-          <li>tap</li>
-          <li>doubletap</li>
+		.properties span { margin-left: 5px; }
 
-          <li>dragstart</li>
-          <li>drag</li>
-          <li>dragend</li>
-          <li>dragleft</li>
-          <li>dragright</li>
-          <li>dragup</li>
-          <li>dragdown</li>
+		.log li.active { background: lightgreen; }
 
-          <li>swipe</li>
-          <li>swipeleft</li>
-          <li>swiperight</li>
-          <li>swipeup</li>
-          <li>swipedown</li>
+		.log li.property-gesture {
+			position: fixed;
+			right: 0;
+			top: 0;
+			background: lightgreen;
+			padding: 1px 4px;
+			width: auto;
+		}
 
-          <li>transformstart</li>
-          <li>transform</li>
-          <li>transformend</li>
-          <li>rotate</li>
-          <li>pinch</li>
-          <li>pinchin</li>
-          <li>pinchout</li>
-      </ul>
-      <h4>EventData</h4>
-      <ul class="unstyled properties">
-          <li class="property-gesture"><strong>gesture</strong> <span id="log-prop-gesture"></span></li>
-          <li><strong>touches</strong> <span id="log-prop-touches"></span></li>
-          <li><strong>pointerType</strong> <span id="log-prop-pointerType"></span></li>
-          <li><strong>center</strong> <span id="log-prop-center"></span></li>
-          <li><strong>angle</strong> <span id="log-prop-angle"></span>&deg;</li>
-          <li><strong>direction</strong> <span id="log-prop-direction"></span></li>
-          <li><strong>distance</strong> <span id="log-prop-distance"></span>px</li>
+	</style>
+</head>
 
-          <li><strong>deltaTime</strong> <span id="log-prop-deltaTime"></span>ms</li>
-          <li><strong>deltaX</strong> <span id="log-prop-deltaX"></span>px</li>
-          <li><strong>deltaY</strong> <span id="log-prop-deltaY"></span>px</li>
+<body>
+	<div class="log">
+		<h1>Hammer.js gestures</h1>
 
-          <li><strong>velocityX</strong> <span id="log-prop-velocityX"></span></li>
-          <li><strong>velocityY</strong> <span id="log-prop-velocityY"></span></li>
+		<h2>Events</h2>
+		<ul class="events" id="events-list">
+			<li id="log-gesture-touch">touch</li>
+			<li id="log-gesture-release">release</li>
+			<li id="log-gesture-hold">hold</li>
+			<li id="log-gesture-tap">tap</li>
+			<li id="log-gesture-doubletap">doubletap</li>
+			<li id="log-gesture-dragstart">dragstart</li>
+			<li id="log-gesture-drag">drag</li>
+			<li id="log-gesture-dragend">dragend</li>
+			<li id="log-gesture-dragleft">dragleft</li>
+			<li id="log-gesture-dragright">dragright</li>
+			<li id="log-gesture-dragup">dragup</li>
+			<li id="log-gesture-dragdown">dragdown</li>
+			<li id="log-gesture-swipe">swipe</li>
+			<li id="log-gesture-swipeleft">swipeleft</li>
+			<li id="log-gesture-swiperight">swiperight</li>
+			<li id="log-gesture-swipeup">swipeup</li>
+			<li id="log-gesture-swipedown">swipedown</li>
+			<li id="log-gesture-transformstart">transformstart</li>
+			<li id="log-gesture-transform">transform</li>
+			<li id="log-gesture-transformend">transformend</li>
+			<li id="log-gesture-rotate">rotate</li>
+			<li id="log-gesture-pinch">pinch</li>
+			<li id="log-gesture-pinchin">pinchin</li>
+			<li id="log-gesture-pinchout">pinchout</li>
+		</ul>
 
-          <li><strong>scale</strong>  <span id="log-prop-scale"></span></li>
-          <li><strong>rotation</strong> <span id="log-prop-rotation"></span>&deg;</li>
-
-          <li><strong>interimDirection</strong>  <span id="log-prop-interimDirection"></span></li>
-          <li><strong>interimAngle</strong> <span id="log-prop-interimAngle"></span>&deg;</li>
-
-          <li><strong>target</strong> <span id="log-prop-target"></span></li>
-      </ul>
-  </div>
-
-  <script src="//rawgithub.com/EightMedia/hammer.js/master/hammer.js"></script>
-  <script data-main="main.js" src="require.js"></script>
+		<h2>EventData</h2>
+		<ul class="unstyled properties">
+			<li class="property-gesture"><strong>gesture</strong> <span id="log-prop-gesture"></span></li>
+			<li><strong>touches</strong> <span id="log-prop-touches"></span></li>
+			<li><strong>pointerType</strong> <span id="log-prop-pointerType"></span></li>
+			<li><strong>center</strong> <span id="log-prop-center"></span></li>
+			<li><strong>angle</strong> <span id="log-prop-angle"></span>&deg;</li>
+			<li><strong>direction</strong> <span id="log-prop-direction"></span></li>
+			<li><strong>distance</strong> <span id="log-prop-distance"></span>px</li>
+			<li><strong>deltaTime</strong> <span id="log-prop-deltaTime"></span>ms</li>
+			<li><strong>deltaX</strong> <span id="log-prop-deltaX"></span>px</li>
+			<li><strong>deltaY</strong> <span id="log-prop-deltaY"></span>px</li>
+			<li><strong>velocityX</strong> <span id="log-prop-velocityX"></span></li>
+			<li><strong>velocityY</strong> <span id="log-prop-velocityY"></span></li>
+			<li><strong>scale</strong> <span id="log-prop-scale"></span></li>
+			<li><strong>rotation</strong> <span id="log-prop-rotation"></span>&deg;</li>
+			<li><strong>interimDirection</strong> <span	id="log-prop-interimDirection"></span></li>
+			<li><strong>interimAngle</strong> <span	id="log-prop-interimAngle"></span>&deg;</li>
+			<li><strong>target</strong> <span id="log-prop-target"></span></li>
+		</ul>
+	</div>
+	<script data-main="main.js" src="require.js"></script>
 </body>
 </html>
