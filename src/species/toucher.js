@@ -119,7 +119,7 @@ define(function(require) {
 				slice, i, angle;
 
 			radius = radius || 100;
-			degrees = (degrees * Math.PI / 180) || 0;
+			degrees = degrees != null ? (degrees * Math.PI / 180) : 0;
 			slice = 2 * Math.PI / points;
 
 			// just one touch, at the center
@@ -151,14 +151,12 @@ define(function(require) {
 		 */
 		function triggerGesture(element, startPos, startTouches, gesture, done) {
 			var interval = 10,
-				loops = Math.floor(gesture.duration / interval),
-				loop = 0;
+				loops = Math.ceil(gesture.duration / interval),
+				loop = 1;
 
 			triggerTouch(startTouches, element, 'start');
 
 			function gestureLoop() {
-				loop++;
-
 				// calculate the radius
 				var radius = gesture.radius;
 				if(gesture.scale < 1) {
@@ -171,9 +169,9 @@ define(function(require) {
 				// calculate new position/rotation
 				var posX = startPos[0] + (gesture.distanceX / loops * loop),
 					posY = startPos[1] + (gesture.distanceY / loops * loop),
-					rotation = typeof gesture.rotation == 'number' ? (gesture.rotation / loops * loop) : 0,
+					rotation = typeof gesture.rotation == 'number' ? (gesture.rotation / loops * loop) : null,
 					touches = getTouches([posX, posY], startTouches.length, radius, rotation),
-					is_last = (loop > loops);
+					is_last = (loop == loops);
 
 				if(!is_last) {
 					triggerTouch(touches, element, 'move');
@@ -183,6 +181,8 @@ define(function(require) {
 					triggerTouch(touches, element, 'end');
 					done(touches)
 				}
+
+				loop++;
 			}
 
 			setTimeout(gestureLoop, 10);
@@ -205,16 +205,18 @@ define(function(require) {
 			};
 
 			touches.forEach(function(touch, i) {
+				var x = Math.round(touch.x),
+					y = Math.round(touch.y);
 				touchlist.push({
-					pageX: touch.x,
-					pageY: touch.y,
-					clientX: touch.x,
-					clientY: touch.y,
-					screenX: touch.x,
-					screenY: touch.y,
+					pageX: x,
+					pageY: y,
+					clientX: x,
+					clientY: y,
+					screenX: x,
+					screenY: y,
 					target: element,
 					identifier: i
-				})
+				});
 			});
 
 			event.touches = (type == 'end') ? [] : touchlist;
@@ -226,14 +228,9 @@ define(function(require) {
 		}
 
 
-		/**
-		 * diffent kind of gestures
-		 */
 		var touchTypes = {
-			/**
-			 * tap, like a click event, only 1 touch
-			 * could also be a slow tap, that could turn out to be a hold
-			 */
+			// tap, like a click event, only 1 touch
+			// could also be a slow tap, that could turn out to be a hold
 			tap: function(position, element, done) {
 				var touches = getTouches(position, 1),
 					gesture = {
@@ -248,11 +245,8 @@ define(function(require) {
 				}, gesture.duration);
 			},
 
-
-			/**
-			 * doubletap, like a dblclick event, only 1 touch
-			 * could also be a slow doubletap, that could turn out to be a hold
-			 */
+			// doubletap, like a dblclick event, only 1 touch
+			// could also be a slow doubletap, that could turn out to be a hold
 			doubletap: function(position, element, done) {
 				touchTypes.tap(position, element, function() {
 					setTimeout(function() {
@@ -261,14 +255,10 @@ define(function(require) {
 				});
 			},
 
-
-			/**
-			 * single touch gesture, could be a drag and swipe, with 1 points
-			 */
+			// single touch gesture, could be a drag and swipe, with 1 points
 			gesture: function(position, element, done) {
 				var points = 1,
 					gesture = {
-						radius: config.randomizer.integer({ min: 50, max: 100 }),
 						distanceX: config.randomizer.integer({ min: -100, max: 200 }),
 						distanceY: config.randomizer.integer({ min: -100, max: 200 }),
 						duration: config.randomizer.integer({ min: 20, max: 500 })
@@ -280,9 +270,7 @@ define(function(require) {
 				});
 			},
 
-			/**
-			 * multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
-			 */
+			// multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
 			multitouch: function(position, element, done) {
 				var points = config.randomizer.integer({min:2, max:config.maxTouches}),
 					gesture = {

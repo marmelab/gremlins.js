@@ -27,6 +27,21 @@ require(['gremlins','./hammer'], function(gremlins, Hammer) {
 
 
 	/**
+	 * round to 1 digit
+	 * @param float
+	 * @param [digits]
+	 * @returns {number}
+	 */
+	function round(float, digits) {
+		if(digits == null) {
+			return Math.round(float);
+		}
+		var round = 10 * digits;
+		return Math.round(float * round) / round;
+	}
+
+
+	/**
 	 * highlight the triggered event and update the log values
 	 * @param ev
 	 */
@@ -93,14 +108,14 @@ require(['gremlins','./hammer'], function(gremlins, Hammer) {
 			switch(species) {
 				case 'toucher':
 					var lastEvent = testLogger.lastEvent;
-
 					if(lastEvent && lastEvent.gesture) {
 						var lastGesture = lastEvent.gesture;
 						console.group();
-						console.log('deltax', lastGesture.deltaX, gremlin.gesture.distanceX);
-						console.log('deltay', lastGesture.deltaY, gremlin.gesture.distanceY);
-						console.log('scale', lastGesture.scale, gremlin.gesture.scale);
-						console.log('rotation', lastGesture.rotation, gremlin.gesture.rotation);
+						console.log('deltax', round(lastGesture.deltaX), round(gremlin.gesture.distanceX));
+						console.log('deltay', round(lastGesture.deltaY), round(gremlin.gesture.distanceY));
+						console.log('scale', round(lastGesture.scale), round(gremlin.gesture.scale));
+						console.log('rotation', round(lastGesture.rotation), round(gremlin.gesture.rotation));
+						console.log(lastGesture, gremlin);
 						console.groupEnd();
 					}
 					break;
