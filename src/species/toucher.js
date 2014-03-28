@@ -190,21 +190,25 @@ define(function(require) {
 				event = document.createEvent('Event');
 			event.initEvent('touch' + type, true, true);
 
-			// just like the mobile browsers, on touchend we dont include a touchlist
-			if(type != 'end') {
-				touches.forEach(function(touch, i) {
-					touchlist.push({
-						pageX: touch.x,
-						pageY: touch.y,
-						clientX: touch.x,
-						clientY: touch.y,
-						target: element,
-						identifier: i
-					})
-				});
-			}
+			touchlist.identifiedTouch = touchlist.item = function(index) {
+				return this[index] || {}
+			};
 
-			event.touches = touchlist;
+			touches.forEach(function(touch, i) {
+				touchlist.push({
+					pageX: touch.x,
+					pageY: touch.y,
+					clientX: touch.x,
+					clientY: touch.y,
+					screenX: touch.x,
+					screenY: touch.y,
+					target: element,
+					identifier: i
+				})
+			});
+
+			event.touches = (type == 'end') ? [] : touchlist;
+			event.targetTouches = (type == 'end') ? [] : touchlist;
 			event.changedTouches = touchlist;
 
 			element.dispatchEvent(event);
