@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hammer.js</title>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <style>
+        html, body, #map {
+            min-height: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            position: relative;
+        }
+    </style>
+</head>
+
+<body>
+
+	<script>
+		if(!("ontouchstart" in window)) {
+			alert('Google maps only adds touch support on touch devices. Open this page on a touchdevice, or emulate it (with the chrome devtools).')
+		}
+	</script>
+
+	<div id="map"></div>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript">
+		var mapOptions = {
+		  center: new google.maps.LatLng(52,6),
+		  zoom: 8
+		};
+		var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    </script>
+
+	<script data-main="maps.js" src="require.js"></script>
+
+</body>
+</html>
