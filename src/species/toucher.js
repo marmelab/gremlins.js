@@ -89,6 +89,7 @@ define(function(require) {
 			return true;
 		};
 
+
 		/**
 		 * @mixin
 		 */
@@ -185,10 +186,9 @@ define(function(require) {
 		 * @param type
 		 */
 		function triggerTouch(touches, element, type) {
-			var event = document.createEvent('Event');
+			var touchlist = [],
+				event = document.createEvent('Event');
 			event.initEvent('touch' + type, true, true);
-
-			var touchlist = [];
 
 			// just like the mobile browsers, on touchend we dont include a touchlist
 			if(type != 'end') {
@@ -208,7 +208,6 @@ define(function(require) {
 			event.changedTouches = touchlist;
 
 			element.dispatchEvent(event);
-
 			config.showAction(touches);
 		}
 
@@ -276,10 +275,8 @@ define(function(require) {
 						scale: config.randomizer.floating({ min: -1, max: 2 }),
 						rotation: config.randomizer.natural({ min: -100, max: 100 }),
 						radius: config.randomizer.integer({ min: 50, max: 200 }),
-
 						distanceX: config.randomizer.integer({ min: -20, max: 20 }),
 						distanceY: config.randomizer.integer({ min: -20, max: 20 }),
-
 						duration: config.randomizer.integer({ min: 100, max: 1500 })
 					},
 					touches = getTouches(position, points, gesture.radius);
