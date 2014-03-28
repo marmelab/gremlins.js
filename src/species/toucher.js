@@ -48,7 +48,7 @@ define(function(require) {
 		var document = window.document,
 			body = document.body;
 
-		var defaultTouchTypes = ['tap', 'gesture', 'doubletap', 'tap', 'gesture', 'gesture', 'gesture', 'multitouch', 'multitouch'];
+		var defaultTouchTypes = ['tap', 'tap', 'tap', 'gesture', 'doubletap', 'tap', 'gesture', 'gesture', 'gesture', 'multitouch', 'multitouch'];
 
 		var defaultPositionSelector = function() {
 			return [
@@ -140,6 +140,7 @@ define(function(require) {
 		}
 
 
+
 		/**
 		 * trigger a gesture
 		 * @param element
@@ -158,11 +159,20 @@ define(function(require) {
 			function gestureLoop() {
 				loop++;
 
-				var scale = gesture.radius * (gesture.scale / loops * loop),
-					rotation = (gesture.rotation / loops * loop),
-					posX = startPos[0] + (gesture.distanceX / loops * loop),
+				// calculate the radius
+				var radius = gesture.radius;
+				if(gesture.scale < 1) {
+					radius = gesture.radius - (gesture.radius * (gesture.scale / loops * loop));
+				}
+				else if(gesture.scale > 1) {
+					radius = gesture.radius * (gesture.scale / loops * loop);
+				}
+
+				// calculate new position/rotation
+				var posX = startPos[0] + (gesture.distanceX / loops * loop),
 					posY = startPos[1] + (gesture.distanceY / loops * loop),
-					touches = getTouches([posX, posY], startTouches.length, scale, rotation),
+					rotation = typeof gesture.rotation == 'number' ? (gesture.rotation / loops * loop) : 0,
+					touches = getTouches([posX, posY], startTouches.length, radius, rotation),
 					is_last = (loop > loops);
 
 				if(!is_last) {
@@ -276,7 +286,7 @@ define(function(require) {
 			multitouch: function(position, element, done) {
 				var points = config.randomizer.integer({min:2, max:config.maxTouches}),
 					gesture = {
-						scale: config.randomizer.floating({ min: -1, max: 2 }),
+						scale: config.randomizer.floating({ min: 0, max: 2 }),
 						rotation: config.randomizer.natural({ min: -100, max: 100 }),
 						radius: config.randomizer.integer({ min: 50, max: 200 }),
 						distanceX: config.randomizer.integer({ min: -20, max: 20 }),
