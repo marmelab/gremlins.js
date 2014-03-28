@@ -306,7 +306,7 @@ define(function(require) {
 				posY = position[1];
 				targetElement = document.elementFromPoint(posX, posY);
 				nbTries++;
-				if(nbTries > config.maxNbTries) return false;
+				if(nbTries > config.maxNbTries) return;
 			} while(!targetElement || !config.canTouch(targetElement));
 
 			var touchType = config.randomizer.pick(config.touchTypes);
