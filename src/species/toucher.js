@@ -58,6 +58,7 @@ define(function(require) {
 		};
 
 		var defaultShowAction = function(touches) {
+			var fragment = document.createDocumentFragment();
 			touches.forEach(function(touch) {
 				var touchSignal = document.createElement('div');
 				touchSignal.style.border = "3px solid blue";
@@ -73,7 +74,7 @@ define(function(require) {
 				touchSignal.style.left = (touch.x - 20 ) + 'px';
 				touchSignal.style.top = (touch.y - 20 ) + 'px';
 
-				var element = body.appendChild(touchSignal);
+				var element = fragment.appendChild(touchSignal);
 				setTimeout(function() {
 					body.removeChild(element);
 				}, 500);
@@ -81,6 +82,7 @@ define(function(require) {
 					element.style.opacity = 0;
 				}, 50);
 			});
+			document.body.appendChild(fragment);
 		};
 
 		var defaultCanTouch = function() {
