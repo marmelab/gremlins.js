@@ -34,15 +34,22 @@ var hammerTest = {
 				if(lastEvent && lastEvent.gesture) {
 					var lastGesture = lastEvent.gesture;
 
-					console.log('angle', lastGesture.angle, gremlin.gesture.angle);
+					console.group();
+					console.log('deltax', lastGesture.deltaX, gremlin.gesture.distanceX);
+					console.log('deltay', lastGesture.deltaY, gremlin.gesture.distanceY);
 					console.log('scale', lastGesture.scale, gremlin.gesture.scale);
 					console.log('rotation', lastGesture.rotation, gremlin.gesture.rotation);
+					console.groupEnd();
 				}
 				break;
 			default:
 				console.log(arguments);
 		}
-	}
+	},
+
+	info: function() { console.info(arguments); },
+	warn:  function() { console.warn(arguments); },
+	error: function() { console.error(arguments); }
 };
 
 
@@ -72,7 +79,9 @@ function logEvent(ev) {
 	}
 
 	// store last event, that should might match the gremlin
-	hammerTest.lastEvent = ev;
+	if(ev.gesture.eventType == 'end') {
+		hammerTest.lastEvent = ev;
+	}
 
 	// highlight gesture
 	var event_el = getLogElement('gesture', ev.type);

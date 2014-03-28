@@ -109,14 +109,14 @@ define(function(require) {
 		 * @param [radius=100]
 		 * @param [rotation=0]
 		 */
-		function getTouches(center, points, radius, rotation) {
+		function getTouches(center, points, radius, degrees) {
 			var cx = center[0],
 				cy = center[1],
 				touches = [],
 				slice, i, angle;
 
 			radius = radius || 100;
-			rotation = rotation || 0;
+			degrees = (degrees * Math.PI / 180) || 0;
 			slice = 2 * Math.PI / points;
 
 			// just one touch, at the center
@@ -127,7 +127,7 @@ define(function(require) {
 			}
 
 			for(i = 0; i < points; i++) {
-				angle = (slice * i) + rotation;
+				angle = (slice * i) + degrees;
 				touches.push({
 					x: (cx + radius * Math.cos(angle)),
 					y: (cy + radius * Math.sin(angle))
@@ -160,7 +160,7 @@ define(function(require) {
 					posX = startPosition[0] + (gesture.distanceX / loops * loop),
 					posY = startPosition[1] + (gesture.distanceY / loops * loop),
 					touches = getTouches([posX, posY], startTouches.length, scale, rotation),
-					is_last = (loop === loops - 1);
+					is_last = (loop > loops);
 
 				if(!is_last) {
 					triggerTouch(touches, element, 'move');
@@ -255,10 +255,9 @@ define(function(require) {
 			gesture: function(position, element, done) {
 				var points = 1,
 					gesture = {
-						radius: config.randomizer.integer({ min: -1, max: 1 }),
+						radius: config.randomizer.integer({ min: 50, max: 100 }),
 						distanceX: config.randomizer.integer({ min: -100, max: 200 }),
 						distanceY: config.randomizer.integer({ min: -100, max: 200 }),
-						angle: config.randomizer.integer({ min: -200, max: 200 }),
 						duration: config.randomizer.integer({ min: 20, max: 500 })
 					},
 					touches = getTouches(position, points, gesture.radius);
@@ -273,15 +272,14 @@ define(function(require) {
 			 */
 			multitouch: function(position, element, done) {
 				var points = config.randomizer.integer({min:2, max:config.maxTouches}),
-					scale = config.randomizer.natural({ min: 0.1, max: 2 }),
-					rotation = config.randomizer.natural({ min: -100, max: 100 }),
 					gesture = {
-						scale: scale,
-						rotation: rotation,
-						radius: config.randomizer.integer({ min: -1, max: 1 }),
-						distanceX: config.randomizer.integer({ min: -100, max: 200 }),
-						distanceY: config.randomizer.integer({ min: -100, max: 200 }),
-						angle: config.randomizer.integer({ min: -200, max: 200 }),
+						scale: config.randomizer.floating({ min: -1, max: 2 }),
+						rotation: config.randomizer.natural({ min: -100, max: 100 }),
+						radius: config.randomizer.integer({ min: 50, max: 200 }),
+
+						distanceX: config.randomizer.integer({ min: -20, max: 20 }),
+						distanceY: config.randomizer.integer({ min: -20, max: 20 }),
+
 						duration: config.randomizer.integer({ min: 100, max: 1500 })
 					},
 					touches = getTouches(position, points, gesture.radius);
