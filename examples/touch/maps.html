@@ -18,21 +18,28 @@
 <body>
 
 	<script>
-		if(!("ontouchstart" in window)) {
-			alert('Google maps only adds touch support on touch devices. Open this page on a touchdevice, or emulate it (with the chrome devtools).')
+		var has_touch = window.navigator.userAgent.match(/mobile|tablet|ip(ad|hone|od)|android|silk/i);
+		if(!has_touch) {
+			document.write('Google maps only adds touch support on touch devices. Open this page on a touchdevice, or emulate it (with the chrome devtools).');
 		}
 	</script>
 
 	<div id="map"></div>
-	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
-    <script type="text/javascript">
-		var mapOptions = {
-		  center: new google.maps.LatLng(52,6),
-		  zoom: 8
-		};
-		var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+	<script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+    <script>
+		if(has_touch) {
+			var eightMedia = new google.maps.LatLng(51.988846, 5.935547),
+				mapOptions = {
+				  center: eightMedia,
+				  zoom: 17
+				},
+				map = new google.maps.Map(document.getElementById("map"), mapOptions),
+				marker = new google.maps.Marker({
+					position: eightMedia,
+					map: map
+				});
+		}
     </script>
-
 	<script data-main="maps.js" src="require.js"></script>
 
 </body>
