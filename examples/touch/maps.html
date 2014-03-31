@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Google Maps</title>
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+	<style>
+		html, body, #map {
+			min-height: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+			position: relative;
+		}
+	</style>
+</head>
+
+<body>
+
+<script>
+	var has_touch = window.navigator.userAgent.match(/mobile|tablet|ip(ad|hone|od)|android|silk/i);
+	if (!has_touch) {
+		document.write('Google maps only adds touch support on touch devices. Open this page on a touchdevice, or emulate it (with the chrome devtools).');
+	}
+</script>
+
+<div id="map"></div>
+<script src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+<script>
+	if (has_touch) {
+		var eightMedia = new google.maps.LatLng(51.988846, 5.935547),
+			mapOptions = {
+				center: eightMedia,
+				zoom: 17
+			},
+			map = new google.maps.Map(document.getElementById("map"), mapOptions),
+			marker = new google.maps.Marker({
+				position: eightMedia,
+				map: map
+			});
+	}
+</script>
+<script data-main="maps.js" src="require.js"></script>
+
+</body>
+</html>
