@@ -4,7 +4,7 @@
  * The toucher gremlin triggers touch events (touchstart, touchmove, touchcancel
  * and touchend), by doing gestures on random targets displayed on the viewport.
  *
- * By default, the touch gremlin activity is showed by a blue circle.
+ * By default, the touch gremlin activity is showed by a red disc.
  *
  *   var toucherGremlin = gremlins.species.toucher();
  *   horde.gremlin(toucherGremlin);
@@ -44,11 +44,10 @@ define(function(require) {
 	var Chance = require('../vendor/chance');
 
 	return function() {
-
 		var document = window.document,
 			body = document.body;
 
-		var defaultTouchTypes = ['tap', 'tap', 'tap', 'gesture', 'doubletap', 'tap', 'gesture', 'gesture', 'gesture', 'multitouch', 'multitouch'];
+		var defaultTouchTypes = ['tap', 'tap', 'tap', 'doubletap', 'gesture', 'gesture', 'gesture', 'multitouch', 'multitouch'];
 
 		var defaultPositionSelector = function() {
 			return [
@@ -61,18 +60,17 @@ define(function(require) {
 			var fragment = document.createDocumentFragment();
 			touches.forEach(function(touch) {
 				var touchSignal = document.createElement('div');
-				touchSignal.style.border = "3px solid blue";
+				touchSignal.style.background = "red";
 				touchSignal.style['border-radius'] = '50%'; // Chrome
 				touchSignal.style.borderRadius = '50%';     // Mozilla
-				touchSignal.style.width = "40px";
-				touchSignal.style.height = "40px";
-				touchSignal.style['box-sizing'] = 'border-box';
+				touchSignal.style.width = "20px";
+				touchSignal.style.height = "20px";
 				touchSignal.style.position = "absolute";
 				touchSignal.style.webkitTransition = 'opacity .5s ease-out';
 				touchSignal.style.mozTransition = 'opacity .5s ease-out';
 				touchSignal.style.transition = 'opacity .5s ease-out';
-				touchSignal.style.left = (touch.x - 20 ) + 'px';
-				touchSignal.style.top = (touch.y - 20 ) + 'px';
+				touchSignal.style.left = (touch.x - 10 ) + 'px';
+				touchSignal.style.top = (touch.y - 10 ) + 'px';
 
 				var element = fragment.appendChild(touchSignal);
 				setTimeout(function() {
@@ -118,16 +116,16 @@ define(function(require) {
 				touches = [],
 				slice, i, angle;
 
-			radius = radius || 100;
-			degrees = degrees != null ? (degrees * Math.PI / 180) : 0;
-			slice = 2 * Math.PI / points;
-
 			// just one touch, at the center
 			if(points === 1) {
 				return [
 					{x: cx, y: cy}
 				];
 			}
+
+			radius = radius || 100;
+			degrees = degrees != null ? (degrees * Math.PI / 180) : 0;
+			slice = 2 * Math.PI / points;
 
 			for(i = 0; i < points; i++) {
 				angle = (slice * i) + degrees;
@@ -137,55 +135,6 @@ define(function(require) {
 				});
 			}
 			return touches;
-		}
-
-
-
-		/**
-		 * trigger a gesture
-		 * @param element
-		 * @param startPos
-		 * @param startTouches
-		 * @param gesture
-		 * @param cb
-		 */
-		function triggerGesture(element, startPos, startTouches, gesture, done) {
-			var interval = 10,
-				loops = Math.ceil(gesture.duration / interval),
-				loop = 1;
-
-			triggerTouch(startTouches, element, 'start');
-
-			function gestureLoop() {
-				// calculate the radius
-				var radius = gesture.radius;
-				if(gesture.scale < 1) {
-					radius = gesture.radius - (gesture.radius * (gesture.scale / loops * loop));
-				}
-				else if(gesture.scale > 1) {
-					radius = gesture.radius * (gesture.scale / loops * loop);
-				}
-
-				// calculate new position/rotation
-				var posX = startPos[0] + (gesture.distanceX / loops * loop),
-					posY = startPos[1] + (gesture.distanceY / loops * loop),
-					rotation = typeof gesture.rotation == 'number' ? (gesture.rotation / loops * loop) : null,
-					touches = getTouches([posX, posY], startTouches.length, radius, rotation),
-					is_last = (loop == loops);
-
-				if(!is_last) {
-					triggerTouch(touches, element, 'move');
-					setTimeout(gestureLoop, 10);
-				}
-				else {
-					triggerTouch(touches, element, 'end');
-					done(touches)
-				}
-
-				loop++;
-			}
-
-			setTimeout(gestureLoop, 10);
 		}
 
 
@@ -225,6 +174,53 @@ define(function(require) {
 
 			element.dispatchEvent(event);
 			config.showAction(touches);
+		}
+
+
+
+		/**
+		 * trigger a gesture
+		 * @param element
+		 * @param startPos
+		 * @param startTouches
+		 * @param gesture
+		 * @param done
+		 */
+		function triggerGesture(element, startPos, startTouches, gesture, done) {
+			var interval = 10,
+				loops = Math.ceil(gesture.duration / interval),
+				loop = 1;
+
+			triggerTouch(startTouches, element, 'start');
+
+			function gestureLoop() {
+				// calculate the radius
+				var radius = gesture.radius;
+				if(gesture.scale < 1) {
+					radius = gesture.radius - (gesture.radius * (gesture.scale / loops * loop));
+				} else if(gesture.scale > 1) {
+					radius = gesture.radius * (gesture.scale / loops * loop);
+				}
+
+				// calculate new position/rotation
+				var posX = startPos[0] + (gesture.distanceX / loops * loop),
+					posY = startPos[1] + (gesture.distanceY / loops * loop),
+					rotation = typeof gesture.rotation == 'number' ? (gesture.rotation / loops * loop) : null,
+					touches = getTouches([posX, posY], startTouches.length, radius, rotation),
+					is_last = (loop == loops);
+
+				if(!is_last) {
+					triggerTouch(touches, element, 'move');
+					setTimeout(gestureLoop, 10);
+				} else {
+					triggerTouch(touches, element, 'end');
+					done(touches)
+				}
+
+				loop++;
+			}
+
+			setTimeout(gestureLoop, 10);
 		}
 
 
@@ -316,11 +312,7 @@ define(function(require) {
 					config.showAction(touches);
 				}
 				if(typeof config.logger.log == 'function') {
-					config.logger.log('gremlin', 'toucher', {
-						position: position,
-						touchType: touchType,
-						gesture: details
-					});
+					config.logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
 				}
 				done();
 			}

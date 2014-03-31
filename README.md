@@ -134,7 +134,7 @@ To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method t
 `gremlins.js` currently provides a few gremlins and mogwais:
 
 * [clickerGremlin](src/species/clicker.js) clicks anywhere on the visible area of the document
-* [toucherGremlin](src/species/toucher.js) clicks anywhere on the visible area of the document
+* [toucherGremlin](src/species/toucher.js) touches anywhere on the visible area of the document
 * [formFillerGremlin](src/species/formFiller.js) fills forms by entering data, selecting options, clicking checkboxes, etc
 * [scrollerGremlin](src/species/scroller.js) scrolls the viewport to reveal another part of the document
 * [typerGremlin](src/species/typer.js) types keys on the keyboard

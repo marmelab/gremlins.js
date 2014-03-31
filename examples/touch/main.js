@@ -104,18 +104,19 @@ require(['gremlins','./hammer'], function(gremlins, Hammer) {
 	testLogger = {
 		lastEvent: {},
 
-		log: function(_, species, gremlin) {
-			switch(species) {
+		log: function(_, species) {
+			switch(species.trim()) {
 				case 'toucher':
+					var details = arguments[6];
 					var lastEvent = testLogger.lastEvent;
 					if(lastEvent && lastEvent.gesture) {
 						var lastGesture = lastEvent.gesture;
 						console.group();
-						console.log('deltax', round(lastGesture.deltaX), round(gremlin.gesture.distanceX));
-						console.log('deltay', round(lastGesture.deltaY), round(gremlin.gesture.distanceY));
-						console.log('scale', round(lastGesture.scale), round(gremlin.gesture.scale));
-						console.log('rotation', round(lastGesture.rotation), round(gremlin.gesture.rotation));
-						console.log(lastGesture, gremlin);
+						console.log('deltax', round(lastGesture.deltaX), round(details.distanceX));
+						console.log('deltay', round(lastGesture.deltaY), round(details.distanceY));
+						console.log('scale', round(lastGesture.scale), round(details.scale));
+						console.log('rotation', round(lastGesture.rotation), round(details.rotation));
+						console.log(lastGesture, details);
 						console.groupEnd();
 					}
 					break;
