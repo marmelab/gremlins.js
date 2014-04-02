@@ -5,3 +5,6 @@ build: clean
 
 clean:
 	@(rm gremlins.min.js)
+
+jshint:
+	@(jshint src/ --extract=auto)
