@@ -30,6 +30,7 @@ define(function(require) {
 
     var configurable = require('../utils/configurable');
     var Chance = require('../vendor/chance');
+    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
 
     return function() {
 
@@ -37,7 +38,7 @@ define(function(require) {
             documentElement = document.documentElement,
             body = document.body;
 
-        var defaultPositionSelector = function() {
+        function defaultPositionSelector() {
             var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
                 documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight);
 
@@ -45,9 +46,9 @@ define(function(require) {
                 config.randomizer.natural({ max: documentWidth  - documentElement.clientWidth }),
                 config.randomizer.natural({ max: documentHeight  - documentElement.clientHeight })
             ];
-        };
+        }
 
-        var defaultShowAction = function(scrollX, scrollY) {
+        function defaultShowAction(scrollX, scrollY) {
             var clickSignal = document.createElement('div');
             clickSignal.style.border = "3px solid red";
             clickSignal.style.width = (documentElement.clientWidth - 25) + "px";
@@ -65,7 +66,7 @@ define(function(require) {
             setTimeout(function() {
                 element.style.opacity = 0;
             }, 50);
-        };
+        }
 
         /**
          * @mixin
@@ -73,14 +74,18 @@ define(function(require) {
         var config = {
             positionSelector: defaultPositionSelector,
             showAction:       defaultShowAction,
-            logger:           {},
-            randomizer:       new Chance()
+            logger:           null,
+            randomizer:       null
         };
 
         /**
          * @mixes config
          */
         function scrollerGremlin() {
+            if (!config.randomizer) {
+                throw new RandomizerRequiredException();
+            }
+
             var position = config.positionSelector(),
                 scrollX = position[0],
                 scrollY = position[1];
