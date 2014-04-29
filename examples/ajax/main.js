@@ -34,6 +34,7 @@ require(['gremlins'], function(gremlins) {
 
     gremlins.createHorde()
         .gremlin(ajaxDelayer())
+        .mogwai(null)
         .unleash();
 
 });
