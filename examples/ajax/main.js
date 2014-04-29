@@ -36,10 +36,12 @@ require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
 
         return randomizer.natural({max : 1000});
     });
+    var ajaxDestroyer = gremlins.species.ajaxDestroyer().logger(console);
 
     gremlins
         .createHorde()
         .gremlin(ajaxDelayer)
+        .gremlin(ajaxDestroyer)
         .mogwai(function () {})
         .after(function () {
             clearInterval(interval);

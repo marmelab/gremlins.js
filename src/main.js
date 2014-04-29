@@ -10,12 +10,13 @@ define(function(require) {
 
     var gremlins = {
         species: {
-            clicker:     require('./species/clicker'),
-            toucher:     require('./species/toucher'),
-            formFiller:  require('./species/formFiller'),
-            scroller:    require('./species/scroller'),
-            typer:       require('./species/typer'),
-            ajaxDelayer: require('./species/ajaxDelayer')
+            clicker:       require('./species/clicker'),
+            toucher:       require('./species/toucher'),
+            formFiller:    require('./species/formFiller'),
+            scroller:      require('./species/scroller'),
+            typer:         require('./species/typer'),
+            ajaxDelayer:   require('./species/ajaxDelayer'),
+            ajaxDestroyer: require('./species/ajaxDestroyer')
         },
         mogwais: {
             alert:      require('./mogwais/alert'),
