@@ -452,7 +452,7 @@ define(function(require) {
         beforeCallbacks = beforeCallbacks.concat(this._mogwais);
         var afterCallbacks  = this._afterCallbacks;
         for (var i = 0, count = gremlinsAndMogwais.length; i < count; i++) {
-            if (typeof gremlinsAndMogwais[i].cleanUp == 'function') {
+            if (gremlinsAndMogwais[i] && typeof gremlinsAndMogwais[i].cleanUp == 'function') {
                 afterCallbacks.push(gremlinsAndMogwais[i].cleanUp);
             }
         }
