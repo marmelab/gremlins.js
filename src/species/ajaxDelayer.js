@@ -42,6 +42,7 @@ define(function(require) {
             window.XMLHttpRequest.prototype.open = function (method, url) {
                 if (typeof logger.log === 'function') {
                     logger.log('delaying ', method, url);
+
                 }
 
                 return oldOpen.apply(this, arguments);

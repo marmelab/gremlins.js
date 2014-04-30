@@ -1,13 +1,13 @@
 /**
- * The ajaxDelayer gremlin force error on ajax request
+ * The ajaxOverrider gremlin force error on ajax request
  *
- *   var ajaxDestroyerGremlin = gremlins.species.ajaxDelayer();
- *   horde.gremlin(ajaxDelayerGremlin);
+ *   var ajaxOverrider = gremlins.species.ajaxOverrider();
+ *   horde.gremlin(ajaxOverrider);
  *
- * The ajaxDestroyerGremlin gremlin can be customized as follows:
+ * The ajaxOverrider gremlin can be customized as follows:
  *
- *   ajaxDestroyerGremlin.logger(loggerObject); // inject a logger
- *   ajaxDestroyerGremlin.destroyRequest //inject a function change status of ajax request
+ *   ajaxOverrider.logger(loggerObject); // inject a logger
+ *   ajaxOverrider.overrideResponse //inject a function change status of ajax request
  *
  * Example usage:
  *
@@ -18,13 +18,12 @@ define(function(require) {
 
     var configurable = require('../utils/configurable');
     var overrider = require('../utils/overrider');
-    var Chance = require('../vendor/chance');
 
     return function() {
         var OriginalXMLHttpRequest = window.XMLHttpRequest;
         var started = false;
 
-        var defaultDestroyRequest = function (override, logger) {
+        var defaultOverrideRequest = function (override, logger) {
             var open = OriginalXMLHttpRequest.prototype.open;
 
             window.XMLHttpRequest.prototype.open = function (method, url) {
@@ -35,13 +34,11 @@ define(function(require) {
             }
         };
 
-        var randomizer = new Chance();
-
         /**
          * @mixin
          */
         var config = {
-            destroyRequest:  defaultDestroyRequest,
+            overrideResponse:  defaultOverrideRequest,
             logger:          {},
             requestOverride: {status: 404, statusText: "Not Found"}
         };
@@ -58,8 +55,8 @@ define(function(require) {
                 config.logger.log('start destroying');
             }
 
-            config.destroyRequest(config.requestOverride, config.logger);
-        }
+            config.overrideResponse(config.requestOverride, config.logger);
+        };
 
         ajaxDestroyerGremlin.stop = function () {
             window.XMLHttpRequest = OriginalXMLHttpRequest;
