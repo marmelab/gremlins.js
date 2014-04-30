@@ -66,7 +66,7 @@ define(function(require) {
      * @param {Object} object - The Object for which to override some property
      * @param {Object} Object containing the properties to override and their new definition
      */
-    function overridable(object, override) {
+    function overrider(object, override) {
         for (var name in override) {
             if (!override.hasOwnProperty(name)) {
                 continue;
@@ -75,5 +75,5 @@ define(function(require) {
         }
     }
 
-    return overridable;
+    return overrider;
 });

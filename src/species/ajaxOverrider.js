@@ -27,10 +27,31 @@ define(function(require) {
             var open = OriginalXMLHttpRequest.prototype.open;
 
             window.XMLHttpRequest.prototype.open = function (method, url) {
-                overrider(this, override);
-                logger.log('changing status from ', this.status, 'to 404 on:', method, url);
+                var self = this;
+                logger.log('forcing status to 404 on:', method, url);
 
-                return open.apply(this, arguments);
+                override.send = function () {
+                    // trigger only when send is called since it is generally not defined before
+                    if (this.onreadystatechange) {
+                        this.onreadystatechange();
+                    }
+                    if (this.status != 200 && this.onerror) {
+                        this.error();
+                    }
+                    if (this.status == 200 && this.onload) {
+                        this.onload();
+                    }
+
+                    return this;
+                };
+                overrider(self, override);
+
+                return open.apply(self, arguments);
+            }
+
+
+            if (jQuery) {
+                jQuery.ajaxSettings.xhr = new  window.XMLHttpRequest ();
             }
         };
 
@@ -38,15 +59,20 @@ define(function(require) {
          * @mixin
          */
         var config = {
-            overrideResponse:  defaultOverrideRequest,
-            logger:          {},
-            requestOverride: {status: 404, statusText: "Not Found"}
+            overrideResponse: defaultOverrideRequest,
+            logger:           {},
+            requestOverride:  {
+                // set the request has having returned
+                readyState: 4,
+                status:     404,
+                statusText: "Not Found"
+            }
         };
 
         /**
          * @mixes config
          */
-        var ajaxDestroyerGremlin = function ajaxDestroyerGremlin() {
+        var ajaxOverriderGremlin = function ajaxOverriderGremlin() {
             if (started) {
                 return;
             }
@@ -58,13 +84,13 @@ define(function(require) {
             config.overrideResponse(config.requestOverride, config.logger);
         };
 
-        ajaxDestroyerGremlin.stop = function () {
+        ajaxOverriderGremlin.stop = function () {
             window.XMLHttpRequest = OriginalXMLHttpRequest;
             started = false;
         };
 
-        configurable(ajaxDestroyerGremlin, config);
+        configurable(ajaxOverriderGremlin, config);
 
-        return ajaxDestroyerGremlin;
+        return ajaxOverriderGremlin;
     };
 });
