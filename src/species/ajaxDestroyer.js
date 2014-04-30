@@ -17,40 +17,19 @@ define(function(require) {
     "use strict";
 
     var configurable = require('../utils/configurable');
+    var overrider = require('../utils/overrider');
     var Chance = require('../vendor/chance');
 
     return function() {
         var OriginalXMLHttpRequest = window.XMLHttpRequest;
         var started = false;
 
-        var defaultDestroyRequest = function (logger) {
-
+        var defaultDestroyRequest = function (override, logger) {
             var open = OriginalXMLHttpRequest.prototype.open;
 
             window.XMLHttpRequest.prototype.open = function (method, url) {
-                var send = this.send;
-                this.send = function () {
-                    var rsc = this.onreadystatechange;
-                    if (rsc) {
-                        // "onreadystatechange" exists. Monkey-patch it
-                        this.onreadystatechange = function(xmlHttpRequestProgressEvent) {
-                            if (this.readyState == 4) {
-                                // dirty and strange need to delete the property to change its value.
-                                // Although the property is writable and configurable
-                                logger.log('changing status from ', this.status, 'to 404 on:', method, url);
-                                delete this.status;
-                                this.status = 404;
-                                delete this.statusText;
-                                this.statusText = 'Not Found';
-                                xmlHttpRequestProgressEvent.currentTarget = this;
-                                xmlHttpRequestProgressEvent.target = this;
-                            }
-
-                            return rsc.apply(this, [xmlHttpRequestProgressEvent]);
-                        };
-                    }
-                    return send.apply(this, arguments);
-                }
+                overrider(this, override);
+                logger.log('changing status from ', this.status, 'to 404 on:', method, url);
 
                 return open.apply(this, arguments);
             }
@@ -62,8 +41,9 @@ define(function(require) {
          * @mixin
          */
         var config = {
-            destroyRequest:         defaultDestroyRequest,
-            logger:           {}
+            destroyRequest:  defaultDestroyRequest,
+            logger:          {},
+            requestOverride: {status: 404, statusText: "Not Found"}
         };
 
         /**
@@ -78,7 +58,7 @@ define(function(require) {
                 config.logger.log('start destroying');
             }
 
-            config.destroyRequest(config.logger);
+            config.destroyRequest(config.requestOverride, config.logger);
         }
 
         ajaxDestroyerGremlin.stop = function () {
