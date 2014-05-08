@@ -42,6 +42,7 @@ define(function(require) {
 
     var configurable = require('../utils/configurable');
     var Chance = require('../vendor/chance');
+    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
 
     return function() {
 
@@ -50,14 +51,14 @@ define(function(require) {
 
         var defaultTouchTypes = ['tap', 'tap', 'tap', 'doubletap', 'gesture', 'gesture', 'gesture', 'multitouch', 'multitouch'];
 
-        var defaultPositionSelector = function() {
+        function defaultPositionSelector() {
             return [
                 config.randomizer.natural({ max: document.documentElement.clientWidth - 1 }),
                 config.randomizer.natural({ max: document.documentElement.clientHeight - 1 })
             ];
-        };
+        }
 
-        var defaultShowAction = function(touches) {
+        function defaultShowAction(touches) {
             var fragment = document.createDocumentFragment();
             touches.forEach(function(touch) {
                 var touchSignal = document.createElement('div');
@@ -82,12 +83,11 @@ define(function(require) {
                 }, 50);
             });
             document.body.appendChild(fragment);
-        };
+        }
 
-        var defaultCanTouch = function() {
+        function defaultCanTouch() {
             return true;
-        };
-
+        }
 
         /**
          * @mixin
@@ -98,11 +98,10 @@ define(function(require) {
             showAction: defaultShowAction,
             canTouch: defaultCanTouch,
             maxNbTries: 10,
-            logger: {},
-            randomizer: new Chance(),
+            logger: null,
+            randomizer: null,
             maxTouches: 2
         };
-
 
         /**
          * generate a list of x/y around the center
@@ -176,8 +175,6 @@ define(function(require) {
             config.showAction(touches);
         }
 
-
-
         /**
          * trigger a gesture
          * @param element
@@ -227,7 +224,7 @@ define(function(require) {
         var touchTypes = {
             // tap, like a click event, only 1 touch
             // could also be a slow tap, that could turn out to be a hold
-            tap: function(position, element, done) {
+            tap: function tap(position, element, done) {
                 var touches = getTouches(position, 1);
                 var gesture = {
                     duration: config.randomizer.integer({ min: 20, max: 700 })
@@ -243,7 +240,7 @@ define(function(require) {
 
             // doubletap, like a dblclick event, only 1 touch
             // could also be a slow doubletap, that could turn out to be a hold
-            doubletap: function(position, element, done) {
+            doubletap: function doubletap(position, element, done) {
                 touchTypes.tap(position, element, function() {
                     setTimeout(function() {
                         touchTypes.tap(position, element, done);
@@ -252,7 +249,7 @@ define(function(require) {
             },
 
             // single touch gesture, could be a drag and swipe, with 1 points
-            gesture: function(position, element, done) {
+            gesture: function gesture(position, element, done) {
                 var gesture = {
                     distanceX: config.randomizer.integer({ min: -100, max: 200 }),
                     distanceY: config.randomizer.integer({ min: -100, max: 200 }),
@@ -266,7 +263,7 @@ define(function(require) {
             },
 
             // multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
-            multitouch: function(position, element, done) {
+            multitouch: function multitouch(position, element, done) {
                 var points = config.randomizer.integer({ min: 2, max: config.maxTouches});
                 var gesture = {
                     scale:     config.randomizer.floating({ min: 0, max: 2 }),
@@ -289,6 +286,10 @@ define(function(require) {
          * @mixes config
          */
         function toucherGremlin(done) {
+            if (!config.randomizer) {
+                throw new RandomizerRequiredException();
+            }
+
             var position,
                 posX, posY,
                 targetElement,
@@ -310,7 +311,7 @@ define(function(require) {
                 if (typeof config.showAction == 'function') {
                     config.showAction(touches);
                 }
-                if (typeof config.logger.log == 'function') {
+                if (config.logger && typeof config.logger.log == 'function') {
                     config.logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
                 }
                 done();

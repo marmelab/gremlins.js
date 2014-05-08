@@ -24,6 +24,7 @@ define(function(require) {
 
     var configurable = require('../utils/configurable');
     var Chance = require('../vendor/chance');
+    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
 
     return function() {
 
@@ -41,7 +42,7 @@ define(function(require) {
             'input:not([type])': fillTextElement
         };
 
-        var defaultShowAction = function(element) {
+        function defaultShowAction(element) {
             if(typeof element.attributes['data-old-border'] === 'undefined') {
                 element.attributes['data-old-border'] = element.style.border;
             }
@@ -52,9 +53,11 @@ define(function(require) {
             setTimeout(function() {
                 element.style.border = oldBorder;
             }, 500);
-        };
+        }
 
-        var defaultCanFillElement = function() { return true; };
+        function defaultCanFillElement() {
+            return true;
+        }
 
         /**
          * @mixin
@@ -64,18 +67,22 @@ define(function(require) {
             showAction:      defaultShowAction,
             canFillElement:  defaultCanFillElement,
             maxNbTries:      10,
-            logger:          {},
-            randomizer:      new Chance()
+            logger:          null,
+            randomizer:      null
         };
 
         /**
          * @mixes config
          */
         function formFillerGremlin() {
+            if (!config.randomizer) {
+                throw new RandomizerRequiredException();
+            }
+
             // Retrieve all selectors
             var elementTypes = [];
 
-            for(var key in config.elementMapTypes) {
+            for (var key in config.elementMapTypes) {
                 if(config.elementMapTypes.hasOwnProperty(key)) {
                     elementTypes.push(key);
                 }
@@ -107,7 +114,7 @@ define(function(require) {
                 config.showAction(element);
             }
 
-            if (typeof config.logger.log == 'function') {
+            if (config.logger && typeof config.logger.log == 'function') {
                 config.logger.log('gremlin', 'formFiller', 'input', value, 'in', element);
             }
         }

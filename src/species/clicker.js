@@ -49,6 +49,7 @@ define(function(require) {
 
     var configurable = require('../utils/configurable');
     var Chance = require('../vendor/chance');
+    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
 
     return function() {
 
@@ -57,14 +58,14 @@ define(function(require) {
 
         var defaultClickTypes = ['click', 'click', 'click', 'click', 'click', 'click', 'dblclick', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mouseover', 'mouseover', 'mousemove', 'mouseout'];
 
-        var defaultPositionSelector = function() {
+        function defaultPositionSelector() {
             return [
                 config.randomizer.natural({ max: document.documentElement.clientWidth - 1 }),
                 config.randomizer.natural({ max: document.documentElement.clientHeight - 1 })
             ];
-        };
+        }
 
-        var defaultShowAction = function(x, y) {
+        function defaultShowAction(x, y) {
             var clickSignal = document.createElement('div');
             clickSignal.style.border = "3px solid red";
             clickSignal.style['border-radius'] = '50%'; // Chrome
@@ -85,9 +86,11 @@ define(function(require) {
             setTimeout(function() {
                 element.style.opacity = 0;
             }, 50);
-        };
+        }
 
-        var defaultCanClick = function() { return true; };
+        function defaultCanClick() {
+            return true;
+        }
 
         /**
          * @mixin
@@ -98,14 +101,17 @@ define(function(require) {
             showAction:       defaultShowAction,
             canClick:         defaultCanClick,
             maxNbTries:       10,
-            logger:           {},
-            randomizer:       new Chance()
+            logger:           null,
+            randomizer:       null
         };
 
         /**
          * @mixes config
          */
         function clickerGremlin() {
+            if (!config.randomizer) {
+                throw new RandomizerRequiredException();
+            }
             var position, posX, posY, targetElement, nbTries = 0;
             do {
                 position = config.positionSelector();
@@ -125,7 +131,7 @@ define(function(require) {
                 config.showAction(posX, posY, clickType);
             }
 
-            if (typeof config.logger.log == 'function') {
+            if (config.logger && typeof config.logger.log == 'function') {
                 config.logger.log('gremlin', 'clicker   ', clickType, 'at', posX, posY);
             }
         }

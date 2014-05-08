@@ -30,20 +30,15 @@ define(function(require) {
     "use strict";
 
     var configurable = require('../utils/configurable');
+    var LoggerRequiredException = require('../exceptions/loggerRequired');
 
     return function() {
 
-        var defaultLogger = {
-            log: function() {},
-            warn: function() {},
-            error: function() {}
-        };
-
-        var defaultLevelSelector = function(fps) {
+        function defaultLevelSelector(fps) {
             if (fps < 10) return 'error';
             if (fps < 20) return 'warn';
             return 'log';
-        };
+        }
 
         /**
          * @mixin
@@ -51,7 +46,7 @@ define(function(require) {
         var config = {
             delay: 500, // how often should the fps be measured
             levelSelector: defaultLevelSelector,
-            logger: defaultLogger
+            logger: null
         };
 
         var initialTime = -Infinity; // force initial measure
@@ -84,6 +79,9 @@ define(function(require) {
          * @mixes config
          */
         function fpsMogwai() {
+            if (!config.logger) {
+                throw new LoggerRequiredException();
+            }
             enabled = true;
             window.requestAnimationFrame(loop);
         }

@@ -26,14 +26,12 @@ define(function(require) {
 
     return function() {
 
-        var defaultLogger = { warn: function() {} };
-
         /**
          * @mixin
          */
         var config = {
             maxErrors: 10,
-            logger:    defaultLogger
+            logger:    null
         };
 
         var realOnError, realLoggerError;
@@ -44,10 +42,11 @@ define(function(require) {
         function gizmoMogwai() {
             var nbErrors = 0;
             var horde = this; // this is exceptional - don't use 'this' for mogwais in general
-            function incrementNbErrors(){
+            function incrementNbErrors() {
                 nbErrors++;
                 if (nbErrors == config.maxErrors) {
                     horde.stop();
+                    if (!config.logger) return;
                     window.setTimeout(function() {
                         // display the mogwai error after the caught error
                         config.logger.warn('mogwai ', 'gizmo     ', 'stopped test execution after ', config.maxErrors, 'errors');
@@ -62,17 +61,17 @@ define(function(require) {
                 return realOnError ? realOnError(message, url, linenumber) : false;
             };
 
-            // console (or logger) errors
-            realLoggerError = config.logger.error;
-            config.logger.error = function() {
+            // console errors
+            realLoggerError = console.error;
+            console.error = function() {
                 incrementNbErrors();
-                realLoggerError.apply(config.logger, arguments);
+                realLoggerError.apply(console, arguments);
             };
         }
 
         gizmoMogwai.cleanUp = function() {
             window.onerror = realOnError;
-            config.logger.error = realLoggerError.bind(config.logger);
+            console.error = realLoggerError.bind(console);
             return gizmoMogwai;
         };
 

@@ -29,22 +29,21 @@ define(function(require) {
 
     var configurable = require('../utils/configurable');
     var Chance = require('../vendor/chance');
+    var LoggerRequiredException = require('../exceptions/loggerRequired');
 
     return function() {
 
         var defaultWatchEvents = ['alert', 'confirm', 'prompt'];
 
-        var defaultConfirmResponse = function() {
+        function defaultConfirmResponse() {
             // Random OK or cancel
             return config.randomizer.bool();
-        };
+        }
 
-        var defaultPromptResponse = function() {
+        function defaultPromptResponse() {
             // Return a random string
             return config.randomizer.sentence();
-        };
-
-        var defaultLogger = { warn: function() {} };
+        }
 
         /**
          * @mixin
@@ -53,8 +52,8 @@ define(function(require) {
             watchEvents:     defaultWatchEvents,
             confirmResponse: defaultConfirmResponse,
             promptResponse:  defaultPromptResponse,
-            logger:          defaultLogger,
-            randomizer:      new Chance()
+            logger:          null,
+            randomizer:      null
         };
 
         var alert   = window.alert;
@@ -65,6 +64,11 @@ define(function(require) {
          * @mixes config
          */
         function alertMogwai() {
+
+            if (!config.logger) {
+                throw new LoggerRequiredException();
+            }
+
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {
                     config.logger.warn('mogwai ', 'alert     ', msg, 'alert');

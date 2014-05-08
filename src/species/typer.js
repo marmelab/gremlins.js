@@ -23,6 +23,7 @@ define(function(require) {
 
     var configurable = require('../utils/configurable');
     var Chance = require('../vendor/chance');
+    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
 
     return function() {
 
@@ -32,15 +33,15 @@ define(function(require) {
 
         var defaultEventTypes = ['keypress', 'keyup', 'keydown'];
 
-        var defaultKeyGenerator = function() {
-            return this.randomizer.natural({ max: 360});
-        };
+        function defaultKeyGenerator() {
+            return config.randomizer.natural({ max: 360});
+        }
 
-        var defaultTargetElement = function(x, y) {
+        function defaultTargetElement(x, y) {
             return document.elementFromPoint(x, y);
-        };
+        }
 
-        var defaultShowAction = function (targetElement, x, y, key) {
+        function defaultShowAction(targetElement, x, y, key) {
             var typeSignal = document.createElement('div');
             typeSignal.style.border = "3px solid orange";
             typeSignal.style['border-radius'] = '50%'; // Chrome
@@ -65,7 +66,7 @@ define(function(require) {
             setTimeout(function () {
                 element.style.opacity = 0;
             }, 50);
-        };
+        }
 
         /**
          * @mixin
@@ -75,14 +76,18 @@ define(function(require) {
             showAction: defaultShowAction,
             keyGenerator: defaultKeyGenerator,
             targetElement: defaultTargetElement,
-            logger:     {},
-            randomizer: new Chance()
+            logger:     null,
+            randomizer: null
         };
 
         /**
          * @mixes config
          */
         function typerGremlin() {
+            if (!config.randomizer) {
+                throw new RandomizerRequiredException();
+            }
+
             var keyboardEvent = document.createEventObject ? document.createEventObject() : document.createEvent("Events"),
                 eventType = config.randomizer.pick(config.eventTypes),
                 key = config.keyGenerator(),
@@ -104,7 +109,7 @@ define(function(require) {
                 config.showAction(targetElement, posX, posY, key);
             }
 
-            if (typeof config.logger.log == 'function') {
+            if (config.logger && typeof config.logger.log == 'function') {
                 config.logger.log('gremlin', 'typer       type', key, 'at', posX, posY);
             }
         }

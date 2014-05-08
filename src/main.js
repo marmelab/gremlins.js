@@ -472,7 +472,7 @@ define(function(require) {
     function inject(services, objects) {
         for (var i = 0, count = objects.length; i < count; i++) {
             for (var name in services) {
-                if (typeof objects[i][name] === "function") {
+                if (typeof objects[i][name] === "function" && !objects[i][name]()) {
                     objects[i][name](services[name]);
                 }
             }
