@@ -34,6 +34,17 @@ define(function(require) {
 
     return function() {
 
+        if (!window.requestAnimationFrame) {
+            // shim layer with setTimeout fallback
+            window.requestAnimationFrame =
+                window.mozRequestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function (callback) {
+                    window.setTimeout(callback, 1000 / 60);
+                };
+        }
+
         function defaultLevelSelector(fps) {
             if (fps < 10) return 'error';
             if (fps < 20) return 'warn';
