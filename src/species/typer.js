@@ -34,7 +34,7 @@ define(function(require) {
         var defaultEventTypes = ['keypress', 'keyup', 'keydown'];
 
         function defaultKeyGenerator() {
-            return config.randomizer.natural({ max: 360});
+            return config.randomizer.natural({ min: 3, max: 254});
         }
 
         function defaultTargetElement(x, y) {
@@ -110,7 +110,7 @@ define(function(require) {
             }
 
             if (config.logger && typeof config.logger.log == 'function') {
-                config.logger.log('gremlin', 'typer       type', key, 'at', posX, posY);
+                config.logger.log('gremlin', 'typer       type', String.fromCharCode(key), 'at', posX, posY);
             }
         }
 
