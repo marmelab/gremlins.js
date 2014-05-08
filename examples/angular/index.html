@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>gremlins</title>
+
+    <style type="text/css">
+    /* Make button bigger so that gremlins can click on it */
+    button {
+      font-size: 4em;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div ng-app="GremlinsTestApp" ng-controller="GremlinsTestApp">
+      <button ng-click="increaseClicks()">Click Me!</button>
+      <h1>{{ model.clicks }} clicks so far... Keep on clicking!</h1>
+    </div>
+    <script src="angular.min.js"></script>
+    <script type="text/javascript">
+    angular.module('GremlinsTestApp', []).
+    controller('GremlinsTestApp', function($scope) {
+      $scope.model = { clicks: 0 };
+      $scope.increaseClicks = function() {
+        $scope.model.clicks++;
+      };
+    });
+    </script>
+    <script src="../../gremlins.min.js"></script>
+    <script>
+    gremlins.createHorde()
+      .gremlin(gremlins.species.clicker()
+        .clickTypes(['click'])
+        .showAction(function showAction(x, y) {
+          var clickSignal = document.createElement('div');
+          clickSignal.style.border = "3px solid red";
+          clickSignal.style['border-radius'] = '50%'; // Chrome
+          clickSignal.style.borderRadius = '50%';     // Mozilla
+          clickSignal.style.width = "20px";
+          clickSignal.style.height = "20px";
+          clickSignal.style['box-sizing'] = 'border-box';
+          clickSignal.style.position = "absolute";
+          clickSignal.style.webkitTransition = 'opacity 1s ease-out';
+          clickSignal.style.mozTransition = 'opacity 1s ease-out';
+          clickSignal.style.transition = 'opacity 1s ease-out';
+          clickSignal.style.left = (x - 10 ) + 'px';
+          clickSignal.style.top = (y - 10 )+ 'px';
+          document.body.appendChild(clickSignal);
+        })
+      )
+      .unleash();
+    </script>
+  </body>
+</html>
