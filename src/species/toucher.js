@@ -3,6 +3,7 @@
  *
  * The toucher gremlin triggers touch events (touchstart, touchmove, touchcancel
  * and touchend), by doing gestures on random targets displayed on the viewport.
+ * Touch gestures can last several seconds, so this gremlin isn't instantaneous.
  *
  * By default, the touch gremlin activity is showed by a red disc.
  *
