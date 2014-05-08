@@ -105,6 +105,8 @@ require(['gremlins'], function(gremlins) {
 });
 ```
 
+`gremlins.js` is also available as a **bookmarklet**. Go to [this page][bookmarklet], grab it, and unleash hordes on any web page.
+
 ## Advanced Usage
 
 ### Setting Gremlins and Mogwais To Use In A Test
