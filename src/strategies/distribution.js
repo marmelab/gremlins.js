@@ -1,10 +1,14 @@
 /**
- * Execute all Gremlins randomly following a distribution, separated by 10ms delay, for 100 times
+ * Execute all Gremlins randomly following a distribution, separated by a 10ms
+ * delay, for 100 times
  *
  * This is the default attack strategy, so selecting no strategy is equivalent to
  *
  *   var distributionStrategy = gremlins.strategies.distribution();
  *   horde.strategy(distributionStrategy);
+ *
+ * The attack duration is roughly equivalent to delay * nb, although setTimeout
+ * may make it longer when delay is small.
  *
  * By default, this strategy uses a uniform distribution, i.e. all gremlins
  * have an equal chance to be selected for the next action.
@@ -17,6 +21,7 @@
  *   distributionStrategy.randomizer(randomizerObject); // inject a randomizer
  *
  * Example usage:
+ *
  *   horde.strategy(gremlins.strategies.distribution()
  *     .delay(50)
  *     .distribution([
@@ -42,7 +47,7 @@ define(function(require) {
         var config = {
             distribution: [],  // percentage of each gremlin species ; the sum of all values should equal to 1
             delay:        10,  // delay in milliseconds between each wave
-            nb:           100, // number of waves to execute (can be overridden in params)
+            nb:           1000, // number of waves to execute (can be overridden in params)
             randomizer:   new Chance()
         };
 

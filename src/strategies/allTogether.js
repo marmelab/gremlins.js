@@ -1,5 +1,10 @@
 /**
- * Execute all Gremlins species ; repeat 10ms after for 100 times
+ * Execute all Gremlins species at once ; repeat 10ms after for 100 times
+ *
+ *   var allTogetherStrategy = gremlins.strategies.allTogether();
+ *   horde.strategy(allTogetherStrategy);
+ *
+ * The actual attack duration depends on the number of species in the horde.
  */
 define(function(require) {
     "use strict";
