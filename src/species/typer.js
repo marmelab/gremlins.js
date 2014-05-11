@@ -43,6 +43,7 @@ define(function(require) {
 
         function defaultShowAction(targetElement, x, y, key) {
             var typeSignal = document.createElement('div');
+            typeSignal.style.zIndex = 2000;
             typeSignal.style.border = "3px solid orange";
             typeSignal.style['border-radius'] = '50%'; // Chrome
             typeSignal.style.borderRadius = '50%';     // Mozilla

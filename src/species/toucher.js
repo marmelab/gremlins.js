@@ -63,6 +63,7 @@ define(function(require) {
             var fragment = document.createDocumentFragment();
             touches.forEach(function(touch) {
                 var touchSignal = document.createElement('div');
+                touchSignal.style.zIndex = 2000;
                 touchSignal.style.background = "red";
                 touchSignal.style['border-radius'] = '50%'; // Chrome
                 touchSignal.style.borderRadius = '50%';     // Mozilla
