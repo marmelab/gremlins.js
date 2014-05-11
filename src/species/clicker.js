@@ -67,6 +67,7 @@ define(function(require) {
 
         function defaultShowAction(x, y) {
             var clickSignal = document.createElement('div');
+            clickSignal.style.zIndex = 2000;
             clickSignal.style.border = "3px solid red";
             clickSignal.style['border-radius'] = '50%'; // Chrome
             clickSignal.style.borderRadius = '50%';     // Mozilla
