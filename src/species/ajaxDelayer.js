@@ -7,8 +7,8 @@
  * The ajaxDelayer gremlin can be customized as follows:
  *
  *   clickerGremlin.logger(loggerObject); // inject a logger
- *   clickerGremlin.delay(randomizerObject || value); // inject a random delay generator or a fix value
- *   clickerGremlin.addDelay //inject a function to add delay on ajax request, by default it slow down the onreadyStateChange event
+ *   clickerGremlin.delay(randomizerObject || value); // inject a random delay generator
+ *   clickerGremlin.delayAdder() //inject a function to add delay on ajax request, by default it slow down the onreadyStateChange event
  *
  * Example usage:
  *
@@ -18,26 +18,25 @@ define(function(require) {
     "use strict";
 
     var configurable = require('../utils/configurable');
-    var Chance = require('../vendor/chance');
 
     return function() {
         var OriginalXMLHttpRequest = window.XMLHttpRequest;
         var started = false;
 
-        var defaultAddDelay = function (delay, logger) {
+        var defaultDelayAdder = function (delay, logger) {
 
             var open = OriginalXMLHttpRequest.prototype.open;
 
             window.XMLHttpRequest.prototype.open = function (method, url) {
                 var send = this.send;
                 this.send = function () {
+                    var d = delay();
                     var rsc = this.onreadystatechange;
                     if (rsc) {
-                        // "onreadystatechange" exists. Monkey-patch it
+                        // "onreadystatechange" exists -> the request is asynchronous. Monkey-patch it
                         this.onreadystatechange = function() {
                             var self = this;
                             if (self.readyState == 4) {
-                                var d = delay();
                                 if (typeof config.logger.log === 'function') {
                                     logger.log('added delay : ', d, ' for ', method, url);
                                 }
@@ -48,6 +47,18 @@ define(function(require) {
                             }
                             return rsc.apply(this, arguments);
                         };
+                    } else {
+                        if (typeof config.logger.log === 'function') {
+                            logger.log('added delay : ', d, ' for ', method, url);
+                        }
+                        // the request is synchronous delay the sending
+                        var start = Date.now();
+                        for (;;) {
+                            var end = Date.now();
+                            if (end - start > d) {
+                                break;
+                            }
+                        }
                     }
                     return send.apply(this, arguments);
                 }
@@ -56,16 +67,18 @@ define(function(require) {
             }
         };
 
-        var randomizer = new Chance();
+        var defaultDelayer = function (randomizer) {
+            return randomizer.natural({max : 1000});
+        }
 
         /**
          * @mixin
          */
         var config = {
-            addDelay:         defaultAddDelay,
-            delay:            randomizer.natural.bind(randomizer),
-            maxDelay:         1000,
-            logger:           {}
+            delayer:    defaultDelayer,
+            delayAdder: defaultDelayAdder,
+            logger:     {},
+            randomizer: new Chance()
         };
 
         /**
@@ -76,25 +89,14 @@ define(function(require) {
                 return;
             }
             started = true;
-            if (typeof config.logger.log === 'function') {
-                config.logger.log('start delaying');
-            }
-            var delay;
-
-            if (typeof config.delay == 'function') {
-                delay = function () {
-                    return config.delay({ max: config.maxDelay});
-                }
-            } else {
-                delay = function () {
-                    return config.delay;
-                }
+            var delayer = function () {
+                return config.delayer(config.randomizer);
             }
 
-            config.addDelay(delay, config.logger);
+            config.delayAdder(delayer, config.logger);
         }
 
-        ajaxDelayerGremlin.stop = function () {
+        ajaxDelayerGremlin.cleanUp = function () {
             window.XMLHttpRequest = OriginalXMLHttpRequest;
             started = false;
         };

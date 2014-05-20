@@ -22,13 +22,11 @@ define(function(require) {
             }
 
             var callback = callbacks.shift();
-            if (callback) {
-                callback.apply(context, args);
+            callback.apply(context, args);
 
-                // Is the callback synchronous ?
-                if (callback.length === nbArguments) {
-                    iterator(callbacks, args, done);
-                }
+            // Is the callback synchronous ?
+            if (callback.length === nbArguments) {
+                iterator(callbacks, args, done);
             }
         };
 
