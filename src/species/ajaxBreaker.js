@@ -1,17 +1,18 @@
 /**
- * The ajaxOverrider gremlin force error on ajax request
+ * The ajaxBreaker gremlin force fake response on ajax request
  *
- *   var ajaxOverrider = gremlins.species.ajaxOverrider();
- *   horde.gremlin(ajaxOverrider);
+ *   var ajaxBreaker = gremlins.species.ajaxBreaker();
+ *   horde.gremlin(ajaxBreaker);
  *
- * The ajaxOverrider gremlin can be customized as follows:
+ * The ajaxBreaker gremlin can be customized as follows:
  *
- *   ajaxOverrider.logger(loggerObject); // inject a logger
- *   ajaxOverrider.overrideResponse //inject a function change status of ajax request
+ *   ajaxBreaker.logger(loggerObject); // inject a logger
+ *   ajaxBreaker.responseBreaker(brokenResponse, loggerObject) //inject a function that force the response for an ajax request
+ *   ajaxBreaker.brokenResponse //inject a fake response objec to break every ajax request with it
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.species.ajaxDelayer());
+ *   horde.gremlin(gremlins.species.ajaxBreaker());
  */
 define(function(require) {
     "use strict";
@@ -23,14 +24,14 @@ define(function(require) {
         var OriginalXMLHttpRequest = window.XMLHttpRequest;
         var started = false;
 
-        var defaultOverrideRequest = function (override, logger) {
+        var defaultResponseBreaker = function (brokenResponse, logger) {
             var open = OriginalXMLHttpRequest.prototype.open;
 
             window.XMLHttpRequest.prototype.open = function (method, url) {
                 var self = this;
                 logger.log('forcing status to 404 on:', method, url);
 
-                override.send = function () {
+                brokenResponse.send = function () {
                     // trigger only when send is called since it is generally not defined before
                     if (this.onreadystatechange) {
                         this.onreadystatechange();
@@ -44,13 +45,12 @@ define(function(require) {
 
                     return this;
                 };
-                overrider(self, override);
+                overrider(self, brokenResponse);
 
                 return open.apply(self, arguments);
             }
 
-
-            if (jQuery) {
+            if (typeof jQuery !== 'undefined') {
                 jQuery.ajaxSettings.xhr = new  window.XMLHttpRequest ();
             }
         };
@@ -59,38 +59,35 @@ define(function(require) {
          * @mixin
          */
         var config = {
-            overrideResponse: defaultOverrideRequest,
+            responseBreaker: defaultResponseBreaker,
             logger:           {},
-            requestOverride:  {
-                // set the request has having returned
+            brokenResponse:  {
+                // set the broken Ajax response details
                 readyState: 4,
-                status:     404,
-                statusText: "Not Found"
+                status:     500,
+                statusText: "Internal servor error"
             }
         };
 
         /**
          * @mixes config
          */
-        var ajaxOverriderGremlin = function ajaxOverriderGremlin() {
+        var ajaxBreakerGremlin = function ajaxBreakerGremlin() {
             if (started) {
                 return;
             }
             started = true;
-            if (typeof config.logger.log === 'function') {
-                config.logger.log('start destroying');
-            }
 
-            config.overrideResponse(config.requestOverride, config.logger);
+            config.responseBreaker(config.brokenResponse, config.logger);
         };
 
-        ajaxOverriderGremlin.stop = function () {
+        ajaxBreakerGremlin.cleanUp = function () {
             window.XMLHttpRequest = OriginalXMLHttpRequest;
             started = false;
         };
 
-        configurable(ajaxOverriderGremlin, config);
+        configurable(ajaxBreakerGremlin, config);
 
-        return ajaxOverriderGremlin;
+        return ajaxBreakerGremlin;
     };
 });

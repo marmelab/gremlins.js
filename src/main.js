@@ -16,7 +16,7 @@ define(function(require) {
             scroller:      require('./species/scroller'),
             typer:         require('./species/typer'),
             ajaxDelayer:   require('./species/ajaxDelayer'),
-            ajaxOverrider: require('./species/ajaxOverrider')
+            ajaxBreaker:   require('./species/ajaxBreaker')
         },
         mogwais: {
             alert:      require('./mogwais/alert'),

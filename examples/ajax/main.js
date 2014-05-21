@@ -22,6 +22,8 @@ require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
                 var end = (new Date()).getTime();
                 if(req.status == 200) {
                     requestEl.innerHTML = '<p>request succeeded</p>';
+                } else if(req.status == 500) {
+                    requestEl.innerHTML = '<p>Internal servor error. Curse you gremlins!</p>';
                 } else {
                     requestEl.innerHTML = '<p>Error encountered while loading the page.</p>';
                 }
@@ -36,12 +38,12 @@ require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
 
         return randomizer.natural({max : 1000});
     });
-    var ajaxOverrider = gremlins.species.ajaxOverrider().logger(console);
+    var ajaxBreaker = gremlins.species.ajaxBreaker().logger(console);
 
     gremlins
         .createHorde()
         .gremlin(ajaxDelayer)
-        .gremlin(ajaxOverrider)
+        .gremlin(ajaxBreaker)
         .mogwai(function () {})
         .after(function () {
             clearInterval(interval);
@@ -49,5 +51,4 @@ require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
         })
         .unleash()
     ;
-
 });
