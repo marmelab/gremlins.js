@@ -126,6 +126,10 @@ define(function(require) {
             var evt = document.createEvent("MouseEvents");
             var clickType = config.randomizer.pick(config.clickTypes);
             evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, posX, posY, false, false, false, false, 0, null);
+            
+            if (window.angular) {
+                angular.element(targetElement).triggerHandler('click');
+            }
             targetElement.dispatchEvent(evt);
 
             if (typeof config.showAction == 'function') {
