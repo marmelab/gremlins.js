@@ -19,9 +19,7 @@ define(function(require) {
         domPositionSelector;
 
     pickDomElement = function(elementsList){
-        var elem = elementsList[Math.floor(Math.random() * elementsList.length-1)] || pickDomElement(elementsList);
-
-        return elem;
+        return elementsList[Math.floor(Math.random() * elementsList.length-1)] || pickDomElement(elementsList);
     };
 
     getElementPosition = function(element){
