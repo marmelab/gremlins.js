@@ -7,7 +7,7 @@
  * The ajaxDelayer gremlin can be customized as follows:
  *
  *   clickerGremlin.logger(loggerObject); // inject a logger
- *   clickerGremlin.delay(randomizerObject || value); // inject a random delay generator
+ *   clickerGremlin.delay(randomizerObject); // inject a random delay generator
  *   clickerGremlin.delayAdder() //inject a function to add delay on ajax request, by default it slow down the onreadyStateChange event
  *
  * Example usage:
@@ -17,6 +17,7 @@
 define(function(require) {
     "use strict";
 
+    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
     var configurable = require('../utils/configurable');
 
     return function() {
@@ -28,42 +29,45 @@ define(function(require) {
             var open = OriginalXMLHttpRequest.prototype.open;
 
             window.XMLHttpRequest.prototype.open = function (method, url) {
-                var send = this.send;
-                this.send = function () {
-                    var d = delay();
-                    var rsc = this.onreadystatechange;
-                    if (rsc) {
-                        // "onreadystatechange" exists -> the request is asynchronous. Monkey-patch it
-                        this.onreadystatechange = function() {
-                            var self = this;
-                            if (self.readyState == 4) {
-                                if (typeof config.logger.log === 'function') {
-                                    logger.log('added delay : ', d, ' for ', method, url);
-                                }
-
-                                return setTimeout(function () {
-                                    rsc.apply(self, arguments)
-                                }, d);
-                            }
-                            return rsc.apply(this, arguments);
-                        };
-                    } else {
-                        if (typeof config.logger.log === 'function') {
-                            logger.log('added delay : ', d, ' for ', method, url);
-                        }
-                        // the request is synchronous delay the sending
-                        var start = Date.now();
-                        for (;;) {
-                            var end = Date.now();
-                            if (end - start > d) {
-                                break;
-                            }
-                        }
-                    }
-                    return send.apply(this, arguments);
+                if (typeof config.logger.log === 'function') {
+                    logger.log('delaying ', method, url);
                 }
 
                 return open.apply(this, arguments);
+            }
+
+
+            var send = OriginalXMLHttpRequest.prototype.send;
+
+            window.XMLHttpRequest.prototype.send = function () {
+                var d = delay();
+                if (typeof config.logger.log === 'function') {
+                    logger.log('added delay : ', d);
+                }
+                var rsc = this.onreadystatechange;
+                if (rsc) {
+                    // "onreadystatechange" exists -> the request is asynchronous. Monkey-patch it
+                    this.onreadystatechange = function() {
+                        var self = this;
+                        if (self.readyState == 4) {
+
+                            return setTimeout(function () {
+                                rsc.apply(self, arguments)
+                            }, d);
+                        }
+                        return rsc.apply(this, arguments);
+                    };
+                } else {
+                    // the request is synchronous delay the sending
+                    var start = Date.now();
+                    for (;;) {
+                        var end = Date.now();
+                        if (end - start > d) {
+                            break;
+                        }
+                    }
+                }
+                return send.apply(this, arguments);
             }
         };
 
@@ -77,8 +81,8 @@ define(function(require) {
         var config = {
             delayer:    defaultDelayer,
             delayAdder: defaultDelayAdder,
-            logger:     {},
-            randomizer: new Chance()
+            logger:     null,
+            randomizer: null
         };
 
         /**
@@ -87,6 +91,9 @@ define(function(require) {
         var ajaxDelayerGremlin = function ajaxDelayerGremlin() {
             if (started) {
                 return;
+            }
+            if (!config.randomizer) {
+                throw new RandomizerRequiredException();
             }
             started = true;
             var delayer = function () {

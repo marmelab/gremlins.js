@@ -8,7 +8,7 @@ require.config({
     */
 });
 
-require(['gremlins'], function(gremlins) {
+require(['gremlins', 'chance'], function(gremlins, Chance) {
 
     var requestEl = document.getElementById('request');
 
@@ -37,7 +37,7 @@ require(['gremlins'], function(gremlins) {
         req.send(null);
     }, 1500);
 
-    var ajaxDelayer = gremlins.species.ajaxDelayer().logger(console);
+    var ajaxDelayer = gremlins.species.ajaxDelayer().logger(console).randomizer(new Chance());
 
     gremlins.createHorde()
         .gremlin(ajaxDelayer())
