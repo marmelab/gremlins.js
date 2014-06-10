@@ -5,7 +5,7 @@
  * gremlins picks a random screen location first.
  *
  * By default, the typer gremlin activity is showed by a letter surrounded by
- * a red circle.
+ * a orange circle with a keyname on it.
  *
  *   var typerGremlin = gremlins.species.typer();
  *   horde.gremlin(typerGremlin);
