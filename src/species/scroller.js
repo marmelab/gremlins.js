@@ -13,7 +13,7 @@
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.species.clicker()
+ *   horde.gremlin(gremlins.species.scroller()
  *     .positionSelector(function() {
  *       // only click in the app
  *       var $list = $('#todoapp');
