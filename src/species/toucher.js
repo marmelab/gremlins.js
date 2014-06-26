@@ -190,15 +190,11 @@ define(function(require) {
                 loops = Math.ceil(gesture.duration / interval),
                 loop = 1;
 
-            triggerTouch(startTouches, element, 'start');
-
             function gestureLoop() {
                 // calculate the radius
                 var radius = gesture.radius;
-                if (gesture.scale < 1) {
-                    radius = gesture.radius - (gesture.radius * (gesture.scale / loops * loop));
-                } else if (gesture.scale > 1) {
-                    radius = gesture.radius * (gesture.scale / loops * loop);
+                if (gesture.scale !== 1) {
+                    radius = gesture.radius - (gesture.radius * (1 - gesture.scale) * (1 / loops * loop));
                 }
 
                 // calculate new position/rotation
@@ -206,20 +202,22 @@ define(function(require) {
                     posY = startPos[1] + (gesture.distanceY / loops * loop),
                     rotation = typeof gesture.rotation == 'number' ? (gesture.rotation / loops * loop) : null,
                     touches = getTouches([posX, posY], startTouches.length, radius, rotation),
-                    is_last = (loop == loops);
+                    isFirst = (loop == 1),
+                    isLast = (loop == loops);
 
-                if (!is_last) {
-                    triggerTouch(touches, element, 'move');
-                    setTimeout(gestureLoop, 10);
-                } else {
+                if (isFirst) {
+                    triggerTouch(touches, element, 'start');
+                } else if (isLast) {
                     triggerTouch(touches, element, 'end');
-                    done(touches);
+                    return done(touches);
+                } else {
+                    triggerTouch(touches, element, 'move');
                 }
 
+                setTimeout(gestureLoop, interval);
                 loop++;
             }
-
-            setTimeout(gestureLoop, 10);
+            gestureLoop();
         }
 
 
