@@ -1,0 +1,11 @@
+{
+  "undef": true,
+  "unused": true,
+  "indent": 4,
+  "smarttabs": true,
+  "browser": true,
+  "globals" : {
+    "console": true,
+    "define": true
+  }
+}
