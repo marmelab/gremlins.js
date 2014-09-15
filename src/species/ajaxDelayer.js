@@ -49,7 +49,7 @@ define(function(require) {
         }
 
         var defaultDelayer = function () {
-            return Math.floor(Math.random() * 1000);
+            return 1000;
         }
 
         /**
