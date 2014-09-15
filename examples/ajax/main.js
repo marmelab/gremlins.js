@@ -8,7 +8,7 @@ require.config({
     */
 });
 
-require(['gremlins', 'chance'], function(gremlins, Chance) {
+require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
 
     var requestEl = document.getElementById('request');
 
@@ -39,9 +39,11 @@ require(['gremlins', 'chance'], function(gremlins, Chance) {
 
     var ajaxDelayer = gremlins.species.ajaxDelayer().logger(console).randomizer(new Chance());
 
-    gremlins.createHorde()
-        .gremlin(ajaxDelayer())
-        .mogwai(null)
-        .unleash();
+    gremlins
+        .createHorde()
+        .gremlin(ajaxDelayer)
+        .mogwai(function () {})
+        .unleash()
+    ;
 
 });
