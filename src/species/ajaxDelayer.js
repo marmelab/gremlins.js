@@ -1,5 +1,5 @@
 /**
- * The ajaxDelayer gremlin delay result from ajax request
+ * The ajaxDelayer gremlin delay responses from ajax request
  *
  *   var ajaxDelayerGremlin = gremlins.species.ajaxDelayer();
  *   horde.gremlin(ajaxDelayerGremlin);
@@ -7,8 +7,9 @@
  * The ajaxDelayer gremlin can be customized as follows:
  *
  *   clickerGremlin.logger(loggerObject); // inject a logger
- *   clickerGremlin.delay(randomizerObject); // inject a random delay generator
- *   clickerGremlin.delayAdder() //inject a function to add delay on ajax request, by default it slow down the onreadyStateChange event
+ *   clickerGremlin.delayer(); // inject a delay generator that return a delay in milliseconds
+ *   clickerGremlin.delayAdder() //inject a function to add delay on ajax request, by default delay the execution of the send method
+ *   clickerGremlin.requestReporter() //inject a function to log on ajax request open By default log the method and url requested
  *
  * Example usage:
  *
@@ -17,7 +18,6 @@
 define(function(require) {
     "use strict";
 
-    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
     var configurable = require('../utils/configurable');
 
     return function() {
@@ -26,21 +26,21 @@ define(function(require) {
         var oldSend = window.XMLHttpRequest.prototype.send;
         var oldOpen = window.XMLHttpRequest.prototype.open;
 
-        var defaultDelayAdder = function (delay, logger) {
+        var defaultDelayAdder = function (delayer, logger) {
 
             window.XMLHttpRequest.prototype.send = function () {
-                var d = delay();
-                if (typeof config.logger.log === 'function') {
-                    logger.log('adding delay : ', d);
+                var delay = delayer();
+                if (typeof logger.log === 'function') {
+                    logger.log('adding delay : ', delay);
                 }
 
-                setTimeout(oldSend.bind(this), d);
+                setTimeout(oldSend.bind(this), delay);
             }
         };
 
         var defaultRequestReporter = function (logger) {
             window.XMLHttpRequest.prototype.open = function (method, url) {
-                if (typeof config.logger.log === 'function') {
+                if (typeof logger.log === 'function') {
                     logger.log('delaying ', method, url);
                 }
 
@@ -48,8 +48,8 @@ define(function(require) {
             }
         }
 
-        var defaultDelayer = function (randomizer) {
-            return randomizer.natural({max : 1000});
+        var defaultDelayer = function () {
+            return Math.floor(Math.random() * 1000);
         }
 
         /**
@@ -60,7 +60,6 @@ define(function(require) {
             delayAdder: defaultDelayAdder,
             requestReporter: defaultRequestReporter,
             logger: null,
-            randomizer: null
         };
 
         /**
@@ -70,16 +69,10 @@ define(function(require) {
             if (started) {
                 return;
             }
-            if (!config.randomizer) {
-                throw new RandomizerRequiredException();
-            }
             started = true;
-            var delayer = function () {
-                return config.delayer(config.randomizer);
-            }
 
             config.requestReporter(config.logger);
-            config.delayAdder(delayer, config.logger);
+            config.delayAdder(config.delayer, config.logger);
         }
 
         ajaxDelayerGremlin.cleanUp = function () {
