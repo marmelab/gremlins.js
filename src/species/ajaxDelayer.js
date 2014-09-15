@@ -21,23 +21,12 @@ define(function(require) {
     var configurable = require('../utils/configurable');
 
     return function() {
-        var OriginalXMLHttpRequest = window.XMLHttpRequest;
         var started = false;
 
+        var oldSend = window.XMLHttpRequest.prototype.send;
+        var oldOpen = window.XMLHttpRequest.prototype.open;
+
         var defaultDelayAdder = function (delay, logger) {
-
-            var open = OriginalXMLHttpRequest.prototype.open;
-
-            window.XMLHttpRequest.prototype.open = function (method, url) {
-                if (typeof config.logger.log === 'function') {
-                    logger.log('delaying ', method, url);
-                }
-
-                return open.apply(this, arguments);
-            }
-
-
-            var send = OriginalXMLHttpRequest.prototype.send;
 
             window.XMLHttpRequest.prototype.send = function () {
                 var d = delay();
@@ -67,9 +56,21 @@ define(function(require) {
                         }
                     }
                 }
-                return send.apply(this, arguments);
+                return oldSend.apply(this, arguments);
             }
         };
+
+        var defaultRequestReporter = function (logger) {
+
+            window.XMLHttpRequest.prototype.open = function (method, url) {
+                if (typeof config.logger.log === 'function') {
+                    logger.log('delaying ', method, url);
+                }
+
+                return oldOpen.apply(this, arguments);
+            }
+
+        }
 
         var defaultDelayer = function (randomizer) {
             return randomizer.natural({max : 1000});
@@ -79,9 +80,10 @@ define(function(require) {
          * @mixin
          */
         var config = {
-            delayer:    defaultDelayer,
+            delayer: defaultDelayer,
             delayAdder: defaultDelayAdder,
-            logger:     null,
+            requestReporter: defaultRequestReporter,
+            logger: null,
             randomizer: null
         };
 
@@ -100,11 +102,13 @@ define(function(require) {
                 return config.delayer(config.randomizer);
             }
 
+            config.requestReporter(config.logger);
             config.delayAdder(delayer, config.logger);
         }
 
         ajaxDelayerGremlin.cleanUp = function () {
-            window.XMLHttpRequest = OriginalXMLHttpRequest;
+            window.XMLHttpRequest.prototype.send = oldSend;
+            window.XMLHttpRequest.prototype.open = oldOpen;
             started = false;
         };
 
