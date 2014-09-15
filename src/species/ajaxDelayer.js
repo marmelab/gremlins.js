@@ -18,6 +18,7 @@
 define(function(require) {
     "use strict";
 
+    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
     var configurable = require('../utils/configurable');
 
     return function() {
@@ -49,7 +50,7 @@ define(function(require) {
         }
 
         var defaultDelayer = function () {
-            return 1000;
+            return config.randomizer.natural({ max: 1000 });
         }
 
         /**
@@ -60,12 +61,17 @@ define(function(require) {
             delayAdder: defaultDelayAdder,
             requestReporter: defaultRequestReporter,
             logger: null,
+            randomizer: null
         };
 
         /**
          * @mixes config
          */
         var ajaxDelayerGremlin = function ajaxDelayerGremlin() {
+            if (!config.randomizer) {
+                throw new RandomizerRequiredException();
+            }
+
             if (started) {
                 return;
             }
