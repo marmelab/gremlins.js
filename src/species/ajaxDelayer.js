@@ -31,37 +31,14 @@ define(function(require) {
             window.XMLHttpRequest.prototype.send = function () {
                 var d = delay();
                 if (typeof config.logger.log === 'function') {
-                    logger.log('added delay : ', d);
+                    logger.log('adding delay : ', d);
                 }
-                var rsc = this.onreadystatechange;
-                if (rsc) {
-                    // "onreadystatechange" exists -> the request is asynchronous. Monkey-patch it
-                    this.onreadystatechange = function() {
-                        var self = this;
-                        if (self.readyState == 4) {
 
-                            return setTimeout(function () {
-                                rsc.apply(self, arguments)
-                            }, d);
-                        }
-                        return rsc.apply(this, arguments);
-                    };
-                } else {
-                    // the request is synchronous delay the sending
-                    var start = Date.now();
-                    for (;;) {
-                        var end = Date.now();
-                        if (end - start > d) {
-                            break;
-                        }
-                    }
-                }
-                return oldSend.apply(this, arguments);
+                setTimeout(oldSend.bind(this), d);
             }
         };
 
         var defaultRequestReporter = function (logger) {
-
             window.XMLHttpRequest.prototype.open = function (method, url) {
                 if (typeof config.logger.log === 'function') {
                     logger.log('delaying ', method, url);
@@ -69,7 +46,6 @@ define(function(require) {
 
                 return oldOpen.apply(this, arguments);
             }
-
         }
 
         var defaultDelayer = function (randomizer) {
