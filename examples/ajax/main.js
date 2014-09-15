@@ -6,7 +6,7 @@ require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
 
     var requestEl = document.getElementById('request');
 
-    setInterval(function() {
+    var interval = setInterval(function() {
         requestEl.innerHTML = '<p>requesting /</p>';
         var req = new XMLHttpRequest();
         //0 or 1
@@ -31,12 +31,20 @@ require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
         req.send(null);
     }, 1500);
 
-    var ajaxDelayer = gremlins.species.ajaxDelayer().logger(console).randomizer(new Chance());
+    var ajaxDelayer = gremlins.species.ajaxDelayer().logger(console).delayer(function () {
+        var randomizer = new Chance();
+
+        return randomizer.natural({max : 1000});
+    });
 
     gremlins
         .createHorde()
         .gremlin(ajaxDelayer)
         .mogwai(function () {})
+        .after(function () {
+            clearInterval(interval);
+            requestEl.innerHTML = '<p>Finished.</p>';
+        })
         .unleash()
     ;
 
