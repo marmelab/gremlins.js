@@ -1,11 +1,5 @@
 require.config({
     packages: [{ name: 'gremlins', location: '../../src' }]
-    /*
-    // alternative: use the packaged version
-    paths: {
-        gremlins:  '../../gremlins.min'
-    }
-    */
 });
 
 require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
