@@ -147,6 +147,7 @@ To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method t
 * [formFillerGremlin](src/species/formFiller.js) fills forms by entering data, selecting options, clicking checkboxes, etc
 * [scrollerGremlin](src/species/scroller.js) scrolls the viewport to reveal another part of the document
 * [typerGremlin](src/species/typer.js) types keys on the keyboard
+* [ajaxDelayerGremlin](src/species/ajaxDelayer.js) adds a random delay to AJAX responses
 * [alertMogwai](src/mogwais/alert.js) prevents calls to alert() from blocking the test
 * [fpsMogwai](src/mogwais/fps.js) logs the number of frames per seconds (FPS) of the browser
 * [gizmoMogwai](src/mogwais/gizmo.js) can stop the gremlins when they go too far
