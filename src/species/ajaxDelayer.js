@@ -4,19 +4,21 @@
  * Even if called several times in a horde, this gremlin will only
  * override the XMLHttpRequest functions once. 
  *
+ * By default, the random delay ranges from 0 to 1 second.
+ *
  *   var ajaxDelayerGremlin = gremlins.species.ajaxDelayer();
  *   horde.gremlin(ajaxDelayerGremlin);
  *
  * The ajaxDelayer gremlin can be customized as follows:
  *
- *   ajaxDelayerGremlin.delayer(); // inject a delay generator, returning a delay in milliseconds
+ *   ajaxDelayerGremlin.delayCalculator(); // inject a function returning a delay in milliseconds
  *   ajaxDelayerGremlin.logger(loggerObject); // inject a logger
  *   ajaxDelayerGremlin.randomizer(randomizerObject); // inject a randomizer
  *
  * Example usage:
  *
  *   horde.gremlin(gremlins.species.ajaxDelayer()
- *     .delayer(function () { return 500; }) // delay all AJAX calls by 500ms
+ *     .delayCalculator(function () { return 500; }) // delay all AJAX calls by 500ms
  *   );
  */
 define(function(require) {
@@ -29,7 +31,7 @@ define(function(require) {
 
         var XHR = window.XMLHttpRequest.prototype;
 
-        var defaultDelayer = function () {
+        var defaultDelayCalculator = function () {
             return config.randomizer.natural({ max: 1000 });
         };
 
@@ -37,7 +39,7 @@ define(function(require) {
          * @mixin
          */
         var config = {
-            delayer: defaultDelayer,
+            delayCalculator: defaultDelayCalculator,
             logger: null,
             randomizer: null
         };
@@ -60,7 +62,7 @@ define(function(require) {
             XHR.send = function () {
                 var xhrInstance = this;
                 var sendArguments = arguments;
-                var delay = config.delayer();
+                var delay = config.delayCalculator();
                 window.setTimeout(function delayedSend() {
                     return oldSend.apply(xhrInstance, sendArguments);
                 }, delay);
