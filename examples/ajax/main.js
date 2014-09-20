@@ -36,7 +36,7 @@ require(['gremlins', '../../src/vendor/chance.js'], function(gremlins, Chance) {
     // start gremlins after the third call
     setTimeout(function() {
         requestEl.innerHTML += '<p>Enter ajaxDelayer Gremlin</p>';
-        var ajaxDelayer = gremlins.species.ajaxDelayer().logger(console).delayer(function () {
+        var ajaxDelayer = gremlins.species.ajaxDelayer().logger(console).delayCalculator(function () {
             var randomizer = new Chance();
             return randomizer.natural({max : 1000});
         });
