@@ -65,10 +65,11 @@ define(function(require) {
                     return oldSend.apply(xhrInstance, sendArguments);
                 }, delay);
                 if (config.logger && typeof config.logger.log === 'function') {
-                    config.logger.log('gremlin', 'ajaxDelayer', 'delay', this.ajaxDelayer_url, 'response by', delay, 'ms');
+                    config.logger.log('gremlin', 'ajaxDelayer', 'delay', this.ajaxDelayer_method, this.ajaxDelayer_url, 'response by', delay, 'ms');
                 }
             };
             XHR.open = function (method, url) {
+                this.ajaxDelayer_method = method;
                 this.ajaxDelayer_url = url;
                 return oldOpen.apply(this, arguments);
             };
