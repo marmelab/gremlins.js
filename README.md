@@ -263,6 +263,14 @@ Your feedback about the usage of gremlins.js in your specific context is valuabl
 
 All contributions are welcome. New gremlins, new mogwais, new strategies, should all be tested against the two examples bundled in the application. Try to follow the functional programming style. Also, don't forget to rebuild the minified version of the library using `make`.
 
+While developing, you can use the command `make watch` to prevent from rebuilding at each step. In this case, just include the library using:
+
+``` html
+<script src="http://localhost:8080/gremlins.min.js"></script>
+```
+
+To build library, use `make build`.
+
 ## License
 
 gremlins.js is licensed under the [MIT Licence](LICENSE), courtesy of [marmelab](http://marmelab.com).
