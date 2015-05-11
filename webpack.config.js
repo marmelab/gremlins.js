@@ -10,6 +10,7 @@ module.exports = {
     },
     output: {
         filename: "gremlins.min.js",
-        publicPath: "http://localhost:8080/"
+        publicPath: "http://localhost:8080/",
+        libraryTarget: "umd"
     }
 };
