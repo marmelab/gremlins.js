@@ -505,6 +505,10 @@ define(function(require) {
         return new GremlinsHorde();
     };
 
+    if (window) {
+        window.gremlins = gremlins;
+    }
+
     return gremlins;
 
 });

@@ -24,5 +24,9 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/marmelab/gremlins.js/issues"
+  },
+  "devDependencies": {
+    "webpack": "^1.8.11",
+    "webpack-dev-server": "^1.8.2"
   }
 }
