@@ -159,7 +159,7 @@ For instance, the clicker gremlin is a function that you can execute it directly
 
 ```js
 var clickerGremlin = gremlins.species.clicker();
-clickerGremin(); // trigger a random mouse even in the screen:
+clickerGremlin(); // trigger a random mouse even in the screen:
 ```
 
 In JavaScript, functions are objects, and as such can have methods. The clicker gremlin function offers customizing methods:
