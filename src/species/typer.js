@@ -97,7 +97,7 @@ define(function(require) {
                 targetElement = config.targetElement(posX, posY);
 
             if(keyboardEvent.initEvent){
-                keyboardEvent.initEvent(eventType, true, true);
+                keyboardEvent.initEvent(eventType, true, true, window);
             }
 
             keyboardEvent.keyCode = key;
