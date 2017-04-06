@@ -22,7 +22,7 @@ This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monke
 A gremlins *horde* is an army of specialized gremlins ready to mess up your application. *unleash* the gremlins to start the stress test:
 
 ```js
-var horde = gremlins.createHorde()
+var horde = gremlins.createHorde();
 horde.unleash();
 // gremlins will act randomly, at 10 ms interval, 1000 times
 ```
