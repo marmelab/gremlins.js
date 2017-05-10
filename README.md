@@ -22,9 +22,9 @@ This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monke
 A gremlins *horde* is an army of specialized gremlins ready to mess up your application. *unleash* the gremlins to start the stress test:
 
 ```js
-var horde = gremlins.createHorde()
+var horde = gremlins.createHorde();
 horde.unleash();
-// gremlins will act randomly, at 10 ms interval, 100 times
+// gremlins will act randomly, at 10 ms interval, 1000 times
 ```
 
 `gremlins.js` provides several gremlin *species*: some click everywhere on the page, others enter data in form inputs, others scroll the window in every possible direction, etc.
@@ -59,6 +59,13 @@ mogwai  fps  15.76
 ```
 
 After 10 errors, a special mogwai stops the test. He's called *Gizmo*, and he prevents gremlins from breaking applications bad. After all, once gremlins have found the first 10 errors, you already know what you have to do to make your application more robust.
+
+If not stopped by Gizmo, the default horde stops after roughly 1 minute. You can increase the number of gremlins actions to make the attack last longer:
+
+```js
+horde.unleash({ nb: 10000 });
+// gremlins will attack at 10 ms interval, 10,000 times
+```
 
 Gremlins, just like mogwais, are simple JavaScript functions. If `gremlins.js` doesn't provide the gremlin that can break your application, it's very easy to develop it:
 
@@ -97,6 +104,8 @@ require(['gremlins'], function(gremlins) {
   gremlins.createHorde().unleash();
 });
 ```
+
+`gremlins.js` is also available as a **bookmarklet**. Go to [this page](https://rawgithub.com/marmelab/gremlins.js/master/bookmarklet.html), grab it, and unleash hordes on any web page.
 
 ## Advanced Usage
 
@@ -150,7 +159,7 @@ For instance, the clicker gremlin is a function that you can execute it directly
 
 ```js
 var clickerGremlin = gremlins.species.clicker();
-clickerGremin(); // trigger a random mouse even in the screen:
+clickerGremlin(); // trigger a random mouse event in the screen:
 ```
 
 In JavaScript, functions are objects, and as such can have methods. The clicker gremlin function offers customizing methods:
@@ -253,6 +262,14 @@ horde.logger(customLogger);
 Your feedback about the usage of gremlins.js in your specific context is valuable, don't hesitate to [open GitHub Issues](https://github.com/marmelab/gremlins.js/issues) for any problem or question you may have.
 
 All contributions are welcome. New gremlins, new mogwais, new strategies, should all be tested against the two examples bundled in the application. Try to follow the functional programming style. Also, don't forget to rebuild the minified version of the library using `make`.
+
+While developing, you can use the command `make watch` to prevent from rebuilding at each step. In this case, just include the library using:
+
+``` html
+<script src="http://localhost:8080/gremlins.min.js"></script>
+```
+
+To build library, use `make build`.
 
 ## License
 

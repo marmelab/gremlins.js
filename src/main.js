@@ -51,7 +51,7 @@ define(function(require) {
      *     // do nasty things to the application
      *   });
      *
-     * The gremlins object contains a few gremlin species than you can add:
+     * The gremlins object contains a few gremlin species that you can add:
      *
      *   horde.gremlin(gremlins.species.clicker());
      *
@@ -504,6 +504,10 @@ define(function(require) {
     gremlins.createHorde = function() {
         return new GremlinsHorde();
     };
+
+    if (window) {
+        window.gremlins = gremlins;
+    }
 
     return gremlins;
 

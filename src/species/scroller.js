@@ -13,7 +13,7 @@
  *
  * Example usage:
  *
- *   horde.gremlin(gremlins.species.clicker()
+ *   horde.gremlin(gremlins.species.scroller()
  *     .positionSelector(function() {
  *       // only click in the app
  *       var $list = $('#todoapp');
@@ -49,17 +49,18 @@ define(function(require) {
         }
 
         function defaultShowAction(scrollX, scrollY) {
-            var clickSignal = document.createElement('div');
-            clickSignal.style.border = "3px solid red";
-            clickSignal.style.width = (documentElement.clientWidth - 25) + "px";
-            clickSignal.style.height = (documentElement.clientHeight - 25) + "px";
-            clickSignal.style.position = "absolute";
-            clickSignal.style.webkitTransition = 'opacity 1s ease-out';
-            clickSignal.style.mozTransition = 'opacity 1s ease-out';
-            clickSignal.style.transition = 'opacity 1s ease-out';
-            clickSignal.style.left = (scrollX + 10) + 'px';
-            clickSignal.style.top = (scrollY + 10) + 'px';
-            var element = body.appendChild(clickSignal);
+            var scrollSignal = document.createElement('div');
+            scrollSignal.style.zIndex = 2000;
+            scrollSignal.style.border = "3px solid red";
+            scrollSignal.style.width = (documentElement.clientWidth - 25) + "px";
+            scrollSignal.style.height = (documentElement.clientHeight - 25) + "px";
+            scrollSignal.style.position = "absolute";
+            scrollSignal.style.webkitTransition = 'opacity 1s ease-out';
+            scrollSignal.style.mozTransition = 'opacity 1s ease-out';
+            scrollSignal.style.transition = 'opacity 1s ease-out';
+            scrollSignal.style.left = (scrollX + 10) + 'px';
+            scrollSignal.style.top = (scrollY + 10) + 'px';
+            var element = body.appendChild(scrollSignal);
             setTimeout(function() {
                 body.removeChild(element);
             }, 1000);

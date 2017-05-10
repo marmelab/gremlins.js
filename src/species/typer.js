@@ -5,7 +5,7 @@
  * gremlins picks a random screen location first.
  *
  * By default, the typer gremlin activity is showed by a letter surrounded by
- * a red circle.
+ * a orange circle with a keyname on it.
  *
  *   var typerGremlin = gremlins.species.typer();
  *   horde.gremlin(typerGremlin);
@@ -34,7 +34,7 @@ define(function(require) {
         var defaultEventTypes = ['keypress', 'keyup', 'keydown'];
 
         function defaultKeyGenerator() {
-            return config.randomizer.natural({ max: 360});
+            return config.randomizer.natural({ min: 3, max: 254});
         }
 
         function defaultTargetElement(x, y) {
@@ -43,6 +43,7 @@ define(function(require) {
 
         function defaultShowAction(targetElement, x, y, key) {
             var typeSignal = document.createElement('div');
+            typeSignal.style.zIndex = 2000;
             typeSignal.style.border = "3px solid orange";
             typeSignal.style['border-radius'] = '50%'; // Chrome
             typeSignal.style.borderRadius = '50%';     // Mozilla
@@ -110,7 +111,7 @@ define(function(require) {
             }
 
             if (config.logger && typeof config.logger.log == 'function') {
-                config.logger.log('gremlin', 'typer       type', key, 'at', posX, posY);
+                config.logger.log('gremlin', 'typer       type', String.fromCharCode(key), 'at', posX, posY);
             }
         }
 

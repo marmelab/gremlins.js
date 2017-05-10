@@ -67,6 +67,7 @@ define(function(require) {
 
         function defaultShowAction(x, y) {
             var clickSignal = document.createElement('div');
+            clickSignal.style.zIndex = 2000;
             clickSignal.style.border = "3px solid red";
             clickSignal.style['border-radius'] = '50%'; // Chrome
             clickSignal.style.borderRadius = '50%';     // Mozilla
@@ -124,7 +125,7 @@ define(function(require) {
 
             var evt = document.createEvent("MouseEvents");
             var clickType = config.randomizer.pick(config.clickTypes);
-            evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, posX, posY, false, false, false, false, 0, null);
             targetElement.dispatchEvent(evt);
 
             if (typeof config.showAction == 'function') {
