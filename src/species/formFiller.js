@@ -115,7 +115,14 @@ define(function(require) {
             }
 
             if (config.logger && typeof config.logger.log == 'function') {
-                config.logger.log('gremlin', 'formFiller', 'input', value, 'in', element);
+              var event = {
+                species: 'gremlin',
+                type: 'formFiller',
+                action: 'input',
+                value: value,
+                element: element
+              };
+              config.logger.log('GREMLINSACTION', event);
             }
         }
 
