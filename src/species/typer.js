@@ -111,7 +111,16 @@ define(function(require) {
             }
 
             if (config.logger && typeof config.logger.log == 'function') {
-                config.logger.log('gremlin', 'typer       type', String.fromCharCode(key), 'at', posX, posY);
+              var event = {
+                species: 'gremlin',
+                type: 'typer',
+                action: 'key',
+                value: String.fromCharCode(key),
+                element: targetElement,
+                posX: posX,
+                posY: posY
+              };
+              config.logger.log('GREMLINSALERT', event);
             }
         }
 
