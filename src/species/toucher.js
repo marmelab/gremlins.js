@@ -312,7 +312,16 @@ define(function(require) {
                     config.showAction(touches);
                 }
                 if (config.logger && typeof config.logger.log == 'function') {
-                    config.logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
+                  var event = {
+                    species: 'gremlin',
+                    type: 'toucher',
+                    action: touchType,
+                    element: targetElement,
+                    posX: posX,
+                    posY: posY,
+                    details: details
+                  };
+                  config.logger.log('GREMLINSALERT', event);
                 }
                 done();
             }

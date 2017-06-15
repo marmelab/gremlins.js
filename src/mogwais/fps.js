@@ -79,9 +79,15 @@ define(function(require) {
                 window.requestAnimationFrame(measure);
             }
             function measure(time) {
-                var fps = (time - lastTime < 16) ? 60 : 1000/(time - lastTime);
-                var level = config.levelSelector(fps);
-                config.logger[level]('mogwai ', 'fps       ', fps);
+              var fps = (time - lastTime < 16) ? 60 : 1000/(time - lastTime);
+              var level = config.levelSelector(fps);
+              var event = {
+                fps: fps,
+                type: 'fps',
+                message: msg,
+                species: 'mogwai'
+              };
+              config.logger[level]('GREMLINSALERT', event);
             }
             window.requestAnimationFrame(init);
         }

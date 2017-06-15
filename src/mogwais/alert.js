@@ -71,19 +71,37 @@ define(function(require) {
 
             if (config.watchEvents.indexOf('alert') !== -1) {
                 window.alert = function (msg) {
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
+                  var event = {
+                    message: msg,
+                    type: 'alert',
+                    action: 'alert',
+                    species: 'mogwai'
+                  };
+                  config.logger.warn('GREMLINSALERT', event);
                 };
             }
             if (config.watchEvents.indexOf('confirm') !== -1) {
                 window.confirm = function (msg) {
-                    config.confirmResponse();
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
+                  config.confirmResponse();
+                  var event = {
+                    message: msg,
+                    type: 'confirm',
+                    action: 'alert',
+                    species: 'mogwai'
+                  };
+                  config.logger.warn('GREMLINSALERT', event);
                 };
             }
             if (config.watchEvents.indexOf('prompt') !== -1) {
                 window.prompt = function (msg) {
-                    config.promptResponse();
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
+                  config.promptResponse();
+                  var event = {
+                    message: msg,
+                    type: 'prompt',
+                    action: 'alert',
+                    species: 'mogwai'
+                  };
+                  config.logger.warn('GREMLINSALERT', event);
                 };
             }
         }

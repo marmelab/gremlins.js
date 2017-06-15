@@ -133,7 +133,15 @@ define(function(require) {
             }
 
             if (config.logger && typeof config.logger.log == 'function') {
-                config.logger.log('gremlin', 'clicker   ', clickType, 'at', posX, posY);
+                var event = {
+                  species: 'gremlin',
+                  type: 'clicker',
+                  action: clickType,
+                  element: targetElement,
+                  posX: posX,
+                  posY: posY
+                };
+                config.logger.log('GREMLINSACTION', event);
             }
         }
 
