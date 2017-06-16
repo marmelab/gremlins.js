@@ -84,10 +84,9 @@ define(function(require) {
               var event = {
                 fps: fps,
                 type: 'fps',
-                message: msg,
                 species: 'mogwai'
               };
-              config.logger[level]('GREMLINSALERT', event);
+              config.logger[level](event);
             }
             window.requestAnimationFrame(init);
         }

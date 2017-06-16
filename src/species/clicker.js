@@ -141,7 +141,7 @@ define(function(require) {
                   posX: posX,
                   posY: posY
                 };
-                config.logger.log('GREMLINSACTION', event);
+                config.logger.log(event);
             }
         }
 

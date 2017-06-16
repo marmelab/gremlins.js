@@ -120,7 +120,7 @@ define(function(require) {
                 posX: posX,
                 posY: posY
               };
-              config.logger.log('GREMLINSALERT', event);
+              config.logger.log(event);
             }
         }
 

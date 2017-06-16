@@ -77,7 +77,7 @@ define(function(require) {
                     action: 'alert',
                     species: 'mogwai'
                   };
-                  config.logger.warn('GREMLINSALERT', event);
+                  config.logger.warn(event);
                 };
             }
             if (config.watchEvents.indexOf('confirm') !== -1) {
@@ -89,7 +89,7 @@ define(function(require) {
                     action: 'alert',
                     species: 'mogwai'
                   };
-                  config.logger.warn('GREMLINSALERT', event);
+                  config.logger.warn(event);
                 };
             }
             if (config.watchEvents.indexOf('prompt') !== -1) {
@@ -101,7 +101,7 @@ define(function(require) {
                     action: 'alert',
                     species: 'mogwai'
                   };
-                  config.logger.warn('GREMLINSALERT', event);
+                  config.logger.warn(event);
                 };
             }
         }

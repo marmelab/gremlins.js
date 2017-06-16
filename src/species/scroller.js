@@ -105,7 +105,7 @@ define(function(require) {
                 posX: scrollX,
                 posY: scrollY
               };
-              config.logger.log('GREMLINSALERT', event);
+              config.logger.log(event);
             }
         }
 
