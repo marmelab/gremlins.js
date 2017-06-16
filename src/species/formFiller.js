@@ -122,7 +122,7 @@ define(function(require) {
                 value: value,
                 element: element
               };
-              config.logger.log('GREMLINSACTION', event);
+              config.logger.log(event);
             }
         }
 

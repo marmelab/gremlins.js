@@ -321,7 +321,7 @@ define(function(require) {
                     posY: posY,
                     details: details
                   };
-                  config.logger.log('GREMLINSALERT', event);
+                  config.logger.log(event);
                 }
                 done();
             }

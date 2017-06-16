@@ -50,13 +50,12 @@ define(function(require) {
                     window.setTimeout(function() {
                         // display the mogwai error after the caught error
                       var event = {
-                        message: msg,
                         type: 'gizmo',
                         species: 'mogwai',
                         errorCount: config.maxErrors,
                         action: 'test execution halted'
                       };
-                      config.logger.warn('GREMLINSALERT', event);
+                      config.logger.warn(event);
                     }, 4);
                 }
             }
