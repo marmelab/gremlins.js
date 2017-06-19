@@ -49,7 +49,13 @@ define(function(require) {
                     if (!config.logger) return;
                     window.setTimeout(function() {
                         // display the mogwai error after the caught error
-                        config.logger.warn('mogwai ', 'gizmo     ', 'stopped test execution after ', config.maxErrors, 'errors');
+                      var event = {
+                        type: 'gizmo',
+                        species: 'mogwai',
+                        errorCount: config.maxErrors,
+                        action: 'test execution halted'
+                      };
+                      config.logger.warn(event);
                     }, 4);
                 }
             }

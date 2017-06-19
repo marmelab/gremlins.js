@@ -98,7 +98,14 @@ define(function(require) {
             }
 
             if (typeof config.logger.log == 'function') {
-                config.logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
+              var event = {
+                species: 'gremlin',
+                type: 'scroller',
+                action: 'scrollTo',
+                posX: scrollX,
+                posY: scrollY
+              };
+              config.logger.log(event);
             }
         }
 

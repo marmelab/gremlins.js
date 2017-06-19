@@ -1,17 +1,14 @@
 {
-  "name": "gremlins.js",
+  "name": "clickup-gremlins.js",
   "version": "0.1.0",
   "description": "A monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.",
   "main": "gremlins.min.js",
   "directories": {
     "example": "examples"
   },
-  "scripts": {
-    "test": "make test"
-  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/marmelab/gremlins.js.git"
+    "url": "git://github.com/rlwhatley3/gremlins.js.git"
   },
   "keywords": [
     "monkey",
@@ -20,11 +17,7 @@
     "stress",
     "gremlin"
   ],
-  "author": "Francois Zaninotto",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/marmelab/gremlins.js/issues"
-  },
   "devDependencies": {
     "webpack": "^1.8.11",
     "webpack-dev-server": "^1.8.2"
