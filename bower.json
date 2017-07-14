@@ -6,6 +6,7 @@
     "Emmanuel Quentin <manu.quentin@gmail.com>",
     "Thiery Michel <thiery@marmelab.com>"
   ],
+ 
   "description": "A monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.",
   "main": "gremlins.min.js",
   "keywords": [
