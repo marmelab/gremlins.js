@@ -60,6 +60,7 @@ define(function(require) {
             scrollSignal.style.transition = 'opacity 1s ease-out';
             scrollSignal.style.left = (scrollX + 10) + 'px';
             scrollSignal.style.top = (scrollY + 10) + 'px';
+	    scrollSignal.style["pointer-events"] = "none";
             var element = body.appendChild(scrollSignal);
             setTimeout(function() {
                 body.removeChild(element);
