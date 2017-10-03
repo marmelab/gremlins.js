@@ -235,6 +235,8 @@ horde.strategy(gremlins.strategies.distribution()
 )
 ```
 
+Note that if using default gremlins, there are [five type of gremlins](https://github.com/marmelab/gremlins.js/blob/master/src/main.js#L12). The previous example would give a 0 value to last gremlin specie.
+
 You can also use another strategy. A strategy is just a callback expecting three parameters: an array of gremlins, a parameter object (the one passed to `unleash()`), and a final callback. Two other strategies are bundled ([allTogether](src/strategies/allTogether.js) and [bySpecies](src/strategies/bySpecies.js)), and it should be fairly easy to implement a custom strategy for more sophisticated attack scenarios.
 
 ### Stopping The Attack
