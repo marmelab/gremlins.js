@@ -18,6 +18,7 @@
  *   formFillerGremlin.maxNbTries(5); // How many times the gremlin must look for a fillable element before quitting
  *   formFillerGremlin.logger(loggerObject); // inject a logger
  *   formFillerGremlin.randomizer(randomizerObject); // inject a randomizer
+ *   formFillerGremlin.triggerInputEvent(true); // Trigger an input event on changing the value of text / number inputs that allows frameworks like Angular to trigger validation / watches
  */
 define(function(require) {
     "use strict";
@@ -63,12 +64,13 @@ define(function(require) {
          * @mixin
          */
         var config = {
-            elementMapTypes: defaultMapElements,
-            showAction:      defaultShowAction,
-            canFillElement:  defaultCanFillElement,
-            maxNbTries:      10,
-            logger:          null,
-            randomizer:      null
+            elementMapTypes:   defaultMapElements,
+            showAction:        defaultShowAction,
+            canFillElement:    defaultCanFillElement,
+            maxNbTries:        10,
+            logger:            null,
+            randomizer:        null,
+            triggerInputEvent: false
         };
 
         /**
@@ -123,12 +125,20 @@ define(function(require) {
             var character = config.randomizer.character();
             element.value += character;
 
+            if (config.triggerInputEvent) {
+              element.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+
             return character;
         }
 
         function fillNumberElement(element) {
             var number = config.randomizer.character({pool: '0123456789'});
             element.value += number;
+
+            if (config.triggerInputEvent) {
+              element.dispatchEvent(new Event("input", { bubbles: true }));
+            }
 
             return number;
         }
