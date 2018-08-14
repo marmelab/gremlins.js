@@ -1,17 +1,22 @@
 {
   "name": "gremlins.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.",
-  "main": "gremlins.min.js",
+  "main": "dist/gremlins.min.js",
   "directories": {
     "example": "examples"
   },
+  "files": [
+    "dist/",
+    "*.md"
+  ],
   "scripts": {
-    "test": "make test"
+    "start": "./node_modules/.bin/webpack-dev-server --config webpack.demo.js --colors --devtool cheap-module-inline-source-map --host=0.0.0.0",
+    "build": "./node_modules/.bin/webpack"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/marmelab/gremlins.js.git"
+    "url": "https://github.com/marmelab/gremlins.js"
   },
   "keywords": [
     "monkey",
@@ -25,8 +30,17 @@
   "bugs": {
     "url": "https://github.com/marmelab/gremlins.js/issues"
   },
+  "homepage": "https://github.com/marmelab/gremlins.js",
   "devDependencies": {
-    "webpack": "^1.8.11",
-    "webpack-dev-server": "^1.8.2"
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^1.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.22.1",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
   }
 }
