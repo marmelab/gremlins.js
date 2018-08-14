@@ -1,3 +1,7 @@
 import gremlins from '../../src';
 
-console.log(gremlins().createHorde());
+console.log(
+    gremlins()
+        .createHorde()
+        .stop()
+);
