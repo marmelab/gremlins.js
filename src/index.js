@@ -1,20 +1,20 @@
 // do not export anything else here to keep window.gremlins as a function
 export default () => {
-  const gremlins = () => {};
+    const gremlins = () => {};
 
-  const initHorde = () => {
-    gremlins._gremlins = [];
-    gremlins._mogwais = [];
-    gremlins._strategies = [];
-    gremlins._beforeCallbacks = [];
-    gremlins._afterCallbacks = [];
-    gremlins._logger = console; // logs to console by default
-  };
+    const initHorde = () => {
+        gremlins._gremlins = [];
+        gremlins._mogwais = [];
+        gremlins._strategies = [];
+        gremlins._beforeCallbacks = [];
+        gremlins._afterCallbacks = [];
+        gremlins._logger = console; // logs to console by default
+    };
 
-  gremlins.createHorde = () => {
-    initHorde();
-    return 'New Horde';
-  };
+    gremlins.createHorde = () => {
+        initHorde();
+        return 'New Horde';
+    };
 
-  return gremlins;
+    return gremlins;
 };

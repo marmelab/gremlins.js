@@ -11,3 +11,11 @@ build: ## Webpack build the project
 	rm -rf dist/
 	mkdir -p dist
 	npm run build
+
+lint: ## lint the code and check coding conventions
+	echo "Running linter..."
+	npm run lint
+
+prettier: ## prettify the source code using prettier
+	echo "Running prettier..."
+	npm run prettier
