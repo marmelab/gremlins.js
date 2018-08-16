@@ -1,5 +1,7 @@
+import Chance from 'chance';
+
 import configurable from '../utils/configurable';
-import RandomizerRequiredException from '../exceptions/randomizerRequired';
+import RandomizerRequiredException from '../exceptions/randomizerRequiredException';
 
 /**
  * The clicker gremlin clicks anywhere on the visible area of the document
@@ -112,14 +114,14 @@ export default () => {
     /**
      * @mixin
      */
-    var config = {
+    const config = {
         clickTypes: defaultClickTypes,
         positionSelector: defaultPositionSelector,
         showAction: defaultShowAction,
         canClick: defaultCanClick,
         maxNbTries: 10,
         logger: null,
-        randomizer: null,
+        randomizer: new Chance(),
     };
 
     /**
@@ -127,7 +129,9 @@ export default () => {
      */
     const clickerGremlin = () => {
         if (!config.randomizer) {
-            throw new RandomizerRequiredException();
+            throw new RandomizerRequiredException(
+                'This gremlin requires a randomizer to run.Please call randomizer(randomizerObject) before executing the gremlin'
+            );
         }
         let position;
         let posX;

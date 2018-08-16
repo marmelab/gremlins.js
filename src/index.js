@@ -1,6 +1,21 @@
+import Chance from 'chance';
+
+import clicker from './species/clicker';
+
+import distribution from './strategies/distribution';
+
+import executeInSeries from './utils/executeInSeries';
+
 // do not export anything else here to keep window.gremlins as a function
 export default () => {
-    const gremlins = () => {};
+    const gremlins = {
+        species: {
+            clicker,
+        },
+        strategies: {
+            distribution,
+        },
+    };
 
     const initHorde = () => {
         gremlins._gremlins = [];
@@ -9,6 +24,20 @@ export default () => {
         gremlins._beforeCallbacks = [];
         gremlins._afterCallbacks = [];
         gremlins._logger = console; // logs to console by default
+        gremlins._randomizer = new Chance();
+    };
+
+    const inject = (services, objects) => {
+        for (let i = 0, count = objects.length; i < count; i++) {
+            for (let name in services) {
+                if (
+                    typeof objects[i][name] === 'function' &&
+                    !objects[i][name]()
+                ) {
+                    objects[i][name](services[name]);
+                }
+            }
+        }
     };
 
     /**
@@ -362,7 +391,7 @@ export default () => {
     };
 
     gremlins.seed = seed => {
-        console.error('seed not implement');
+        gremlins._randomizer = new Chance(seed);
         return gremlins;
     };
 
@@ -394,7 +423,54 @@ export default () => {
      * @param {Function} [done] - A callback to be executed once the stress test is over
      */
     gremlins.unleash = (params, done) => {
-        console.error('unleash not implement');
+        if (gremlins._gremlins.length === 0) {
+            gremlins.allGremlins();
+        }
+        if (gremlins._mogwais.length === 0) {
+            gremlins.allMogwais();
+        }
+        if (gremlins._strategies.length === 0) {
+            gremlins.strategy(gremlins.strategies.distribution());
+        }
+
+        var gremlinsAndMogwais = [].concat(
+            gremlins._gremlins,
+            gremlins._mogwais
+        );
+        var allCallbacks = gremlinsAndMogwais.concat(
+            gremlins._strategies,
+            gremlins._beforeCallbacks,
+            gremlins._afterCallbacks
+        );
+        inject(
+            { logger: gremlins._logger, randomizer: gremlins._randomizer },
+            allCallbacks
+        );
+        let beforeCallbacks = gremlins._beforeCallbacks;
+        beforeCallbacks = beforeCallbacks.concat(gremlins._mogwais);
+        const afterCallbacks = gremlins._afterCallbacks;
+        for (let i = 0, count = gremlinsAndMogwais.length; i < count; i++) {
+            if (typeof gremlinsAndMogwais[i].cleanUp == 'function') {
+                afterCallbacks.push(gremlinsAndMogwais[i].cleanUp);
+            }
+        }
+
+        const horde = gremlins;
+
+        executeInSeries(beforeCallbacks, [], horde, function() {
+            executeInSeries(
+                horde._strategies,
+                [horde._gremlins, params],
+                horde,
+                function() {
+                    executeInSeries(afterCallbacks, [], horde, function() {
+                        if (typeof done === 'function') {
+                            done();
+                        }
+                    });
+                }
+            );
+        });
     };
 
     /**
