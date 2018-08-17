@@ -2,6 +2,7 @@ import Chance from 'chance';
 
 import clicker from './species/clicker';
 import formFiller from './species/formFiller';
+import scroller from './species/scroller';
 
 import fps from './mogwais/fps';
 
@@ -15,6 +16,7 @@ export default () => {
         species: {
             clicker,
             formFiller,
+            scroller,
         },
         mogwais: {
             fps,
@@ -440,11 +442,11 @@ export default () => {
             gremlins.strategy(gremlins.strategies.distribution());
         }
 
-        var gremlinsAndMogwais = [].concat(
+        const gremlinsAndMogwais = [].concat(
             gremlins._gremlins,
             gremlins._mogwais
         );
-        var allCallbacks = gremlinsAndMogwais.concat(
+        const allCallbacks = gremlinsAndMogwais.concat(
             gremlins._strategies,
             gremlins._beforeCallbacks,
             gremlins._afterCallbacks
