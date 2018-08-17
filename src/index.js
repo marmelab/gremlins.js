@@ -4,6 +4,7 @@ import clicker from './species/clicker';
 import toucher from './species/toucher';
 import formFiller from './species/formFiller';
 import scroller from './species/scroller';
+import typer from './species/typer';
 
 import fps from './mogwais/fps';
 
@@ -19,6 +20,7 @@ export default () => {
             scroller,
             toucher,
             formFiller,
+            typer,
         },
         mogwais: {
             fps,

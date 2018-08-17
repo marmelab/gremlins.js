@@ -16,6 +16,7 @@ horde = horde.gremlin(gremlin.species.formFiller());
 horde = horde.gremlin(gremlin.species.clicker().clickTypes(['click']));
 horde = horde.gremlin(gremlin.species.toucher());
 horde = horde.gremlin(gremlin.species.scroller());
+horde = horde.gremlin(gremlin.species.typer());
 // horde = horde.gremlin(() => {
 //     alert('here');
 // });
