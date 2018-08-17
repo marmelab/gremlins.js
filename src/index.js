@@ -10,6 +10,8 @@ import alert from './mogwais/alert';
 import fps from './mogwais/fps';
 import gizmo from './mogwais/gizmo';
 
+import allTogether from './strategies/allTogether';
+import bySpecies from './strategies/bySpecies';
 import distribution from './strategies/distribution';
 
 import executeInSeries from './utils/executeInSeries';
@@ -30,6 +32,8 @@ export default () => {
             gizmo,
         },
         strategies: {
+            allTogether,
+            bySpecies,
             distribution,
         },
     };
