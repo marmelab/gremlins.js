@@ -6,7 +6,9 @@ import formFiller from './species/formFiller';
 import scroller from './species/scroller';
 import typer from './species/typer';
 
+import alert from './mogwais/alert';
 import fps from './mogwais/fps';
+import gizmo from './mogwais/gizmo';
 
 import distribution from './strategies/distribution';
 
@@ -17,13 +19,15 @@ export default () => {
     const gremlins = {
         species: {
             clicker,
-            scroller,
             toucher,
             formFiller,
+            scroller,
             typer,
         },
         mogwais: {
+            alert,
             fps,
+            gizmo,
         },
         strategies: {
             distribution,
