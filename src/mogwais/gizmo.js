@@ -68,7 +68,7 @@ export default () => {
         realLoggerError = console.error;
         console.error = () => {
             incrementNbErrors();
-            realLoggerError.apply(console, []);
+            realLoggerError.apply(console, arguments); // eslint-disable-line no-undef
         };
     };
 
