@@ -7,7 +7,7 @@ import configurable from '../utils/configurable';
  * console.alert(), and stops the stress test execution once the number of
  * errors pass a certain threshold (10 errors by default).
  *
- *   var gizmoMogwai = gremlins.mogwais.gizmo();
+ *   const gizmoMogwai = gremlins.mogwais.gizmo();
  *   horde.mogwai(gizmoMogwai);
  *
  * The gizmo mogwai can be customized as follows:
@@ -25,7 +25,7 @@ export default () => {
     /**
      * @mixin
      */
-    var config = {
+    const config = {
         maxErrors: 10,
         logger: console,
     };
@@ -37,8 +37,8 @@ export default () => {
      * @mixes config
      */
     const gizmoMogwai = () => {
-        var nbErrors = 0;
-        var horde = this; // this is exceptional - don't use 'this' for mogwais in general
+        let nbErrors = 0;
+        const horde = this; // this is exceptional - don't use 'this' for mogwais in general
         const incrementNbErrors = () => {
             nbErrors++;
             if (nbErrors == config.maxErrors) {
@@ -72,7 +72,7 @@ export default () => {
         };
     };
 
-    gizmoMogwai.cleanUp = function() {
+    gizmoMogwai.cleanUp = () => {
         window.onerror = realOnError;
         console.error = realLoggerError.bind(console);
         return gizmoMogwai;

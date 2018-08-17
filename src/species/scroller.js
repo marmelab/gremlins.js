@@ -6,7 +6,7 @@ import RandomizerRequiredException from '../exceptions/randomizerRequiredExcepti
 /**
  * The scroller gremlin scrolls the viewport to reveal another part of the document
  *
- *   var scrollerGremlin = gremlins.species.scroller();
+ *   const scrollerGremlin = gremlins.species.scroller();
  *   horde.gremlin(scrollerGremlin);
  *
  * The scrollerGremlin gremlin can be customized as follows:
@@ -21,8 +21,8 @@ import RandomizerRequiredException from '../exceptions/randomizerRequiredExcepti
  *   horde.gremlin(gremlins.species.scroller()
  *     .positionSelector(function() {
  *       // only click in the app
- *       var $list = $('#todoapp');
- *       var offset = $list.offset();
+ *       const $list = $('#todoapp');
+ *       const offset = $list.offset();
  *       return [
  *         parseInt(Math.random() * $list.outerWidth() + offset.left),
  *         parseInt(Math.random() * ($list.outerHeight() + $('#info').outerHeight()) + offset.top)
@@ -36,20 +36,20 @@ export default () => {
     const body = document.body;
 
     const defaultPositionSelector = () => {
-        var documentWidth = Math.max(
-                body.scrollWidth,
-                body.offsetWidth,
-                documentElement.scrollWidth,
-                documentElement.offsetWidth,
-                documentElement.clientWidth
-            ),
-            documentHeight = Math.max(
-                body.scrollHeight,
-                body.offsetHeight,
-                documentElement.scrollHeight,
-                documentElement.offsetHeight,
-                documentElement.clientHeight
-            );
+        const documentWidth = Math.max(
+            body.scrollWidth,
+            body.offsetWidth,
+            documentElement.scrollWidth,
+            documentElement.offsetWidth,
+            documentElement.clientWidth
+        );
+        const documentHeight = Math.max(
+            body.scrollHeight,
+            body.offsetHeight,
+            documentElement.scrollHeight,
+            documentElement.offsetHeight,
+            documentElement.clientHeight
+        );
 
         return [
             config.randomizer.natural({

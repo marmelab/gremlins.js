@@ -12,7 +12,7 @@ import RandomizerRequiredException from '../exceptions/randomizerRequiredExcepti
  * By default, the formFiller gremlin activity is showed by changing the
  * element border to solid red.
  *
- *   var formFillerGremlin = gremlins.species.formFiller();
+ *   const formFillerGremlin = gremlins.species.formFiller();
  *   horde.gremlin(formFillerGremlin);
  *
  * The formFiller gremlin can be customized as follows:
@@ -128,10 +128,10 @@ export default () => {
             element.attributes['data-old-border'] = element.style.border;
         }
 
-        var oldBorder = element.attributes['data-old-border'];
+        const oldBorder = element.attributes['data-old-border'];
         element.style.border = '1px solid red';
 
-        setTimeout(function() {
+        setTimeout(() => {
             element.style.border = oldBorder;
         }, 500);
     };

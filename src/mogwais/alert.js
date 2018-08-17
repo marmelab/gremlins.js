@@ -11,7 +11,7 @@ import LoggerRequiredException from '../exceptions/loggerRequiredException';
  * of displaying a dialog, these methods are simply replaced by a write in the
  * logger.
  *
- *   var alertMogwai = gremlins.mogwais.alert();
+ *   const alertMogwai = gremlins.mogwais.alert();
  *   horde.mogwai(alertMogwai);
  *
  * The alert mogwai can be customized as follows:

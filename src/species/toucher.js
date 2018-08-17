@@ -12,7 +12,7 @@ import RandomizerRequiredException from '../exceptions/randomizerRequiredExcepti
  *
  * By default, the touch gremlin activity is showed by a red disc.
  *
- *   var toucherGremlin = gremlins.species.toucher();
+ *   const toucherGremlin = gremlins.species.toucher();
  *   horde.gremlin(toucherGremlin);
  *
  * The toucher gremlin can be customized as follows:
@@ -31,8 +31,8 @@ import RandomizerRequiredException from '../exceptions/randomizerRequiredExcepti
  *     .touchTypes(['gesture'])
  *     .positionSelector(function() {
  *        // only touch inside the foo element area
- *        var $el = $('#foo');
- *        var offset = $el.offset();
+ *        const $el = $('#foo');
+ *        const offset = $el.offset();
  *        return [
  *          parseInt(Math.random() * $el.outerWidth() + offset.left),
  *          parseInt(Math.random() * $el.outerHeight() + offset.top)

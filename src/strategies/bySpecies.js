@@ -4,7 +4,7 @@ import configurable from '../utils/configurable';
 /**
  * For each species, execute the gremlin 200 times, separated by a 10ms delay
  *
- *   var bySpeciesStrategy = gremlins.strategies.bySpecies();
+ *   const bySpeciesStrategy = gremlins.strategies.bySpecies();
  *   horde.strategy(bySpeciesStrategy);
  *
  * The actual attack duration depends on the number of species in the horde.

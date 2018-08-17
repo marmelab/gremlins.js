@@ -478,13 +478,13 @@ export default () => {
 
         const horde = gremlins;
 
-        executeInSeries(beforeCallbacks, [], horde, function() {
+        executeInSeries(beforeCallbacks, [], horde, () => {
             executeInSeries(
                 horde._strategies,
                 [horde._gremlins, params],
                 horde,
-                function() {
-                    executeInSeries(afterCallbacks, [], horde, function() {
+                () => {
+                    executeInSeries(afterCallbacks, [], horde, () => {
                         if (typeof done === 'function') {
                             done();
                         }

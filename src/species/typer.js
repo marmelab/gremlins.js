@@ -12,7 +12,7 @@ import RandomizerRequiredException from '../exceptions/randomizerRequiredExcepti
  * By default, the typer gremlin activity is showed by a letter surrounded by
  * a orange circle with a keyname on it.
  *
- *   var typerGremlin = gremlins.species.typer();
+ *   const typerGremlin = gremlins.species.typer();
  *   horde.gremlin(typerGremlin);
  *
  * The typerGremlin gremlin can be customized as follows:

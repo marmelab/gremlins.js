@@ -12,7 +12,7 @@ import RandomizerRequiredException from '../exceptions/randomizerRequiredExcepti
  *
  * By default, the clicker gremlin activity is showed by a red circle.
  *
- *   var clickerGremlin = gremlins.species.clicker();
+ *   const clickerGremlin = gremlins.species.clicker();
  *   horde.gremlin(clickerGremlin);
  *
  * The clicker gremlin can be customized as follows:
@@ -98,11 +98,11 @@ export default () => {
         clickSignal.style.transition = 'opacity 1s ease-out';
         clickSignal.style.left = x - 20 + 'px';
         clickSignal.style.top = y - 20 + 'px';
-        var element = body.appendChild(clickSignal);
-        setTimeout(function() {
+        const element = body.appendChild(clickSignal);
+        setTimeout(() => {
             body.removeChild(element);
         }, 1000);
-        setTimeout(function() {
+        setTimeout(() => {
             element.style.opacity = 0;
         }, 50);
     };

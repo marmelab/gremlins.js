@@ -4,7 +4,7 @@
  * Configurable functions modify their configuration. The configuration
  * must be an object defined in the function closure.
  *
- *   var config = {
+ *   const config = {
  *     foo: 1
  *   };
  *   function bar() {

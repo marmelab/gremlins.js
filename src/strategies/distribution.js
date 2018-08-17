@@ -9,7 +9,7 @@ import configurable from '../utils/configurable';
  *
  * This is the default attack strategy, so selecting no strategy is equivalent to
  *
- *   var distributionStrategy = gremlins.strategies.distribution();
+ *   const distributionStrategy = gremlins.strategies.distribution();
  *   horde.strategy(distributionStrategy);
  *
  * The attack duration is roughly equivalent to delay * nb, although setTimeout
@@ -71,8 +71,8 @@ export default () => {
         const executeNext = (gremlin, i, callback) => {
             if (stopped) return;
             if (i >= nb) return callDone();
-            executeInSeries([gremlin], [], horde, function() {
-                setTimeout(function() {
+            executeInSeries([gremlin], [], horde, () => {
+                setTimeout(() => {
                     executeNext(
                         pickGremlin(newGremlins, distribution),
                         ++i,

@@ -9,7 +9,7 @@ import LoggerRequiredException from '../exceptions/loggerRequiredException';
  *
  * This mogwai logs with the error level once the FPS rate drops below 10.
  *
- *   var fpsMogwai = gremlins.mogwais.fps();
+ *   const fpsMogwai = gremlins.mogwais.fps();
  *   horde.mogwai(fpsMogwai);
  *
  * The fps mogwai can be customized as follows:
@@ -75,8 +75,8 @@ export default () => {
             window.requestAnimationFrame(measure);
         };
         const measure = time => {
-            var fps = time - lastTime < 16 ? 60 : 1000 / (time - lastTime);
-            var level = config.levelSelector(fps);
+            const fps = time - lastTime < 16 ? 60 : 1000 / (time - lastTime);
+            const level = config.levelSelector(fps);
             config.logger[level]('mogwai ', 'fps       ', fps);
         };
         window.requestAnimationFrame(init);

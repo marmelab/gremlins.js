@@ -27,7 +27,7 @@ export default (callbacks, args, context, done) => {
         }
     };
 
-    args.push(function() {
+    args.push(() => {
         iterator(callbacks, args, done);
     });
 
