@@ -2,6 +2,8 @@ import Chance from 'chance';
 
 import clicker from './species/clicker';
 
+import fps from './mogwais/fps';
+
 import distribution from './strategies/distribution';
 
 import executeInSeries from './utils/executeInSeries';
@@ -11,6 +13,9 @@ export default () => {
     const gremlins = {
         species: {
             clicker,
+        },
+        mogwais: {
+            fps,
         },
         strategies: {
             distribution,
