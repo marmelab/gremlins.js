@@ -12,6 +12,7 @@ horde = gremlin.before(done => {
 horde = horde.before(() => {
     horde.log('sync');
 });
+horde = horde.gremlin(gremlin.species.formFiller());
 horde = horde.gremlin(gremlin.species.clicker().clickTypes(['click']));
 horde = horde.mogwai(gremlin.mogwais.fps());
 horde = horde.after(function() {

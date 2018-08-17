@@ -1,6 +1,7 @@
 import Chance from 'chance';
 
 import clicker from './species/clicker';
+import formFiller from './species/formFiller';
 
 import fps from './mogwais/fps';
 
@@ -13,6 +14,7 @@ export default () => {
     const gremlins = {
         species: {
             clicker,
+            formFiller,
         },
         mogwais: {
             fps,
