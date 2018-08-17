@@ -1,6 +1,7 @@
 import Chance from 'chance';
 
 import clicker from './species/clicker';
+import toucher from './species/toucher';
 import formFiller from './species/formFiller';
 import scroller from './species/scroller';
 
@@ -15,8 +16,9 @@ export default () => {
     const gremlins = {
         species: {
             clicker,
-            formFiller,
             scroller,
+            toucher,
+            formFiller,
         },
         mogwais: {
             fps,

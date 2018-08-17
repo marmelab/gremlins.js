@@ -14,9 +14,16 @@ horde = horde.before(() => {
 });
 horde = horde.gremlin(gremlin.species.formFiller());
 horde = horde.gremlin(gremlin.species.clicker().clickTypes(['click']));
+horde = horde.gremlin(gremlin.species.toucher());
+horde = horde.gremlin(gremlin.species.scroller());
+// horde = horde.gremlin(() => {
+//     alert('here');
+// });
+horde = horde.after(() => {
+    horde.log('finished!');
+});
 horde = horde.mogwai(gremlin.mogwais.fps());
-horde = horde.mogwai(gremlin.mogwais.scroller());
-horde = horde.after(function() {
+horde = horde.after(() => {
     horde.log('finished!');
 });
 horde.unleash();
