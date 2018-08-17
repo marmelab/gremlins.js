@@ -16,17 +16,13 @@ horde = horde.gremlin(gremlin.species.formFiller());
 horde = horde.gremlin(gremlin.species.clicker().clickTypes(['click']));
 horde = horde.gremlin(gremlin.species.toucher());
 horde = horde.gremlin(gremlin.species.scroller());
-// horde = horde.gremlin(gremlin.species.typer());
-// horde = horde.gremlin(() => {
-//     alert('here');
-// });
+horde = horde.gremlin(() => {
+    alert('here');
+});
 horde = horde.after(() => {
     horde.log('finished!');
 });
 horde = horde.mogwai(gremlin.mogwais.alert());
 horde = horde.mogwai(gremlin.mogwais.fps());
 horde = horde.mogwai(gremlin.mogwais.gizmo().maxErrors(2));
-horde = horde.after(() => {
-    horde.log('finished!');
-});
 horde.unleash();
