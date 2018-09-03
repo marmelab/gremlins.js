@@ -1,28 +1,39 @@
 import gremlins from '../../src';
 
-const gremlin = gremlins();
-let horde = gremlin.createHorde();
-horde = gremlin.before(done => {
-    const horde = gremlin;
+const horde = gremlins().createHorde();
+
+// Before Events
+// => Gremlins.js manage Sync and Async Before events
+horde.before(done => {
     setTimeout(() => {
-        horde.log('async');
+        horde.log('Before Async');
         done();
     }, 500);
 });
-horde = horde.before(() => {
-    horde.log('sync');
+horde.before(() => {
+    horde.log('Before Sync');
 });
-horde = horde.gremlin(gremlin.species.formFiller());
-horde = horde.gremlin(gremlin.species.clicker().clickTypes(['click']));
-horde = horde.gremlin(gremlin.species.toucher());
-horde = horde.gremlin(gremlin.species.scroller());
-horde = horde.gremlin(() => {
-    alert('here');
+
+// Setup Gremlins
+horde.gremlin(horde.species.formFiller());
+horde.gremlin(horde.species.clicker());
+horde.gremlin(horde.species.toucher());
+horde.gremlin(horde.species.scroller());
+
+// After Events
+// => Gremlins.js manage Sync and Async After events
+horde.after(done => {
+    setTimeout(() => {
+        horde.log('Finish Async!');
+        done();
+    }, 500);
 });
-horde = horde.after(() => {
-    horde.log('finished!');
-});
-horde = horde.mogwai(gremlin.mogwais.alert());
-horde = horde.mogwai(gremlin.mogwais.fps());
-horde = horde.mogwai(gremlin.mogwais.gizmo().maxErrors(2));
-horde.unleash();
+horde.after(() => horde.log('Finish Sync!'));
+
+// Setup Mogwais
+horde.mogwai(horde.mogwais.alert());
+horde.mogwai(horde.mogwais.fps());
+horde.mogwai(horde.mogwais.gizmo().maxErrors(2));
+
+// Unleash the horde
+horde.unleash({ nb: 50 });
