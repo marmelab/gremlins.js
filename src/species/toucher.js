@@ -242,7 +242,7 @@ export default () => {
     const touchTypes = {
         // tap, like a click event, only 1 touch
         // could also be a slow tap, that could turn out to be a hold
-        tap: (position, element, done) => {
+        tap(position, element, done) {
             const touches = getTouches(position, 1);
             const gesture = {
                 duration: config.randomizer.integer({ min: 20, max: 700 }),
@@ -258,7 +258,7 @@ export default () => {
 
         // doubletap, like a dblclick event, only 1 touch
         // could also be a slow doubletap, that could turn out to be a hold
-        doubletap: (position, element, done) => {
+        doubletap(position, element, done) {
             touchTypes.tap(position, element, () => {
                 setTimeout(() => {
                     touchTypes.tap(position, element, done);
@@ -267,7 +267,7 @@ export default () => {
         },
 
         // single touch gesture, could be a drag and swipe, with 1 points
-        gesture: (position, element, done) => {
+        gesture(position, element, done) {
             const gesture = {
                 distanceX: config.randomizer.integer({ min: -100, max: 200 }),
                 distanceY: config.randomizer.integer({ min: -100, max: 200 }),
@@ -281,7 +281,7 @@ export default () => {
         },
 
         // multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
-        multitouch: (position, element, done) => {
+        multitouch(position, element, done) {
             const points = config.randomizer.integer({
                 min: 2,
                 max: config.maxTouches,
@@ -307,7 +307,9 @@ export default () => {
      */
     const toucherGremlin = (done = () => {}) => {
         if (!config.randomizer) {
-            throw new RandomizerRequiredException();
+            throw new RandomizerRequiredException(
+                'This gremlin requires a randomizer to run. Please call randomizer(randomizerObject) before executing the gremlin.'
+            );
         }
 
         let position;
@@ -341,10 +343,8 @@ export default () => {
                     details
                 );
             }
-            done();
         };
-
-        touchTypes[touchType](position, targetElement, logGremlin);
+        touchTypes[touchType](position, targetElement, logGremlin, done);
     };
 
     configurable(toucherGremlin, config);
