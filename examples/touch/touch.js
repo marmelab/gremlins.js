@@ -1,6 +1,6 @@
 import hammer from 'hammerjs';
-
 import gremlins from '../../src';
+import './touch.css';
 import round from './round';
 
 let lastEvent = {};
@@ -157,10 +157,17 @@ const logger = {
     },
 };
 
-// Start Gremlins
-gremlins()
-    .createHorde()
-    .gremlin(gremlins.species.toucher())
-    .logger(logger)
-    .mogwai(gremlins.mogwais.gizmo().maxErrors(2))
-    .unleash();
+const horde = gremlins().createHorde();
+
+// Setup Gremlins
+horde.gremlin(horde.species.toucher());
+
+horde.logger(logger);
+
+// Setup Mogwais
+horde.mogwai(horde.mogwais.alert());
+horde.mogwai(horde.mogwais.fps());
+horde.mogwai(horde.mogwais.gizmo().maxErrors(2));
+
+// Unleash the horde
+horde.unleash({ nb: 50 });

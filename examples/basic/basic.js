@@ -1,4 +1,5 @@
 import gremlins from '../../src';
+import './basic.css';
 
 const horde = gremlins().createHorde();
 

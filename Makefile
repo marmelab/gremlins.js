@@ -4,7 +4,7 @@ help:
 install: ## Install dependencies
 	npm install
 
-run: ## Run the webpack-dev-server
+run: ## Run examples for development
 	npm start
 
 build: ## Webpack build the project
