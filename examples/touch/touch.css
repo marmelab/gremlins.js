@@ -1,0 +1,61 @@
+body {
+    padding: 10px;
+    margin: 0;
+    font: 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+ul,
+ol {
+    padding: 0;
+    margin: 0 0 10px 0;
+    list-style: none;
+}
+
+.log {
+    min-height: 20px;
+    padding: 9px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+}
+
+.log li {
+    display: inline-block;
+    width: 49%;
+    overflow: hidden;
+}
+
+@media screen and (min-width: 640px) {
+    .log li {
+        width: 30%;
+    }
+}
+
+.properties li {
+    white-space: nowrap;
+}
+
+.properties span {
+    margin-left: 5px;
+}
+
+.log li.active {
+    background: lightgreen;
+}
+
+.log li.property-gesture {
+    position: fixed;
+    right: 0;
+    top: 0;
+    background: lightgreen;
+    padding: 1px 4px;
+    width: auto;
+}
