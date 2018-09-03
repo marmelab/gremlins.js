@@ -21,7 +21,7 @@ export default (callbacks, args, context, done) => {
         const callback = callbacks.shift();
         callback.apply(context, args);
 
-        // Is the callback synchronous ?
+        // Is the callback synchronous?
         if (callback.length === nbArguments) {
             iterator(callbacks, args, done);
         }

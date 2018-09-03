@@ -130,21 +130,23 @@ export default () => {
     const clickerGremlin = () => {
         if (!config.randomizer) {
             throw new RandomizerRequiredException(
-                'This gremlin requires a randomizer to run.Please call randomizer(randomizerObject) before executing the gremlin'
+                'This gremlin requires a randomizer to run. Please call randomizer(randomizerObject) before executing the gremlin.'
             );
         }
+
         let position;
         let posX;
         let posY;
         let targetElement;
         let nbTries = 0;
+
         do {
             position = config.positionSelector();
             posX = position[0];
             posY = position[1];
             targetElement = document.elementFromPoint(posX, posY);
             nbTries++;
-            if (nbTries > config.maxNbTries) return false;
+            if (nbTries > config.maxNbTries) return;
         } while (!targetElement || !config.canClick(targetElement));
 
         const evt = document.createEvent('MouseEvents');

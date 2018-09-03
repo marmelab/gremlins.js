@@ -175,10 +175,10 @@ export default () => {
         do {
             // Find a random element within all selectors
             const elements = document.querySelectorAll(elementTypes.join(','));
-            if (elements.length === 0) return false;
+            if (elements.length === 0) return;
             element = config.randomizer.pick(elements);
             nbTries++;
-            if (nbTries > config.maxNbTries) return false;
+            if (nbTries > config.maxNbTries) return;
         } while (!element || !config.canFillElement(element));
 
         // Retrieve element type
