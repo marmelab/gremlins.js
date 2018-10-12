@@ -121,9 +121,6 @@ export default () => {
         randomizer: new Chance(),
     };
 
-    /**
-     * @mixes config
-     */
     const clickerGremlin = () => {
         if (!config.randomizer) {
             throw new RandomizerRequiredException(

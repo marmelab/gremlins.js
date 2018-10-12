@@ -18,9 +18,6 @@ export default () => {
     let stopped;
     let doneCallback;
 
-    /**
-     * @mixes config
-     */
     const allTogetherStrategy = (gremlins, params, done) => {
         const nb = params && params.nb ? params.nb : config.nb;
         const horde = this;

@@ -12,7 +12,7 @@ build: ## Webpack build the project
 	mkdir -p dist
 	npm run build
 
-lint: ## lint the code and check coding conventions
+check-linting: ## lint the code and check coding conventions
 	echo "Running linter..."
 	npm run lint
 

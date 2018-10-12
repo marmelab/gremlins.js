@@ -48,9 +48,6 @@ export default () => {
     let stopped;
     let doneCallback;
 
-    /**
-     * @mixes config
-     */
     const distributionStrategy = (newGremlins, params, done) => {
         const nb = params && params.nb ? params.nb : config.nb;
         const gremlins = newGremlins.slice(0); // clone the array to avoid modifying the original

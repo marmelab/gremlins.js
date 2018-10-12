@@ -30,9 +30,6 @@ export default () => {
     let realOnError;
     let realLoggerError;
 
-    /**
-     * @mixes config
-     */
     const gizmoMogwai = () => {
         let nbErrors = 0;
         const horde = this; // this is exceptional - don't use 'this' for mogwais in general

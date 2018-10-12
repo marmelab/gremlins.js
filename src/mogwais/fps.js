@@ -29,6 +29,9 @@ import LoggerRequiredException from '../exceptions/loggerRequiredException';
  *     })
  *   );
  */
+
+const NEXT_FRAME_MS = 16;
+
 export default () => {
     if (!window.requestAnimationFrame) {
         // shim layer with setTimeout fallback
@@ -72,16 +75,14 @@ export default () => {
             window.requestAnimationFrame(measure);
         };
         const measure = time => {
-            const fps = time - lastTime < 16 ? 60 : 1000 / (time - lastTime);
+            const fps =
+                time - lastTime < NEXT_FRAME_MS ? 60 : 1000 / (time - lastTime);
             const level = config.levelSelector(fps);
             config.logger[level]('mogwai ', 'fps       ', fps);
         };
         window.requestAnimationFrame(init);
     };
 
-    /**
-     * @mixes config
-     */
     const fpsMogwai = () => {
         if (!config.logger) {
             throw new LoggerRequiredException(

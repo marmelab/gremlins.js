@@ -76,9 +76,6 @@ export default () => {
         randomizer: new Chance(),
     };
 
-    /**
-     * @mixes config
-     */
     const typerGremlin = () => {
         if (!config.randomizer) {
             throw new RandomizerRequiredException();

@@ -299,9 +299,6 @@ export default () => {
         },
     };
 
-    /**
-     * @mixes config
-     */
     const toucherGremlin = (done = () => {}) => {
         if (!config.randomizer) {
             throw new RandomizerRequiredException(

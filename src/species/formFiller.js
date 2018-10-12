@@ -149,9 +149,6 @@ export default () => {
         randomizer: new Chance(),
     };
 
-    /**
-     * @mixes config
-     */
     const formFillerGremlin = () => {
         if (!config.randomizer) {
             throw new RandomizerRequiredException();

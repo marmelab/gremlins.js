@@ -89,9 +89,6 @@ export default () => {
         randomizer: new Chance(),
     };
 
-    /**
-     * @mixes config
-     */
     const scrollerGremlin = () => {
         if (!config.randomizer) {
             throw new RandomizerRequiredException();

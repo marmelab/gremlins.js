@@ -54,26 +54,23 @@ export default () => {
     const confirm = window.confirm;
     const prompt = window.prompt;
 
-    /**
-     * @mixes config
-     */
     const alertMogwai = () => {
         if (!config.logger) {
             throw new LoggerRequiredException();
         }
 
-        if (config.watchEvents.indexOf('alert') !== -1) {
+        if (config.watchEvents.includes('alert')) {
             window.alert = msg => {
                 config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
             };
         }
-        if (config.watchEvents.indexOf('confirm') !== -1) {
+        if (config.watchEvents.includes('confirm')) {
             window.confirm = msg => {
                 config.confirmResponse();
                 config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
             };
         }
-        if (config.watchEvents.indexOf('prompt') !== -1) {
+        if (config.watchEvents.includes('prompt')) {
             window.prompt = msg => {
                 config.promptResponse();
                 config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
