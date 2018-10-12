@@ -102,9 +102,6 @@ export default () => {
         return true;
     };
 
-    /**
-     * @mixin
-     */
     const config = {
         touchTypes: defaultTouchTypes,
         positionSelector: defaultPositionSelector,

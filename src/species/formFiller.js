@@ -140,9 +140,6 @@ export default () => {
         return true;
     };
 
-    /**
-     * @mixin
-     */
     const config = {
         elementMapTypes: defaultMapElements,
         showAction: defaultShowAction,

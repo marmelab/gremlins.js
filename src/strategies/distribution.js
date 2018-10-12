@@ -38,9 +38,6 @@ import configurable from '../utils/configurable';
  *   )
  */
 export default () => {
-    /**
-     * @mixin
-     */
     const config = {
         distribution: [], // percentage of each gremlin species ; the sum of all values should equal to 1
         delay: 10, // delay in milliseconds between each wave

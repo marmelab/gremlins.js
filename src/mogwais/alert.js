@@ -42,9 +42,6 @@ export default () => {
         return config.randomizer.sentence();
     };
 
-    /**
-     * @mixin
-     */
     const config = {
         watchEvents: defaultWatchEvents,
         confirmResponse: defaultConfirmResponse,

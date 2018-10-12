@@ -47,9 +47,6 @@ export default () => {
         return 'log';
     };
 
-    /**
-     * @mixin
-     */
     const config = {
         delay: 500, // how often should the fps be measured
         levelSelector: defaultLevelSelector,

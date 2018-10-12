@@ -22,9 +22,6 @@ import configurable from '../utils/configurable';
  *   );
  */
 export default () => {
-    /**
-     * @mixin
-     */
     const config = {
         maxErrors: 10,
         logger: console,

@@ -10,9 +10,6 @@ import configurable from '../utils/configurable';
  * The actual attack duration depends on the number of species in the horde.
  */
 export default () => {
-    /**
-     * @mixin
-     */
     const config = {
         delay: 10, // delay in milliseconds between each wave
         nb: 100, // number of waves to execute (can be overridden in params)

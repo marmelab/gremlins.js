@@ -111,9 +111,6 @@ export default () => {
         return true;
     };
 
-    /**
-     * @mixin
-     */
     const config = {
         clickTypes: defaultClickTypes,
         positionSelector: defaultPositionSelector,

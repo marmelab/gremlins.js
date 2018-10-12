@@ -82,9 +82,6 @@ export default () => {
         }, 50);
     };
 
-    /**
-     * @mixin
-     */
     const config = {
         positionSelector: defaultPositionSelector,
         showAction: defaultShowAction,

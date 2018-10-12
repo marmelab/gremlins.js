@@ -36,9 +36,6 @@ import configurable from '../utils/configurable';
  *   // t+20s, end of the attack
  */
 export default () => {
-    /**
-     * @mixin
-     */
     const config = {
         delay: 10, // delay in milliseconds between each attack
         nb: 200, // number of attacks to execute (can be overridden in params)

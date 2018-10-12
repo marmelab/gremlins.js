@@ -67,9 +67,6 @@ export default () => {
         }, 50);
     };
 
-    /**
-     * @mixin
-     */
     const config = {
         eventTypes: defaultEventTypes,
         showAction: defaultShowAction,
