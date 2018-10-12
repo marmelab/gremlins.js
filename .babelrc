@@ -1,8 +1,17 @@
 {
     "presets": [
-        "env"
+        [
+            "@babel/preset-env",
+            {
+                "loose": true,
+                "modules": false,
+                "useBuiltIns": "usage",
+                "shippedProposals": true,
+                "targets": {
+                    "browsers": [">0.25%", "not dead"]
+                }
+            }
+        ]
     ],
-    "plugins": [
-        "transform-object-rest-spread"
-    ]
+    "plugins": ["@babel/plugin-proposal-object-rest-spread"]
 }
