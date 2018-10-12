@@ -106,11 +106,11 @@ export default () => {
 
         window.scrollTo(scrollX, scrollY);
 
-        if (typeof config.showAction == 'function') {
+        if (typeof config.showAction === 'function') {
             config.showAction(scrollX, scrollY);
         }
 
-        if (config.logger && typeof config.logger.log == 'function') {
+        if (config.logger && typeof config.logger.log === 'function') {
             config.logger.log(
                 'gremlin',
                 'scroller  ',

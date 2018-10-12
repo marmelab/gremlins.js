@@ -48,7 +48,7 @@ export default () => {
 
         for (let i = 0, c = options.length; i < c; i++) {
             const option = options[i];
-            option.selected = option.value == randomOption.value;
+            option.selected = option.value === randomOption.value;
         }
 
         return randomOption.value;
@@ -192,11 +192,11 @@ export default () => {
 
         const value = config.elementMapTypes[elementType](element);
 
-        if (typeof config.showAction == 'function') {
+        if (typeof config.showAction === 'function') {
             config.showAction(element);
         }
 
-        if (config.logger && typeof config.logger.log == 'function') {
+        if (config.logger && typeof config.logger.log === 'function') {
             config.logger.log(
                 'gremlin',
                 'formFiller',

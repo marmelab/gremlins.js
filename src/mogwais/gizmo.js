@@ -41,7 +41,7 @@ export default () => {
         const horde = this; // this is exceptional - don't use 'this' for mogwais in general
         const incrementNbErrors = () => {
             nbErrors++;
-            if (nbErrors == config.maxErrors) {
+            if (nbErrors === config.maxErrors) {
                 horde.stop();
                 if (!config.logger) return;
                 window.setTimeout(() => {

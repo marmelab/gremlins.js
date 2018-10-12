@@ -178,8 +178,8 @@ export default () => {
             });
         });
 
-        event.touches = type == 'end' ? [] : touchlist;
-        event.targetTouches = type == 'end' ? [] : touchlist;
+        event.touches = type === 'end' ? [] : touchlist;
+        event.targetTouches = type === 'end' ? [] : touchlist;
         event.changedTouches = touchlist;
 
         element.dispatchEvent(event);
@@ -212,7 +212,7 @@ export default () => {
             const posX = startPos[0] + (gesture.distanceX / loops) * loop;
             const posY = startPos[1] + (gesture.distanceY / loops) * loop;
             const rotation =
-                typeof gesture.rotation == 'number'
+                typeof gesture.rotation === 'number'
                     ? (gesture.rotation / loops) * loop
                     : null;
             const touches = getTouches(
@@ -221,8 +221,8 @@ export default () => {
                 radius,
                 rotation
             );
-            const isFirst = loop == 1;
-            const isLast = loop == loops;
+            const isFirst = loop === 1;
+            const isLast = loop === loops;
 
             if (isFirst) {
                 triggerTouch(touches, element, 'start');
@@ -329,10 +329,10 @@ export default () => {
 
         const touchType = config.randomizer.pick(config.touchTypes);
         const logGremlin = (touches, details) => {
-            if (typeof config.showAction == 'function') {
+            if (typeof config.showAction === 'function') {
                 config.showAction(touches);
             }
-            if (config.logger && typeof config.logger.log == 'function') {
+            if (config.logger && typeof config.logger.log === 'function') {
                 config.logger.log(
                     'gremlin',
                     'toucher   ',

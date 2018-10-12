@@ -116,7 +116,7 @@ export default () => {
             config.showAction(targetElement, posX, posY, key);
         }
 
-        if (config.logger && typeof config.logger.log == 'function') {
+        if (config.logger && typeof config.logger.log === 'function') {
             config.logger.log(
                 'gremlin',
                 'typer       type',

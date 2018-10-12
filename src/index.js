@@ -471,7 +471,7 @@ export default () => {
         beforeCallbacks = beforeCallbacks.concat(gremlins._mogwais);
         const afterCallbacks = gremlins._afterCallbacks;
         for (let i = 0, count = gremlinsAndMogwais.length; i < count; i++) {
-            if (typeof gremlinsAndMogwais[i].cleanUp == 'function') {
+            if (typeof gremlinsAndMogwais[i].cleanUp === 'function') {
                 afterCallbacks.push(gremlinsAndMogwais[i].cleanUp);
             }
         }

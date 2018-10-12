@@ -170,11 +170,11 @@ export default () => {
         );
         targetElement.dispatchEvent(evt);
 
-        if (typeof config.showAction == 'function') {
+        if (typeof config.showAction === 'function') {
             config.showAction(posX, posY, clickType);
         }
 
-        if (config.logger && typeof config.logger.log == 'function') {
+        if (config.logger && typeof config.logger.log === 'function') {
             config.logger.log(
                 'gremlin',
                 'clicker   ',
