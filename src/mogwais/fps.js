@@ -10,7 +10,7 @@
  *   horde.mogwai(fpsMogwai);
  *
  * The fps mogwai can be customized as follows:
- *
+ *2333
  *   fpsMogwai.delay(500); // the interval for FPS measurements
  *   fpsMogwai.levelSelector(function(fps) { // select logging level according to fps value });
  *   fpsMogwai.logger(loggerObject); // inject a logger
