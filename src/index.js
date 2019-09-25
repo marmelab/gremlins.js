@@ -484,7 +484,7 @@ export default () => {
         executeInSeries(beforeCallbacks, [], horde, () => {
             executeInSeries(
                 horde._strategies,
-                [gremlinsAndMogwais, ...params],
+                [gremlins._gremlins, params],
                 horde,
                 () => {
                     executeInSeries(afterCallbacks, [], horde, () => {

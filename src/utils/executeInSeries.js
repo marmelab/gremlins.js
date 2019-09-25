@@ -12,15 +12,14 @@
 export default (callbacks, args, context, done) => {
     const cbs = [...callbacks]; // clone the array to avoid modifying the original
 
-    const iterator = (callbacks, iteratorArgs) => {
-        if (!callbacks.length) {
+    const iterator = (iteratorCallbacks, iteratorArgs) => {
+        if (!iteratorCallbacks.length) {
             return typeof done === 'function' ? done() : true;
         }
 
-        const callback = callbacks.shift();
+        const callback = iteratorCallbacks.shift();
         callback.apply(context, iteratorArgs);
-
-        iterator(callbacks, iteratorArgs);
+        iterator(iteratorCallbacks, iteratorArgs);
     };
 
     const newArgs = [...args, () => iterator(cbs, args)];

@@ -99,6 +99,5 @@ export default () => {
     };
 
     configurable(fpsMogwai, config);
-
     return fpsMogwai;
 };
