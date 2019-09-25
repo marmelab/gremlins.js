@@ -67,18 +67,12 @@ export default () => {
             if (i >= nb) {
                 return callDone();
             }
-            executeInSeries(
-                [gremlin],
-                [],
-                horde,
-                () => {
-                    setTimeout(() => {
-                        const nextGremlin = pickGremlin(gremlins, distribution);
-                        executeNext(nextGremlin, ++i);
-                    }, config.delay);
-                },
-                true
-            );
+            executeInSeries([gremlin], [], horde, () => {
+                setTimeout(() => {
+                    const nextGremlin = pickGremlin(gremlins, distribution);
+                    executeNext(nextGremlin, ++i);
+                }, config.delay);
+            });
         };
 
         executeNext(pickGremlin(gremlins, distribution), 0);

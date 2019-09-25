@@ -10,23 +10,17 @@
  * @param {Function} done - The final callback to execute once all functions are executed
  */
 export default (callbacks, args, context, done) => {
-    const nbArguments = args.length;
     const cbs = [...callbacks]; // clone the array to avoid modifying the original
 
-    const iterator = (callbacks, args) => {
+    const iterator = (callbacks, iteratorArgs) => {
         if (!callbacks.length) {
             return typeof done === 'function' ? done() : true;
         }
 
         const callback = callbacks.shift();
-        callback.apply(context, args);
+        callback.apply(context, iteratorArgs);
 
-        // Is the callback synchronous?
-        if (callback.length === nbArguments) {
-            iterator(callbacks, args);
-        } else {
-            done();
-        }
+        iterator(callbacks, iteratorArgs);
     };
 
     const newArgs = [...args, () => iterator(cbs, args)];
