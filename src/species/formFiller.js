@@ -168,7 +168,7 @@ export default () => {
         } while (!element || !config.canFillElement(element));
 
         // Retrieve element type
-        const elementType = config.elementMapTypes.find(selector =>
+        const elementType = Object.keys(config.elementMapTypes).find(selector =>
             matchesSelector(element, selector)
         );
 

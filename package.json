@@ -11,7 +11,7 @@
         "*.md"
     ],
     "scripts": {
-        "start": "webpack-dev-server --config webpack.demo.js --colors --devtool cheap-module-inline-source-map --host=0.0.0.0",
+        "start": "webpack-dev-server --config webpack.demo.js --colors --devtool cheap-module-inline-source-map --hot --inline --host=0.0.0.0",
         "build": "webpack",
         "lint": "eslint src examples",
         "prettier": "prettier-eslint --write --list-different src/**/*.js examples/**/*.js"
