@@ -45,11 +45,9 @@ export default () => {
         const options = element.querySelectorAll('option');
         if (options.length === 0) return;
         const randomOption = config.randomizer.pick(options);
-
-        for (let i = 0, c = options.length; i < c; i++) {
-            const option = options[i];
+        options.forEach(option => {
             option.selected = option.value === randomOption.value;
-        }
+        });
 
         return randomOption.value;
     };
@@ -155,13 +153,7 @@ export default () => {
         }
 
         // Retrieve all selectors
-        const elementTypes = [];
-
-        for (let key in config.elementMapTypes) {
-            if (config.elementMapTypes.hasOwnProperty(key)) {
-                elementTypes.push(key);
-            }
-        }
+        const elementTypes = Object.keys(config.elementMapTypes);
 
         let element;
         let nbTries = 0;
@@ -176,13 +168,9 @@ export default () => {
         } while (!element || !config.canFillElement(element));
 
         // Retrieve element type
-        let elementType = null;
-        for (let selector in config.elementMapTypes) {
-            if (matchesSelector(element, selector)) {
-                elementType = selector;
-                break;
-            }
-        }
+        const elementType = config.elementMapTypes.find(selector =>
+            matchesSelector(element, selector)
+        );
 
         const value = config.elementMapTypes[elementType](element);
 
