@@ -11,7 +11,7 @@
  */
 export default (callbacks, args, context, done) => {
     const nbArguments = args.length;
-    callbacks = callbacks.slice(0); // clone the array to avoid modifying the original
+    const cbs = [...callbacks]; // clone the array to avoid modifying the original
 
     const iterator = (callbacks, args) => {
         if (!callbacks.length) {
@@ -23,13 +23,12 @@ export default (callbacks, args, context, done) => {
 
         // Is the callback synchronous?
         if (callback.length === nbArguments) {
-            iterator(callbacks, args, done);
+            iterator(callbacks, args);
+        } else {
+            done();
         }
     };
 
-    args.push(() => {
-        iterator(callbacks, args, done);
-    });
-
-    iterator(callbacks, args, done);
+    const newArgs = [...args, () => iterator(cbs, args)];
+    iterator(cbs, newArgs);
 };

@@ -36,4 +36,4 @@ horde.mogwai(horde.mogwais.fps());
 horde.mogwai(horde.mogwais.gizmo().maxErrors(2));
 
 // Unleash the horde
-horde.unleash({ nb: 50 });
+horde.unleash({ nb: 1000 });

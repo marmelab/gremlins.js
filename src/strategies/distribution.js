@@ -50,33 +50,38 @@ export default () => {
 
     const distributionStrategy = (newGremlins, params, done) => {
         const nb = params && params.nb ? params.nb : config.nb;
+        const horde = params.horde;
         const gremlins = newGremlins.slice(0); // clone the array to avoid modifying the original
         const distribution =
             config.distribution.length === 0
                 ? getUniformDistribution(gremlins)
                 : config.distribution;
-        const horde = this;
 
         if (nb === 0) return done();
-
         stopped = false;
         doneCallback = done; // done can also be called by stop()
-
-        const executeNext = (gremlin, i, callback) => {
-            if (stopped) return;
-            if (i >= nb) return callDone();
-            executeInSeries([gremlin], [], horde, () => {
-                setTimeout(() => {
-                    executeNext(
-                        pickGremlin(newGremlins, distribution),
-                        ++i,
-                        callback
-                    );
-                }, config.delay);
-            });
+        const executeNext = (gremlin, i) => {
+            if (stopped) {
+                return;
+            }
+            if (i >= nb) {
+                return callDone();
+            }
+            executeInSeries(
+                [gremlin],
+                [],
+                horde,
+                () => {
+                    setTimeout(() => {
+                        const nextGremlin = pickGremlin(gremlins, distribution);
+                        executeNext(nextGremlin, ++i);
+                    }, config.delay);
+                },
+                true
+            );
         };
 
-        executeNext(pickGremlin(gremlins, distribution), 0, executeNext);
+        executeNext(pickGremlin(gremlins, distribution), 0);
     };
 
     const getUniformDistribution = newGremlins => {

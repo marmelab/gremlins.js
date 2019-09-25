@@ -454,34 +454,37 @@ export default () => {
             gremlins.strategy(gremlins.strategies.distribution());
         }
 
-        const gremlinsAndMogwais = [].concat(
-            gremlins._gremlins,
-            gremlins._mogwais
-        );
-        const allCallbacks = gremlinsAndMogwais.concat(
-            gremlins._strategies,
-            gremlins._beforeCallbacks,
-            gremlins._afterCallbacks
-        );
+        const gremlinsAndMogwais = [
+            ...gremlins._gremlins,
+            ...gremlins._mogwais,
+        ];
+        const allCallbacks = [
+            ...gremlinsAndMogwais,
+            ...gremlins._strategies,
+            ...gremlins._beforeCallbacks,
+            ...gremlins._afterCallbacks,
+        ];
         inject(
             { logger: gremlins._logger, randomizer: gremlins._randomizer },
             allCallbacks
         );
-        let beforeCallbacks = gremlins._beforeCallbacks;
-        beforeCallbacks = beforeCallbacks.concat(gremlins._mogwais);
-        const afterCallbacks = gremlins._afterCallbacks;
-        for (let i = 0, count = gremlinsAndMogwais.length; i < count; i++) {
-            if (typeof gremlinsAndMogwais[i].cleanUp === 'function') {
-                afterCallbacks.push(gremlinsAndMogwais[i].cleanUp);
-            }
-        }
+        const beforeCallbacks = [
+            ...gremlins._beforeCallbacks,
+            ...gremlins._mogwais,
+        ];
+        const afterCallbacks = [
+            ...gremlins._afterCallbacks,
+            ...gremlinsAndMogwais
+                .map(beast => beast.cleanUp)
+                .filter(cleanUp => typeof cleanUp === 'function'),
+        ];
 
         const horde = gremlins;
 
         executeInSeries(beforeCallbacks, [], horde, () => {
             executeInSeries(
                 horde._strategies,
-                [horde._gremlins, params],
+                [horde._gremlins, { ...params, horde }],
                 horde,
                 () => {
                     executeInSeries(afterCallbacks, [], horde, () => {
