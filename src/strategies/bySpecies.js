@@ -1,5 +1,6 @@
 import executeInSeries from '../utils/executeInSeries';
 import configurable from '../utils/configurable';
+import wait from '../utils/wait';
 
 /**
  * For each species, execute the gremlin 200 times, separated by a 10ms delay
@@ -42,47 +43,31 @@ export default () => {
     };
 
     let stopped;
-    let doneCallback;
 
-    const bySpeciesStrategy = (newGremlins, params, done) => {
+    const bySpeciesStrategy = async (newGremlins, params) => {
         const nb = params && params.nb ? params.nb : config.nb;
-        const gremlins = newGremlins.slice(0); // clone the array to avoid modifying the original
+        const delay = params && params.delay ? params.delay : config.delay;
+
+        const gremlins = [...newGremlins]; // clone the array to avoid modifying the original
         const horde = this;
 
         stopped = false;
-        doneCallback = done; // done can also be called by stop()
 
-        const executeNext = (gremlin, i, callback) => {
-            if (stopped) return;
-            if (i >= nb) return callback();
-            executeInSeries([gremlin], [], horde, () => {
-                setTimeout(() => {
-                    executeNext(gremlin, ++i, callback);
-                }, config.delay);
-            });
-        };
-
-        const executeNextGremlin = () => {
-            if (stopped) return;
-            if (gremlins.length === 0) {
-                return callDone();
+        for (let gremlinIndex in gremlins) {
+            const gremlin = gremlins[gremlinIndex];
+            for (let i = 0; i < nb; i++) {
+                await wait(delay);
+                if (stopped) {
+                    return Promise.resolve();
+                }
+                await executeInSeries([gremlin], [], horde, delay);
             }
-            executeNext(gremlins.shift(), 0, executeNextGremlin);
-        };
-
-        executeNextGremlin();
+        }
+        return Promise.resolve();
     };
 
     bySpeciesStrategy.stop = () => {
         stopped = true;
-        setTimeout(callDone, 4);
-    };
-
-    const callDone = () => {
-        if (typeof doneCallback === 'function') {
-            doneCallback();
-        }
-        doneCallback = null;
     };
 
     configurable(bySpeciesStrategy, config);

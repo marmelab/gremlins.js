@@ -4,10 +4,9 @@ const horde = gremlins().createHorde();
 
 // Before Events
 // => Gremlins.js manage Sync and Async Before events
-horde.before(done => {
+horde.before(() => {
     setTimeout(() => {
         horde.log('Before Async');
-        done();
     }, 500);
 });
 horde.before(() => {
@@ -22,10 +21,9 @@ horde.gremlin(horde.species.scroller());
 
 // After Events
 // => Gremlins.js manage Sync and Async After events
-horde.after(done => {
+horde.after(() => {
     setTimeout(() => {
         horde.log('Finish Async!');
-        done();
     }, 500);
 });
 horde.after(() => horde.log('Finish Sync!'));
@@ -36,4 +34,4 @@ horde.mogwai(horde.mogwais.fps());
 horde.mogwai(horde.mogwais.gizmo().maxErrors(2));
 
 // Unleash the horde
-horde.unleash({ nb: 1000, delay: 1 });
+horde.unleash({ nb: 200, delay: 10 });

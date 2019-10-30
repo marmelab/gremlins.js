@@ -18,28 +18,21 @@ export default () => {
 
     let stopped;
 
-    const allTogetherStrategy = (gremlins, params) =>
-        new Promise(resolve => {
-            const nb = params && params.nb ? params.nb : config.nb;
-            const delay = params && params.delay ? params.delay : config.delay;
-            const horde = this;
+    const allTogetherStrategy = async (gremlins, params) => {
+        const nb = params && params.nb ? params.nb : config.nb;
+        const delay = params && params.delay ? params.delay : config.delay;
+        const horde = this;
 
-            stopped = false;
-
-            const promises = [...Array(nb)]
-                .map(executeInSeries(gremlins, [], horde))
-                .reduce((chainedPromises, promise) =>
-                    chainedPromises.then(async () => {
-                        if (stopped) {
-                            return Promise.resolve();
-                        }
-                        await wait(delay);
-                        return promise;
-                    }, Promise.resolve())
-                );
-            promises.then(resolve);
-        });
-
+        stopped = false;
+        for (let i = 0; i < nb; i++) {
+            await wait(delay);
+            if (stopped) {
+                return Promise.resolve();
+            }
+            await executeInSeries(gremlins, [], horde);
+        }
+        return Promise.resolve();
+    };
     allTogetherStrategy.stop = () => {
         stopped = true;
     };
