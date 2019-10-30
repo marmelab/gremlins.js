@@ -2,6 +2,7 @@ import Chance from 'chance';
 
 import executeInSeries from '../utils/executeInSeries';
 import configurable from '../utils/configurable';
+import wait from '../utils/wait';
 
 /**
  * Execute all Gremlins randomly following a distribution, separated by a 10ms
@@ -46,36 +47,30 @@ export default () => {
     };
 
     let stopped;
-    let doneCallback;
 
-    const distributionStrategy = (newGremlins, params, done) => {
+    const distributionStrategy = async (newGremlins, params) => {
         const nb = params && params.nb ? params.nb : config.nb;
+        const delay = params && params.delay ? params.delay : config.delay;
         const horde = params.horde;
-        const gremlins = newGremlins.slice(0); // clone the array to avoid modifying the original
+
+        const gremlins = [...newGremlins]; // clone the array to avoid modifying the original
         const distribution =
             config.distribution.length === 0
                 ? getUniformDistribution(gremlins)
                 : config.distribution;
 
-        if (nb === 0) return done();
+        if (nb === 0) return Promise.resolve();
         stopped = false;
-        doneCallback = done; // done can also be called by stop()
-        const executeNext = (gremlin, i) => {
-            if (stopped) {
-                return;
-            }
-            if (i >= nb) {
-                return callDone();
-            }
-            executeInSeries([gremlin], [], horde, () => {
-                setTimeout(() => {
-                    const nextGremlin = pickGremlin(gremlins, distribution);
-                    executeNext(nextGremlin, ++i);
-                }, config.delay);
-            });
-        };
 
-        executeNext(pickGremlin(gremlins, distribution), 0);
+        for (let i = 0; i < nb; i++) {
+            const gremlin = pickGremlin(gremlins, distribution);
+            await wait(delay);
+            if (stopped) {
+                return Promise.resolve();
+            }
+            await executeInSeries([gremlin], [], horde);
+        }
+        return Promise.resolve();
     };
 
     const getUniformDistribution = newGremlins => {
@@ -102,14 +97,6 @@ export default () => {
 
     distributionStrategy.stop = () => {
         stopped = true;
-        setTimeout(callDone, 4);
-    };
-
-    const callDone = () => {
-        if (typeof doneCallback === 'function') {
-            doneCallback();
-        }
-        doneCallback = null;
     };
 
     configurable(distributionStrategy, config);
