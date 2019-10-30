@@ -4,6 +4,8 @@ help:
 install: ## Install dependencies
 	npm install
 
+start: run
+
 run: ## Run the webpack-dev-server
 	npm start
 
