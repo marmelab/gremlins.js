@@ -12,7 +12,7 @@
 export default (callables, args, context) =>
     new Promise(async (resolve, reject) => {
         try {
-            callables.forEach(cb => cb.apply(context, args));
+            callables.forEach(async cb => await cb.apply(context, args));
         } catch (error) {
             return reject(error);
         }
