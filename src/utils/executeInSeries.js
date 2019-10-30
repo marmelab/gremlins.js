@@ -9,19 +9,14 @@
  * @param {Object|null} context - The object the functions must be bound to
  * @param {Function} done - The final callback to execute once all functions are executed
  */
-export default (callbacks, args, context, done) => {
-    const cbs = [...callbacks]; // clone the array to avoid modifying the original
-
-    const iterator = (iteratorCallbacks, iteratorArgs) => {
-        if (!iteratorCallbacks.length) {
-            return typeof done === 'function' ? done() : true;
+export default (callables, args, context) =>
+    new Promise((resolve, reject) => {
+        // wtf ???
+        // const newArgs = [...args, () => iterator(callables, args)];
+        try {
+            callables.forEach(cb => cb.apply(context, args));
+        } catch (error) {
+            return reject(error);
         }
-
-        const callback = iteratorCallbacks.shift();
-        callback.apply(context, iteratorArgs);
-        iterator(iteratorCallbacks, iteratorArgs);
-    };
-
-    const newArgs = [...args, () => iterator(cbs, args)];
-    iterator(cbs, newArgs);
-};
+        return resolve();
+    });

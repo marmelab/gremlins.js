@@ -1,5 +1,6 @@
 import executeInSeries from '../utils/executeInSeries';
 import configurable from '../utils/configurable';
+import wait from '../utils/wait';
 
 /**
  * Execute all Gremlins species at once ; repeat 10ms after for 100 times
@@ -16,42 +17,31 @@ export default () => {
     };
 
     let stopped;
-    let doneCallback;
 
-    const allTogetherStrategy = (gremlins, params, done) => {
-        const nb = params && params.nb ? params.nb : config.nb;
-        const horde = this;
+    const allTogetherStrategy = (gremlins, params) =>
+        new Promise(resolve => {
+            const nb = params && params.nb ? params.nb : config.nb;
+            const delay = params && params.delay ? params.delay : config.delay;
+            const horde = this;
 
-        stopped = false;
-        doneCallback = done; // done can also be called by stop()
+            stopped = false;
 
-        const executeAllGremlins = callback => {
-            executeInSeries(gremlins, [], horde, callback);
-        };
-
-        const executeNextWave = i => {
-            if (stopped) return;
-            if (i >= nb) return callDone();
-            executeAllGremlins(() => {
-                setTimeout(() => {
-                    executeNextWave(++i);
-                }, config.delay);
-            });
-        };
-
-        executeNextWave(0);
-    };
-
-    const callDone = () => {
-        if (typeof doneCallback === 'function') {
-            doneCallback();
-        }
-        doneCallback = null;
-    };
+            const promises = [...Array(nb)]
+                .map(executeInSeries(gremlins, [], horde))
+                .reduce((chainedPromises, promise) =>
+                    chainedPromises.then(async () => {
+                        if (stopped) {
+                            return Promise.resolve();
+                        }
+                        await wait(delay);
+                        return promise;
+                    }, Promise.resolve())
+                );
+            promises.then(resolve);
+        });
 
     allTogetherStrategy.stop = () => {
         stopped = true;
-        setTimeout(callDone, 4);
     };
 
     configurable(allTogetherStrategy, config);
