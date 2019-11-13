@@ -16,7 +16,7 @@
     },
     "rules": {
         "prettier/prettier": ["error"],
-        "import/no-named-as-default": ["off"],
+        "import/no-named-as-default": [0],
         "no-unused-vars": [
             "error",
             {
