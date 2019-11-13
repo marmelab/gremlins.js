@@ -29,7 +29,15 @@ export default () => {
 
     const fillTextElement = element => {
         const character = config.randomizer.character();
-        element.value += character;
+        const newValue = element.value + character;
+
+        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype,
+            'value'
+        ).set;
+        nativeInputValueSetter.call(element, newValue);
+        var ev2 = new Event('input', { bubbles: true });
+        element.dispatchEvent(ev2);
 
         return character;
     };
@@ -109,6 +117,8 @@ export default () => {
         return email;
     };
 
+    const clickSubmit = element => element.click();
+
     const defaultMapElements = {
         textarea: fillTextElement,
         'input[type="text"]': fillTextElement,
@@ -119,6 +129,7 @@ export default () => {
         'input[type="checkbox"]': fillCheckbox,
         'input[type="email"]': fillEmail,
         'input:not([type])': fillTextElement,
+        'input[type="submit"]': clickSubmit,
     };
 
     const defaultShowAction = element => {

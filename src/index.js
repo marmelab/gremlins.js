@@ -450,7 +450,7 @@ export default () => {
             gremlins.allMogwais();
         }
         if (gremlins._strategies.length === 0) {
-            gremlins.strategy(gremlins.strategies.bySpecies());
+            gremlins.strategy(gremlins.strategies.allTogether());
         }
 
         const gremlinsAndMogwais = [
@@ -480,8 +480,9 @@ export default () => {
 
         const horde = gremlins;
 
+        console.log(params);
         const strategies = horde._strategies.map(strat =>
-            strat(gremlins._gremlins, ...params)
+            strat(gremlins._gremlins, params)
         );
 
         await executeInSeries(beforeCallbacks, [], horde);
