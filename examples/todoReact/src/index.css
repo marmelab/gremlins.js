@@ -18,13 +18,32 @@ code {
 }
 
 .new-todo--button {
+    background: cyan;
+    border: none;
     height: 50px;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5em;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none;
+}
+
+.new-todo--button:hover {
+    background: none;
+    border: 5px solid cyan;
 }
 
 .new-todo--input {
+    border: none;
+    border-bottom: 5px cyan solid;
+    background: none;
     font-size: 24px;
     height: 50px;
     width: 300px;
+    margin-bottom: 10px;
+    color: white;
+    outline: none;
 }
 
 .todo-list {
@@ -35,7 +54,6 @@ code {
 
 .todo-row {
     margin-top: 16px;
-    border-bottom: 2px cyan solid;
     width: 100%;
     display: flex;
     align-items: center;
@@ -49,10 +67,19 @@ code {
     font-size: larger;
     outline: none;
     color: darkcyan;
+    transition: color 0.2s ease;
 }
 
-.delete-button {
+.done-button:hover {
+    color: greenyellow;
+}
+
+.delete-button:hover {
     color: tomato;
+}
+
+.todo-button-done:hover {
+    color: darkcyan;
 }
 
 .todo-button-done {
@@ -64,6 +91,7 @@ code {
     text-align: center;
     background: none;
     border: none;
+    border-bottom: 2px cyan solid;
     color: white;
     font-size: 20px;
     max-width: 220px;

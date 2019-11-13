@@ -1,19 +1,19 @@
 import React from 'react';
 import './App.css';
 
-let id = 0;
 const getTodoElement = value => ({
     value,
     done: false,
-    id: id++,
+    id: new Date().getTime(),
 });
 
 const App = () => {
     const [inputTodo, setInputTodo] = React.useState('');
     const [todoList, setTodoList] = React.useState([]);
+
     const onInputChange = event => setInputTodo(event.target.value);
     const handleAddTodo = event => {
-        event.preventDefault();
+        event && event.preventDefault();
         if (!inputTodo) {
             return;
         }
@@ -45,17 +45,18 @@ const App = () => {
         <div className="App">
             <header className="App-header">
                 <div className="todo-container">
-                    <h2>Todo list</h2>
+                    <h2>Todo</h2>
                     <form className="new-todo" onSubmit={handleAddTodo}>
                         <input
                             className="new-todo--input"
                             type="text"
                             value={inputTodo}
                             onChange={onInputChange}
-                        ></input>
+                            placeholder="Something to do"
+                        />
                         <input
                             type="submit"
-                            value="Submit"
+                            value="+"
                             className="new-todo--button"
                         />
                     </form>
@@ -68,7 +69,7 @@ const App = () => {
                                     key={`todo-row-${todo.id}`}
                                 >
                                     <button
-                                        className="todo-button"
+                                        className="todo-button done-button"
                                         onClick={() => handleDone(todo.id)}
                                     >
                                         &#10004;
@@ -91,7 +92,7 @@ const App = () => {
                     </div>
                 </div>
                 <div className="todo-container">
-                    <h2>Done List</h2>
+                    <h2>Done</h2>
                     <div className="todo-list">
                         {todoList
                             .filter(todo => !!todo.done)
