@@ -450,7 +450,7 @@ export default () => {
             gremlins.allMogwais();
         }
         if (gremlins._strategies.length === 0) {
-            gremlins.strategy(gremlins.strategies.allTogether());
+            gremlins.strategy(gremlins.strategies.bySpecies());
         }
 
         const gremlinsAndMogwais = [
@@ -487,21 +487,6 @@ export default () => {
         await executeInSeries(beforeCallbacks, [], horde);
         await Promise.all(strategies);
         await executeInSeries(afterCallbacks, [], horde);
-
-        // executeInSeries(beforeCallbacks, [], horde, () => {
-        //     executeInSeries(
-        //         horde._strategies,
-        //         [gremlins._gremlins, params],
-        //         horde,
-        //         () => {
-        //             executeInSeries(afterCallbacks, [], horde, () => {
-        //                 if (typeof done === 'function') {
-        //                     done();
-        //                 }
-        //             });
-        //         }
-        //     );
-        // });
     };
 
     /**
