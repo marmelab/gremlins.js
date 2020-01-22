@@ -31,12 +31,14 @@ export default () => {
         const character = config.randomizer.character();
         const newValue = element.value + character;
 
-        var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        element.value += character;
+
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
             window.HTMLInputElement.prototype,
             'value'
         ).set;
         nativeInputValueSetter.call(element, newValue);
-        var ev2 = new Event('input', { bubbles: true });
+        const ev2 = new Event('input', { bubbles: true });
         element.dispatchEvent(ev2);
 
         return character;
