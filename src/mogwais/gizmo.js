@@ -21,7 +21,7 @@ import configurable from '../utils/configurable';
  *     .maxErrors(5)
  *   );
  */
-export default () => {
+export default horde => {
     const config = {
         maxErrors: 10,
         logger: console,
@@ -32,7 +32,6 @@ export default () => {
 
     const gizmoMogwai = () => {
         let nbErrors = 0;
-        const horde = this; // this is exceptional - don't use 'this' for mogwais in general
         const incrementNbErrors = () => {
             nbErrors++;
             if (nbErrors === config.maxErrors) {

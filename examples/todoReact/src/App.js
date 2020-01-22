@@ -7,9 +7,27 @@ const getTodoElement = value => ({
     id: new Date().getTime(),
 });
 
+const initialTodoList = [
+    {
+        value: 'Task done',
+        done: true,
+        id: 1,
+    },
+    {
+        value: 'Current Task 1',
+        done: false,
+        id: 2,
+    },
+    {
+        value: 'Current Task 2',
+        done: false,
+        id: 3,
+    },
+];
+
 const App = () => {
     const [inputTodo, setInputTodo] = React.useState('');
-    const [todoList, setTodoList] = React.useState([]);
+    const [todoList, setTodoList] = React.useState(initialTodoList);
 
     const onInputChange = event => setInputTodo(event.target.value);
     const handleAddTodo = event => {

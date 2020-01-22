@@ -27,20 +27,34 @@ import RandomizerRequiredException from '../exceptions/randomizerRequiredExcepti
 export default () => {
     const document = window.document;
 
-    const fillTextElement = element => {
-        const character = config.randomizer.character();
-        const newValue = element.value + character;
-
-        element.value += character;
+    /**
+     * Hacky function to trigger react onChange on input
+     */
+    const triggerInputOnChange = (element, newValue) => {
+        const lastValue = element.value;
+        element.value = newValue;
 
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
             window.HTMLInputElement.prototype,
             'value'
         ).set;
         nativeInputValueSetter.call(element, newValue);
-        const ev2 = new Event('input', { bubbles: true });
-        element.dispatchEvent(ev2);
+        const event = new Event('input', { bubbles: true });
 
+        // React 15
+        event.simulated = true;
+        // React >= 16
+        let tracker = element._valueTracker;
+        if (tracker) {
+            tracker.setValue(lastValue);
+        }
+        element.dispatchEvent(event);
+    };
+
+    const fillTextElement = element => {
+        const character = config.randomizer.character();
+        const newValue = element.value + character;
+        triggerInputOnChange(element, newValue);
         return character;
     };
 

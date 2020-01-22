@@ -228,7 +228,7 @@ export default () => {
      */
     gremlins.allMogwais = () => {
         for (const mogwaiName in gremlins.mogwais) {
-            gremlins.mogwai(gremlins.mogwais[mogwaiName]());
+            gremlins.mogwai(gremlins.mogwais[mogwaiName](gremlins));
         }
         return gremlins;
     };

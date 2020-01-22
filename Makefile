@@ -21,3 +21,6 @@ check-linting: ## lint the code and check coding conventions
 prettier: ## prettify the source code using prettier
 	echo "Running prettier..."
 	npm run prettier
+
+start-todo:
+	cd examples/todoReact; npm start

@@ -35,13 +35,10 @@ ReactDOM.render(<App />, document.getElementById('root'), () => {
     // Setup Mogwais
     horde.mogwai(horde.mogwais.alert());
     horde.mogwai(horde.mogwais.fps());
-    horde.mogwai(horde.mogwais.gizmo().maxErrors(2));
+    horde.mogwai(horde.mogwais.gizmo(horde).maxErrors(1));
 
     // Unleash the horde
-    horde.unleash({ nb: 2000, delay: 20 });
+    horde.unleash({ nb: 500, delay: 20 });
 });
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
