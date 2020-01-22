@@ -1,8 +1,21 @@
-watch:
-	./node_modules/webpack-dev-server/bin/webpack-dev-server.js --colors --progress --host=0.0.0.0
+help:
+	@grep -P '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-setup:
+install: ## Install dependencies
 	npm install
 
-build:
-	NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p
+run: ## Run the webpack-dev-server
+	npm start
+
+build: ## Webpack build the project
+	rm -rf dist/
+	mkdir -p dist
+	npm run build
+
+check-linting: ## lint the code and check coding conventions
+	echo "Running linter..."
+	npm run lint
+
+prettier: ## prettify the source code using prettier
+	echo "Running prettier..."
+	npm run prettier

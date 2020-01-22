@@ -1,16 +1,23 @@
-var sources = ['./src/main.js'];
-
-if (process.env.NODE_ENV !== 'production') { // for live reload
-    sources.push('webpack-dev-server/client?http://localhost:8080');
-}
+const path = require('path');
 
 module.exports = {
     entry: {
-        gremlins: sources
+        index: './src/index.js',
     },
+    mode: 'production',
     output: {
-        filename: "gremlins.min.js",
-        publicPath: "http://localhost:8080/",
-        libraryTarget: "umd"
-    }
+        filename: 'gremlins.min.js',
+        path: path.resolve(__dirname, 'dist'),
+        library: 'gremlins',
+        libraryTarget: 'umd',
+    },
+    module: {
+        rules: [
+            {
+                use: 'babel-loader',
+                test: /\.js$/,
+                include: [path.resolve(__dirname, 'src')],
+            },
+        ],
+    },
 };

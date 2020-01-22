@@ -1,3 +1,8 @@
+import Chance from 'chance';
+
+import configurable from '../utils/configurable';
+import LoggerRequiredException from '../exceptions/loggerRequiredException';
+
 /**
  * The alert mogwai answers calls to alert()
  *
@@ -6,7 +11,7 @@
  * of displaying a dialog, these methods are simply replaced by a write in the
  * logger.
  *
- *   var alertMogwai = gremlins.mogwais.alert();
+ *   const alertMogwai = gremlins.mogwais.alert();
  *   horde.mogwai(alertMogwai);
  *
  * The alert mogwai can be customized as follows:
@@ -24,79 +29,63 @@
  *     .promptResponse(function() { return 'I typed garbage'; })
  *   );
  */
-define(function(require) {
-    "use strict";
+export default () => {
+    const defaultWatchEvents = ['alert', 'confirm', 'prompt'];
 
-    var configurable = require('../utils/configurable');
-    var Chance = require('../vendor/chance');
-    var LoggerRequiredException = require('../exceptions/loggerRequired');
+    const defaultConfirmResponse = () => {
+        // Random OK or cancel
+        return config.randomizer.bool();
+    };
 
-    return function() {
+    const defaultPromptResponse = () => {
+        // Return a random string
+        return config.randomizer.sentence();
+    };
 
-        var defaultWatchEvents = ['alert', 'confirm', 'prompt'];
+    const config = {
+        watchEvents: defaultWatchEvents,
+        confirmResponse: defaultConfirmResponse,
+        promptResponse: defaultPromptResponse,
+        logger: console,
+        randomizer: new Chance(),
+    };
 
-        function defaultConfirmResponse() {
-            // Random OK or cancel
-            return config.randomizer.bool();
+    const alert = window.alert;
+    const confirm = window.confirm;
+    const prompt = window.prompt;
+
+    const alertMogwai = () => {
+        if (!config.logger) {
+            throw new LoggerRequiredException();
         }
 
-        function defaultPromptResponse() {
-            // Return a random string
-            return config.randomizer.sentence();
+        if (config.watchEvents.includes('alert')) {
+            window.alert = msg => {
+                config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
+            };
         }
-
-        /**
-         * @mixin
-         */
-        var config = {
-            watchEvents:     defaultWatchEvents,
-            confirmResponse: defaultConfirmResponse,
-            promptResponse:  defaultPromptResponse,
-            logger:          null,
-            randomizer:      null
-        };
-
-        var alert   = window.alert;
-        var confirm = window.confirm;
-        var prompt  = window.prompt;
-
-        /**
-         * @mixes config
-         */
-        function alertMogwai() {
-
-            if (!config.logger) {
-                throw new LoggerRequiredException();
-            }
-
-            if (config.watchEvents.indexOf('alert') !== -1) {
-                window.alert = function (msg) {
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
-                };
-            }
-            if (config.watchEvents.indexOf('confirm') !== -1) {
-                window.confirm = function (msg) {
-                    config.confirmResponse();
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
-                };
-            }
-            if (config.watchEvents.indexOf('prompt') !== -1) {
-                window.prompt = function (msg) {
-                    config.promptResponse();
-                    config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
-                };
-            }
+        if (config.watchEvents.includes('confirm')) {
+            window.confirm = msg => {
+                config.confirmResponse();
+                config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
+            };
         }
+        if (config.watchEvents.includes('prompt')) {
+            window.prompt = msg => {
+                config.promptResponse();
+                config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
+            };
+        }
+    };
 
-        alertMogwai.cleanUp = function() {
-            window.alert   = alert;
-            window.confirm = confirm;
-            window.prompt  = prompt;
-            return alertMogwai;
-        };
-
-        configurable(alertMogwai, config);
-
+    alertMogwai.cleanUp = () => {
+        window.alert = alert;
+        window.confirm = confirm;
+        window.prompt = prompt;
         return alertMogwai;
     };
-});
+
+    configurable(alertMogwai, config);
+
+    return alertMogwai;
+};

@@ -1,3 +1,8 @@
+import Chance from 'chance';
+
+import configurable from '../utils/configurable';
+import RandomizerRequiredException from '../exceptions/randomizerRequiredException';
+
 /**
  * The toucher gremlin touches anywhere on the visible area of the document.
  *
@@ -7,7 +12,7 @@
  *
  * By default, the touch gremlin activity is showed by a red disc.
  *
- *   var toucherGremlin = gremlins.species.toucher();
+ *   const toucherGremlin = gremlins.species.toucher();
  *   horde.gremlin(toucherGremlin);
  *
  * The toucher gremlin can be customized as follows:
@@ -26,8 +31,8 @@
  *     .touchTypes(['gesture'])
  *     .positionSelector(function() {
  *        // only touch inside the foo element area
- *        var $el = $('#foo');
- *        var offset = $el.offset();
+ *        const $el = $('#foo');
+ *        const offset = $el.offset();
  *        return [
  *          parseInt(Math.random() * $el.outerWidth() + offset.left),
  *          parseInt(Math.random() * $el.outerHeight() + offset.top)
@@ -38,288 +43,305 @@
  *     })
  *   );
  */
-define(function(require) {
-    "use strict";
+export default () => {
+    const document = window.document;
+    const body = document.body;
 
-    var configurable = require('../utils/configurable');
-    var Chance = require('../vendor/chance');
-    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
+    const defaultTouchTypes = [
+        'tap',
+        'tap',
+        'tap',
+        'doubletap',
+        'gesture',
+        'gesture',
+        'gesture',
+        'multitouch',
+        'multitouch',
+    ];
 
-    return function() {
+    const defaultPositionSelector = () => {
+        return [
+            config.randomizer.natural({
+                max: document.documentElement.clientWidth - 1,
+            }),
+            config.randomizer.natural({
+                max: document.documentElement.clientHeight - 1,
+            }),
+        ];
+    };
 
-        var document = window.document,
-            body = document.body;
+    const defaultShowAction = touches => {
+        const fragment = document.createDocumentFragment();
+        touches.forEach(touch => {
+            const touchSignal = document.createElement('div');
+            touchSignal.style.zIndex = 2000;
+            touchSignal.style.background = 'red';
+            touchSignal.style['border-radius'] = '50%'; // Chrome
+            touchSignal.style.borderRadius = '50%'; // Mozilla
+            touchSignal.style.width = '20px';
+            touchSignal.style.height = '20px';
+            touchSignal.style.position = 'absolute';
+            touchSignal.style.webkitTransition = 'opacity .5s ease-out';
+            touchSignal.style.mozTransition = 'opacity .5s ease-out';
+            touchSignal.style.transition = 'opacity .5s ease-out';
+            touchSignal.style.left = touch.x - 10 + 'px';
+            touchSignal.style.top = touch.y - 10 + 'px';
 
-        var defaultTouchTypes = ['tap', 'tap', 'tap', 'doubletap', 'gesture', 'gesture', 'gesture', 'multitouch', 'multitouch'];
+            const element = fragment.appendChild(touchSignal);
+            setTimeout(() => {
+                body.removeChild(element);
+            }, 500);
+            setTimeout(() => {
+                element.style.opacity = 0;
+            }, 50);
+        });
+        document.body.appendChild(fragment);
+    };
 
-        function defaultPositionSelector() {
-            return [
-                config.randomizer.natural({ max: document.documentElement.clientWidth - 1 }),
-                config.randomizer.natural({ max: document.documentElement.clientHeight - 1 })
-            ];
+    const defaultCanTouch = () => {
+        return true;
+    };
+
+    const config = {
+        touchTypes: defaultTouchTypes,
+        positionSelector: defaultPositionSelector,
+        showAction: defaultShowAction,
+        canTouch: defaultCanTouch,
+        maxNbTries: 10,
+        logger: null,
+        randomizer: new Chance(),
+        maxTouches: 2,
+    };
+
+    /**
+     * generate a list of x/y around the center
+     * @param center
+     * @param points
+     * @param [radius=100]
+     * @param [rotation=0]
+     */
+    const getTouches = (center, points, radius, degrees) => {
+        const cx = center[0];
+        const cy = center[1];
+        const touches = [];
+
+        // just one touch, at the center
+        if (points === 1) {
+            return [{ x: cx, y: cy }];
         }
 
-        function defaultShowAction(touches) {
-            var fragment = document.createDocumentFragment();
-            touches.forEach(function(touch) {
-                var touchSignal = document.createElement('div');
-                touchSignal.style.zIndex = 2000;
-                touchSignal.style.background = "red";
-                touchSignal.style['border-radius'] = '50%'; // Chrome
-                touchSignal.style.borderRadius = '50%';     // Mozilla
-                touchSignal.style.width = "20px";
-                touchSignal.style.height = "20px";
-                touchSignal.style.position = "absolute";
-                touchSignal.style.webkitTransition = 'opacity .5s ease-out';
-                touchSignal.style.mozTransition = 'opacity .5s ease-out';
-                touchSignal.style.transition = 'opacity .5s ease-out';
-                touchSignal.style.left = (touch.x - 10 ) + 'px';
-                touchSignal.style.top = (touch.y - 10 ) + 'px';
+        radius = radius || 100;
+        degrees = degrees !== null ? (degrees * Math.PI) / 180 : 0;
+        const slice = (2 * Math.PI) / points;
 
-                var element = fragment.appendChild(touchSignal);
-                setTimeout(function() {
-                    body.removeChild(element);
-                }, 500);
-                setTimeout(function() {
-                    element.style.opacity = 0;
-                }, 50);
+        for (let i = 0; i < points; i++) {
+            let angle = slice * i + degrees;
+            touches.push({
+                x: cx + radius * Math.cos(angle),
+                y: cy + radius * Math.sin(angle),
             });
-            document.body.appendChild(fragment);
         }
+        return touches;
+    };
 
-        function defaultCanTouch() {
-            return true;
-        }
+    /**
+     * trigger a touchevent
+     * @param touches
+     * @param element
+     * @param type
+     */
+    const triggerTouch = (touches, element, type) => {
+        const touchlist = [];
+        const event = document.createEvent('Event');
 
-        /**
-         * @mixin
-         */
-        var config = {
-            touchTypes: defaultTouchTypes,
-            positionSelector: defaultPositionSelector,
-            showAction: defaultShowAction,
-            canTouch: defaultCanTouch,
-            maxNbTries: 10,
-            logger: null,
-            randomizer: null,
-            maxTouches: 2
+        event.initEvent('touch' + type, true, true);
+
+        touchlist.identifiedTouch = touchlist.item = index => {
+            return this[index] || {};
         };
 
-        /**
-         * generate a list of x/y around the center
-         * @param center
-         * @param points
-         * @param [radius=100]
-         * @param [rotation=0]
-         */
-        function getTouches(center, points, radius, degrees) {
-            var cx = center[0],
-                cy = center[1],
-                touches = [],
-                slice, i, angle;
+        touches.forEach((touch, i) => {
+            const x = Math.round(touch.x);
+            const y = Math.round(touch.y);
+            touchlist.push({
+                pageX: x,
+                pageY: y,
+                clientX: x,
+                clientY: y,
+                screenX: x,
+                screenY: y,
+                target: element,
+                identifier: i,
+            });
+        });
 
-            // just one touch, at the center
-            if (points === 1) {
-                return [{ x: cx, y: cy }];
+        event.touches = type === 'end' ? [] : touchlist;
+        event.targetTouches = type === 'end' ? [] : touchlist;
+        event.changedTouches = touchlist;
+
+        element.dispatchEvent(event);
+        config.showAction(touches);
+    };
+
+    /**
+     * trigger a gesture
+     * @param element
+     * @param startPos
+     * @param startTouches
+     * @param gesture
+     * @param done
+     */
+    const triggerGesture = (element, startPos, startTouches, gesture, done) => {
+        const interval = 10;
+        const loops = Math.ceil(gesture.duration / interval);
+        let loop = 1;
+
+        const gestureLoop = () => {
+            // calculate the radius
+            let radius = gesture.radius;
+            if (gesture.scale !== 1) {
+                radius =
+                    gesture.radius -
+                    gesture.radius * (1 - gesture.scale) * ((1 / loops) * loop);
             }
 
-            radius = radius || 100;
-            degrees = degrees !== null ? (degrees * Math.PI / 180) : 0;
-            slice = 2 * Math.PI / points;
+            // calculate new position/rotation
+            const posX = startPos[0] + (gesture.distanceX / loops) * loop;
+            const posY = startPos[1] + (gesture.distanceY / loops) * loop;
+            const rotation =
+                typeof gesture.rotation === 'number'
+                    ? (gesture.rotation / loops) * loop
+                    : null;
+            const touches = getTouches(
+                [posX, posY],
+                startTouches.length,
+                radius,
+                rotation
+            );
+            const isFirst = loop === 1;
+            const isLast = loop === loops;
 
-            for (i = 0; i < points; i++) {
-                angle = (slice * i) + degrees;
-                touches.push({
-                    x: (cx + radius * Math.cos(angle)),
-                    y: (cy + radius * Math.sin(angle))
-                });
+            if (isFirst) {
+                triggerTouch(touches, element, 'start');
+            } else if (isLast) {
+                triggerTouch(touches, element, 'end');
+                return done(touches);
+            } else {
+                triggerTouch(touches, element, 'move');
             }
-            return touches;
-        }
 
+            setTimeout(gestureLoop, interval);
+            loop++;
+        };
+        gestureLoop();
+    };
 
-        /**
-         * trigger a touchevent
-         * @param touches
-         * @param element
-         * @param type
-         */
-        function triggerTouch(touches, element, type) {
-            var touchlist = [],
-                event = document.createEvent('Event');
-
-            event.initEvent('touch' + type, true, true);
-
-            touchlist.identifiedTouch = touchlist.item = function(index) {
-                return this[index] || {};
+    const touchTypes = {
+        // tap, like a click event, only 1 touch
+        // could also be a slow tap, that could turn out to be a hold
+        tap(position, element, done) {
+            const touches = getTouches(position, 1);
+            const gesture = {
+                duration: config.randomizer.integer({ min: 20, max: 700 }),
             };
 
-            touches.forEach(function(touch, i) {
-                var x = Math.round(touch.x),
-                    y = Math.round(touch.y);
-                touchlist.push({
-                    pageX: x,
-                    pageY: y,
-                    clientX: x,
-                    clientY: y,
-                    screenX: x,
-                    screenY: y,
-                    target: element,
-                    identifier: i
-                });
+            triggerTouch(touches, element, 'start');
+
+            setTimeout(() => {
+                triggerTouch(touches, element, 'end');
+                done(touches, gesture);
+            }, gesture.duration);
+        },
+
+        // doubletap, like a dblclick event, only 1 touch
+        // could also be a slow doubletap, that could turn out to be a hold
+        doubletap(position, element, done) {
+            touchTypes.tap(position, element, () => {
+                setTimeout(() => {
+                    touchTypes.tap(position, element, done);
+                }, 30);
             });
+        },
 
-            event.touches = (type == 'end') ? [] : touchlist;
-            event.targetTouches = (type == 'end') ? [] : touchlist;
-            event.changedTouches = touchlist;
+        // single touch gesture, could be a drag and swipe, with 1 points
+        gesture(position, element, done) {
+            const gesture = {
+                distanceX: config.randomizer.integer({ min: -100, max: 200 }),
+                distanceY: config.randomizer.integer({ min: -100, max: 200 }),
+                duration: config.randomizer.integer({ min: 20, max: 500 }),
+            };
+            const touches = getTouches(position, 1, gesture.radius);
 
-            element.dispatchEvent(event);
-            config.showAction(touches);
+            triggerGesture(element, position, touches, gesture, touches => {
+                done(touches, gesture);
+            });
+        },
+
+        // multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
+        multitouch(position, element, done) {
+            const points = config.randomizer.integer({
+                min: 2,
+                max: config.maxTouches,
+            });
+            const gesture = {
+                scale: config.randomizer.floating({ min: 0, max: 2 }),
+                rotation: config.randomizer.natural({ min: 0, max: 100 }),
+                radius: config.randomizer.integer({ min: 50, max: 200 }),
+                distanceX: config.randomizer.integer({ min: -20, max: 20 }),
+                distanceY: config.randomizer.integer({ min: -20, max: 20 }),
+                duration: config.randomizer.integer({ min: 100, max: 1500 }),
+            };
+            const touches = getTouches(position, points, gesture.radius);
+
+            triggerGesture(element, position, touches, gesture, touches => {
+                done(touches, gesture);
+            });
+        },
+    };
+
+    const toucherGremlin = (done = () => {}) => {
+        if (!config.randomizer) {
+            throw new RandomizerRequiredException(
+                'This gremlin requires a randomizer to run. Please call randomizer(randomizerObject) before executing the gremlin.'
+            );
         }
 
-        /**
-         * trigger a gesture
-         * @param element
-         * @param startPos
-         * @param startTouches
-         * @param gesture
-         * @param done
-         */
-        function triggerGesture(element, startPos, startTouches, gesture, done) {
-            var interval = 10,
-                loops = Math.ceil(gesture.duration / interval),
-                loop = 1;
+        let position;
+        let posX;
+        let posY;
+        let targetElement;
+        let nbTries = 0;
 
-            function gestureLoop() {
-                // calculate the radius
-                var radius = gesture.radius;
-                if (gesture.scale !== 1) {
-                    radius = gesture.radius - (gesture.radius * (1 - gesture.scale) * (1 / loops * loop));
-                }
+        do {
+            position = config.positionSelector();
+            posX = position[0];
+            posY = position[1];
+            targetElement = document.elementFromPoint(posX, posY);
+            nbTries++;
+            if (nbTries > config.maxNbTries) return;
+        } while (!targetElement || !config.canTouch(targetElement));
 
-                // calculate new position/rotation
-                var posX = startPos[0] + (gesture.distanceX / loops * loop),
-                    posY = startPos[1] + (gesture.distanceY / loops * loop),
-                    rotation = typeof gesture.rotation == 'number' ? (gesture.rotation / loops * loop) : null,
-                    touches = getTouches([posX, posY], startTouches.length, radius, rotation),
-                    isFirst = (loop == 1),
-                    isLast = (loop == loops);
-
-                if (isFirst) {
-                    triggerTouch(touches, element, 'start');
-                } else if (isLast) {
-                    triggerTouch(touches, element, 'end');
-                    return done(touches);
-                } else {
-                    triggerTouch(touches, element, 'move');
-                }
-
-                setTimeout(gestureLoop, interval);
-                loop++;
+        const touchType = config.randomizer.pick(config.touchTypes);
+        const logGremlin = (touches, details) => {
+            if (typeof config.showAction === 'function') {
+                config.showAction(touches);
             }
-            gestureLoop();
-        }
-
-
-        var touchTypes = {
-            // tap, like a click event, only 1 touch
-            // could also be a slow tap, that could turn out to be a hold
-            tap: function tap(position, element, done) {
-                var touches = getTouches(position, 1);
-                var gesture = {
-                    duration: config.randomizer.integer({ min: 20, max: 700 })
-                };
-
-                triggerTouch(touches, element, 'start');
-
-                setTimeout(function() {
-                    triggerTouch(touches, element, 'end');
-                    done(touches, gesture);
-                }, gesture.duration);
-            },
-
-            // doubletap, like a dblclick event, only 1 touch
-            // could also be a slow doubletap, that could turn out to be a hold
-            doubletap: function doubletap(position, element, done) {
-                touchTypes.tap(position, element, function() {
-                    setTimeout(function() {
-                        touchTypes.tap(position, element, done);
-                    }, 30);
-                });
-            },
-
-            // single touch gesture, could be a drag and swipe, with 1 points
-            gesture: function gesture(position, element, done) {
-                var gesture = {
-                    distanceX: config.randomizer.integer({ min: -100, max: 200 }),
-                    distanceY: config.randomizer.integer({ min: -100, max: 200 }),
-                    duration:  config.randomizer.integer({ min: 20, max: 500 })
-                };
-                var touches = getTouches(position, 1, gesture.radius);
-
-                triggerGesture(element, position, touches, gesture, function(touches) {
-                    done(touches, gesture);
-                });
-            },
-
-            // multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
-            multitouch: function multitouch(position, element, done) {
-                var points = config.randomizer.integer({ min: 2, max: config.maxTouches});
-                var gesture = {
-                    scale:     config.randomizer.floating({ min: 0, max: 2 }),
-                    rotation:  config.randomizer.natural({ min: -100, max: 100 }),
-                    radius:    config.randomizer.integer({ min: 50, max: 200 }),
-                    distanceX: config.randomizer.integer({ min: -20, max: 20 }),
-                    distanceY: config.randomizer.integer({ min: -20, max: 20 }),
-                    duration:  config.randomizer.integer({ min: 100, max: 1500 })
-                };
-                var touches = getTouches(position, points, gesture.radius);
-
-                triggerGesture(element, position, touches, gesture, function(touches) {
-                    done(touches, gesture);
-                });
+            if (config.logger && typeof config.logger.log === 'function') {
+                config.logger.log(
+                    'gremlin',
+                    'toucher   ',
+                    touchType,
+                    'at',
+                    posX,
+                    posY,
+                    details
+                );
             }
         };
-
-
-        /**
-         * @mixes config
-         */
-        function toucherGremlin(done) {
-            if (!config.randomizer) {
-                throw new RandomizerRequiredException();
-            }
-
-            var position,
-                posX, posY,
-                targetElement,
-                nbTries = 0;
-
-            do {
-                position = config.positionSelector();
-                posX = position[0];
-                posY = position[1];
-                targetElement = document.elementFromPoint(posX, posY);
-                nbTries++;
-                if(nbTries > config.maxNbTries) return;
-            } while (!targetElement || !config.canTouch(targetElement));
-
-            var touchType = config.randomizer.pick(config.touchTypes);
-            touchTypes[touchType](position, targetElement, logGremlin);
-
-            function logGremlin(touches, details) {
-                if (typeof config.showAction == 'function') {
-                    config.showAction(touches);
-                }
-                if (config.logger && typeof config.logger.log == 'function') {
-                    config.logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
-                }
-                done();
-            }
-        }
-
-        configurable(toucherGremlin, config);
-
-        return toucherGremlin;
+        touchTypes[touchType](position, targetElement, logGremlin, done);
     };
-});
+
+    configurable(toucherGremlin, config);
+
+    return toucherGremlin;
+};

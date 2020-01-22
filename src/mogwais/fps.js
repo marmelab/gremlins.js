@@ -1,12 +1,15 @@
+import configurable from '../utils/configurable';
+import LoggerRequiredException from '../exceptions/loggerRequiredException';
+
 /**
  * The fps mogwai logs the number of frames per seconds (FPS) of the browser
- * 
+ *
  * The normal (and maximal) FPS rate is 60. It decreases when the browser is
  * busy refreshing the layout, or executing JavaScript.
  *
  * This mogwai logs with the error level once the FPS rate drops below 10.
  *
- *   var fpsMogwai = gremlins.mogwais.fps();
+ *   const fpsMogwai = gremlins.mogwais.fps();
  *   horde.mogwai(fpsMogwai);
  *
  * The fps mogwai can be customized as follows:
@@ -26,84 +29,75 @@
  *     })
  *   );
  */
-define(function(require) {
-    "use strict";
 
-    var configurable = require('../utils/configurable');
-    var LoggerRequiredException = require('../exceptions/loggerRequired');
+const NEXT_FRAME_MS = 16;
 
-    return function() {
+export default () => {
+    if (!window.requestAnimationFrame) {
+        // shim layer with setTimeout fallback
+        window.requestAnimationFrame =
+            window.mozRequestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            (callback => {
+                window.setTimeout(callback, 1000 / 60);
+            });
+    }
 
-        if (!window.requestAnimationFrame) {
-            // shim layer with setTimeout fallback
-            window.requestAnimationFrame =
-                window.mozRequestAnimationFrame ||
-                window.webkitRequestAnimationFrame ||
-                window.msRequestAnimationFrame ||
-                function (callback) {
-                    window.setTimeout(callback, 1000 / 60);
-                };
+    const defaultLevelSelector = fps => {
+        if (fps < 10) return 'error';
+        if (fps < 20) return 'warn';
+        return 'log';
+    };
+
+    const config = {
+        delay: 500, // how often should the fps be measured
+        levelSelector: defaultLevelSelector,
+        logger: console,
+    };
+
+    let initialTime = -Infinity; // force initial measure
+    let enabled;
+
+    const loop = time => {
+        if (time - initialTime > config.delay) {
+            measureFPS(time);
+            initialTime = time;
         }
+        if (!enabled) return;
+        window.requestAnimationFrame(loop);
+    };
 
-        function defaultLevelSelector(fps) {
-            if (fps < 10) return 'error';
-            if (fps < 20) return 'warn';
-            return 'log';
-        }
-
-        /**
-         * @mixin
-         */
-        var config = {
-            delay: 500, // how often should the fps be measured
-            levelSelector: defaultLevelSelector,
-            logger: null
+    const measureFPS = () => {
+        let lastTime;
+        const init = time => {
+            lastTime = time;
+            window.requestAnimationFrame(measure);
         };
-
-        var initialTime = -Infinity; // force initial measure
-        var enabled;
-
-        function loop(time) {
-            if ((time - initialTime) > config.delay) {
-                measureFPS(time);
-                initialTime = time;
-            }
-            if (!enabled) return;
-            window.requestAnimationFrame(loop);
-        }
-
-        function measureFPS() {
-            var lastTime;
-            function init(time) {
-                lastTime = time;
-                window.requestAnimationFrame(measure);
-            }
-            function measure(time) {
-                var fps = (time - lastTime < 16) ? 60 : 1000/(time - lastTime);
-                var level = config.levelSelector(fps);
-                config.logger[level]('mogwai ', 'fps       ', fps);
-            }
-            window.requestAnimationFrame(init);
-        }
-
-        /**
-         * @mixes config
-         */
-        function fpsMogwai() {
-            if (!config.logger) {
-                throw new LoggerRequiredException();
-            }
-            enabled = true;
-            window.requestAnimationFrame(loop);
-        }
-
-        fpsMogwai.cleanUp = function() {
-            enabled = false;
-            return fpsMogwai;
+        const measure = time => {
+            const fps =
+                time - lastTime < NEXT_FRAME_MS ? 60 : 1000 / (time - lastTime);
+            const level = config.levelSelector(fps);
+            config.logger[level]('mogwai ', 'fps       ', fps);
         };
+        window.requestAnimationFrame(init);
+    };
 
-        configurable(fpsMogwai, config);
+    const fpsMogwai = () => {
+        if (!config.logger) {
+            throw new LoggerRequiredException(
+                'This mogwai requires a logger to run. Please call logger(loggerObject) before executing the mogwai'
+            );
+        }
+        enabled = true;
+        window.requestAnimationFrame(loop);
+    };
 
+    fpsMogwai.cleanUp = () => {
+        enabled = false;
         return fpsMogwai;
     };
-});
+
+    configurable(fpsMogwai, config);
+    return fpsMogwai;
+};

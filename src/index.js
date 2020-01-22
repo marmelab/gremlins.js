@@ -1,43 +1,64 @@
-/**
- * gremlins.js 0.1.0 Copyright (c) 2014, marmelab
- * Available via the MIT license.
- * see: http://github.com/marmelab/gremlins.js for details
- */
-define(function(require) {
-    "use strict";
+import Chance from 'chance';
 
-    var Chance = require('./vendor/chance');
+import clicker from './species/clicker';
+import toucher from './species/toucher';
+import formFiller from './species/formFiller';
+import scroller from './species/scroller';
+import typer from './species/typer';
 
-    var gremlins = {
+import alert from './mogwais/alert';
+import fps from './mogwais/fps';
+import gizmo from './mogwais/gizmo';
+
+import allTogether from './strategies/allTogether';
+import bySpecies from './strategies/bySpecies';
+import distribution from './strategies/distribution';
+
+import executeInSeries from './utils/executeInSeries';
+
+// do not export anything else here to keep window.gremlins as a function
+export default () => {
+    const gremlins = {
         species: {
-            clicker:    require('./species/clicker'),
-            toucher:    require('./species/toucher'),
-            formFiller: require('./species/formFiller'),
-            scroller:   require('./species/scroller'),
-            typer:      require('./species/typer')
+            clicker,
+            toucher,
+            formFiller,
+            scroller,
+            typer,
         },
         mogwais: {
-            alert:      require('./mogwais/alert'),
-            fps:        require('./mogwais/fps'),
-            gizmo:      require('./mogwais/gizmo')
+            alert,
+            fps,
+            gizmo,
         },
         strategies: {
-            allTogether:  require('./strategies/allTogether'),
-            bySpecies:    require('./strategies/bySpecies'),
-            distribution: require('./strategies/distribution')
-        }
+            allTogether,
+            bySpecies,
+            distribution,
+        },
     };
 
-    var executeInSeries = require('./utils/executeInSeries');
+    const initHorde = () => {
+        gremlins._gremlins = [];
+        gremlins._mogwais = [];
+        gremlins._strategies = [];
+        gremlins._beforeCallbacks = [];
+        gremlins._afterCallbacks = [];
+        gremlins._logger = console; // logs to console by default
+        gremlins._randomizer = new Chance();
+    };
 
-    var GremlinsHorde = function() {
-        this._gremlins = [];
-        this._mogwais = [];
-        this._strategies = [];
-        this._beforeCallbacks = [];
-        this._afterCallbacks = [];
-        this._logger = console; // logs to console by default
-        this._randomizer = new Chance();
+    const inject = (services, objects) => {
+        for (let i = 0, count = objects.length; i < count; i++) {
+            for (let name in services) {
+                if (
+                    typeof objects[i][name] === 'function' &&
+                    !objects[i][name]()
+                ) {
+                    objects[i][name](services[name]);
+                }
+            }
+        }
     };
 
     /**
@@ -73,7 +94,7 @@ define(function(require) {
      *
      * Here is a more sophisticated gremlin function example:
      *
-     *   var logger;
+     *   let logger;
      *   function arrayDestroyer() {
      *     Array.prototype.indexOf = function() { return 42; };
      *     if (logger && logger.log) {
@@ -90,7 +111,7 @@ define(function(require) {
      * allow standalone gremlin execution, and to ease debugging.
      *
      *   horde.gremlin(function() {
-     *     var oldIndexOf = Array.prototype.indexOf;
+     *     const oldIndexOf = Array.prototype.indexOf;
      *     Array.prototype.indexOf = function() { return 42; };
      *     // "this" is the horde
      *     this.after(function(){
@@ -104,9 +125,9 @@ define(function(require) {
      * @param {Function} gremlin - A callback to be executed to mess up the app
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.gremlin = function(gremlin) {
-        this._gremlins.push(gremlin);
-        return this;
+    gremlins.gremlin = gremlin => {
+        gremlins._gremlins.push(gremlin);
+        return gremlins;
     };
 
     /**
@@ -119,11 +140,11 @@ define(function(require) {
      *
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.allGremlins = function() {
-        for (var gremlinName in gremlins.species) {
-            this.gremlin(gremlins.species[gremlinName]());
+    gremlins.allGremlins = () => {
+        for (const gremlinName in gremlins.species) {
+            gremlins.gremlin(gremlins.species[gremlinName]());
         }
-        return this;
+        return gremlins;
     };
 
     /**
@@ -135,7 +156,7 @@ define(function(require) {
      *
      *   // this example mogwai monitors javascript alerts
      *   horde.mogwai(function() {
-     *     var oldAlert = window.alert;
+     *     const oldAlert = window.alert;
      *     window.alert = function(message) {
      *       // do stuff
      *       oldAlert(message);
@@ -158,8 +179,8 @@ define(function(require) {
      *
      * Here is a more sophisticated mogwai function example:
      *
-     *   var oldAlert = window.alert;
-     *   var logger;
+     *   const oldAlert = window.alert;
+     *   let logger;
      *   function alert() {
      *     window.alert = function(message) {
      *       oldAlert(message);
@@ -190,9 +211,9 @@ define(function(require) {
      * @param {Function} mogwai - A callback to be executed when the test starts
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.mogwai = function(mogwai) {
-        this._mogwais.push(mogwai);
-        return this;
+    gremlins.mogwai = mogwai => {
+        gremlins._mogwais.push(mogwai);
+        return gremlins;
     };
 
     /**
@@ -205,11 +226,11 @@ define(function(require) {
      *
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.allMogwais = function() {
-        for (var mogwaiName in gremlins.mogwais) {
-            this.mogwai(gremlins.mogwais[mogwaiName]());
+    gremlins.allMogwais = () => {
+        for (const mogwaiName in gremlins.mogwais) {
+            gremlins.mogwai(gremlins.mogwais[mogwaiName]());
         }
-        return this;
+        return gremlins;
     };
 
     /**
@@ -243,9 +264,9 @@ define(function(require) {
      * @param {Function} strategy - A callback to be executed when the test starts
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.strategy = function(strategy) {
-        this._strategies.push(strategy);
-        return this;
+    gremlins.strategy = strategy => {
+        gremlins._strategies.push(strategy);
+        return gremlins;
     };
 
     /**
@@ -285,9 +306,9 @@ define(function(require) {
      * @param {Function} beforeCallback - A callback to be executed before the stress test
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.before = function(beforeCallback) {
-        this._beforeCallbacks.push(beforeCallback);
-        return this;
+    gremlins.before = beforeCallback => {
+        gremlins._beforeCallbacks.push(beforeCallback);
+        return gremlins;
     };
 
     /**
@@ -327,9 +348,9 @@ define(function(require) {
      * @param {Function} afterCallback - A callback to be executed at the end of the stress test
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.after = function(afterCallback) {
-        this._afterCallbacks.push(afterCallback);
-        return this;
+    gremlins.after = afterCallback => {
+        gremlins._afterCallbacks.push(afterCallback);
+        return gremlins;
     };
 
     /**
@@ -339,7 +360,7 @@ define(function(require) {
      *
      * The logger object must provide 4 functions: log, info, warn, and error.
      *
-     *   var consoleLogger = {
+     *   const consoleLogger = {
      *       log:   console.log.bind(console),
      *       info:  console.info.bind(console),
      *       warn:  console.warn.bind(console),
@@ -354,10 +375,9 @@ define(function(require) {
      * @param {Object} [logger] - A logger object
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.logger = function(logger) {
-        if (!arguments.length) return this._logger;
-        this._logger = logger;
-        return this;
+    gremlins.logger = (logger = gremlins._logger) => {
+        gremlins._logger = logger;
+        return gremlins;
     };
 
     /**
@@ -368,8 +388,8 @@ define(function(require) {
      *
      * @param {String} msg The message to log
      */
-    GremlinsHorde.prototype.log = function(msg) {
-        this._logger.log(msg);
+    gremlins.log = msg => {
+        gremlins._logger.log(msg);
     };
 
     /**
@@ -386,24 +406,14 @@ define(function(require) {
      * @param {Object} [randomizer] - A randomizer object
      * @return {GremlinsHorde}
      */
-    GremlinsHorde.prototype.randomizer = function(randomizer) {
-        if (!arguments.length) return this._randomizer;
-        this._randomizer = randomizer;
-        return this;
+    gremlins.randomizer = (randomizer = gremlins._randomizer) => {
+        gremlins._randomizer = randomizer;
+        return gremlins;
     };
 
-    /**
-     * Seed the random number generator
-     *
-     * Useful to generate repeatable random results actions.
-     *
-     * You can pass either an integer, or a random data generator callback
-     *
-     * @see Chance() constructor
-     */
-    GremlinsHorde.prototype.seed = function(seed) {
-        this._randomizer = new Chance(seed);
-        return this;
+    gremlins.seed = seed => {
+        gremlins._randomizer = new Chance(seed);
+        return gremlins;
     };
 
     /**
@@ -433,51 +443,59 @@ define(function(require) {
      * @param {Object} [params] - A list of parameters passed to each strategy.
      * @param {Function} [done] - A callback to be executed once the stress test is over
      */
-    GremlinsHorde.prototype.unleash = function(params, done) {
-        if (this._gremlins.length === 0) {
-            this.allGremlins();
+    gremlins.unleash = (params, done) => {
+        if (gremlins._gremlins.length === 0) {
+            gremlins.allGremlins();
         }
-        if (this._mogwais.length === 0) {
-            this.allMogwais();
+        if (gremlins._mogwais.length === 0) {
+            gremlins.allMogwais();
         }
-        if (this._strategies.length === 0) {
-            this.strategy(gremlins.strategies.distribution());
-        }
-
-        var gremlinsAndMogwais = [].concat(this._gremlins, this._mogwais);
-        var allCallbacks = gremlinsAndMogwais.concat(this._strategies, this._beforeCallbacks, this._afterCallbacks);
-        inject({'logger': this._logger, 'randomizer': this._randomizer}, allCallbacks);
-        var beforeCallbacks = this._beforeCallbacks;
-        beforeCallbacks = beforeCallbacks.concat(this._mogwais);
-        var afterCallbacks  = this._afterCallbacks;
-        for (var i = 0, count = gremlinsAndMogwais.length; i < count; i++) {
-            if (typeof gremlinsAndMogwais[i].cleanUp == 'function') {
-                afterCallbacks.push(gremlinsAndMogwais[i].cleanUp);
-            }
+        if (gremlins._strategies.length === 0) {
+            gremlins.strategy(gremlins.strategies.distribution());
         }
 
-        var horde = this;
+        const gremlinsAndMogwais = [
+            ...gremlins._gremlins,
+            ...gremlins._mogwais,
+        ];
+        const allCallbacks = [
+            ...gremlinsAndMogwais,
+            ...gremlins._strategies,
+            ...gremlins._beforeCallbacks,
+            ...gremlins._afterCallbacks,
+        ];
+        inject(
+            { logger: gremlins._logger, randomizer: gremlins._randomizer },
+            allCallbacks
+        );
+        const beforeCallbacks = [
+            ...gremlins._beforeCallbacks,
+            ...gremlins._mogwais,
+        ];
+        const afterCallbacks = [
+            ...gremlins._afterCallbacks,
+            ...gremlinsAndMogwais
+                .map(beast => beast.cleanUp)
+                .filter(cleanUp => typeof cleanUp === 'function'),
+        ];
 
-        executeInSeries(beforeCallbacks, [], horde, function() {
-            executeInSeries(horde._strategies, [horde._gremlins, params], horde, function() {
-                executeInSeries(afterCallbacks, [], horde, function () {
-                    if (typeof done === 'function') {
-                        done();
-                    }
-                });
-            });
+        const horde = gremlins;
+
+        executeInSeries(beforeCallbacks, [], horde, () => {
+            executeInSeries(
+                horde._strategies,
+                [gremlins._gremlins, params],
+                horde,
+                () => {
+                    executeInSeries(afterCallbacks, [], horde, () => {
+                        if (typeof done === 'function') {
+                            done();
+                        }
+                    });
+                }
+            );
         });
     };
-
-    function inject(services, objects) {
-        for (var i = 0, count = objects.length; i < count; i++) {
-            for (var name in services) {
-                if (typeof objects[i][name] === "function" && !objects[i][name]()) {
-                    objects[i][name](services[name]);
-                }
-            }
-        }
-    }
 
     /**
      * Stop a running test
@@ -489,26 +507,23 @@ define(function(require) {
      * stop() will only work properly if strategies implement their own stop()
      * method.
      */
-    GremlinsHorde.prototype.stop = function() {
-        var strategies = this._strategies;
-        for (var i = 0, count = strategies.length; i < count; i++) {
+    gremlins.stop = () => {
+        const strategies = gremlins._strategies;
+        for (let i = 0, count = strategies.length; i < count; i++) {
             strategies[i].stop();
         }
+        return gremlins;
     };
 
     /**
      * Get a new horde instance
      *
-     * @return {GremlinsHorde}
+     * @return {gremlins}
      */
-    gremlins.createHorde = function() {
-        return new GremlinsHorde();
+    gremlins.createHorde = () => {
+        initHorde();
+        return gremlins;
     };
 
-    if (window) {
-        window.gremlins = gremlins;
-    }
-
     return gremlins;
-
-});
+};

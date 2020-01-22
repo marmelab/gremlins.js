@@ -22,7 +22,7 @@ This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monke
 A gremlins *horde* is an army of specialized gremlins ready to mess up your application. *unleash* the gremlins to start the stress test:
 
 ```js
-var horde = gremlins.createHorde();
+const horde = gremlins.createHorde();
 horde.unleash();
 // gremlins will act randomly, at 10 ms interval, 1000 times
 ```
@@ -158,7 +158,7 @@ All the gremlins and mogwais provided by `gremlins.js` are *configurable functio
 For instance, the clicker gremlin is a function that you can execute it directly:
 
 ```js
-var clickerGremlin = gremlins.species.clicker();
+const clickerGremlin = gremlins.species.clicker();
 clickerGremlin(); // trigger a random mouse event in the screen:
 ```
 
@@ -248,7 +248,7 @@ The horde can stop the attack in case of emergency using the `horde.stop()` meth
 By default, gremlins.js logs all gremlin actions and mogwai observations in the console. If you prefer using an alternative logging method (for instance, storing gremlins activity in LocalStorage and sending it in Ajax once every 10 seconds), just provide a logger object with 4 methods (log, info, warn, and error) to the `logger()` method:
 
 ```js
-var customLogger = {
+const customLogger = {
   log:   function(msg) { /* .. */ },
   info:  function(msg) { /* .. */ },
   warn:  function(msg) { /* .. */ },

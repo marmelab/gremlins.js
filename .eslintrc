@@ -1,0 +1,28 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "plugins": ["babel", "prettier"],
+    "extends": ["eslint:recommended", "plugin:import/recommended", "prettier"],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "modules": true
+        }
+    },
+    "rules": {
+        "prettier/prettier": ["error"],
+        "import/no-named-as-default": ["off"],
+        "no-unused-vars": [
+            "error",
+            {
+                "ignoreRestSiblings": true
+            }
+        ],
+        "no-console": "warn"
+    }
+}

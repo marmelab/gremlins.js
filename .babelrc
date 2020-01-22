@@ -1,0 +1,17 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "loose": true,
+                "modules": false,
+                "useBuiltIns": "usage",
+                "shippedProposals": true,
+                "targets": {
+                    "browsers": [">0.25%", "not dead"]
+                }
+            }
+        ]
+    ],
+    "plugins": ["@babel/plugin-proposal-object-rest-spread"]
+}
