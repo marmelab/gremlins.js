@@ -17,18 +17,12 @@ module.exports = {
             {
                 use: 'babel-loader',
                 test: /\.js$/,
-                include: [
-                    path.resolve(__dirname, 'src'),
-                    path.resolve(__dirname, 'examples/basic'),
-                ],
+                include: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'examples/basic')],
             },
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader'],
-                include: [
-                    path.resolve(__dirname, 'src'),
-                    path.resolve(__dirname, 'examples/basic'),
-                ],
+                include: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'examples/basic')],
             },
         ],
     },

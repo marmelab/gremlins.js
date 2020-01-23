@@ -55,23 +55,7 @@ export default () => {
     const fillRadio = element => {
         // using mouse events to trigger listeners
         const evt = document.createEvent('MouseEvents');
-        evt.initMouseEvent(
-            'click',
-            true,
-            true,
-            window,
-            0,
-            0,
-            0,
-            0,
-            0,
-            false,
-            false,
-            false,
-            false,
-            0,
-            null
-        );
+        evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         element.dispatchEvent(evt);
 
         return element.value;
@@ -80,23 +64,7 @@ export default () => {
     const fillCheckbox = element => {
         // using mouse events to trigger listeners
         const evt = document.createEvent('MouseEvents');
-        evt.initMouseEvent(
-            'click',
-            true,
-            true,
-            window,
-            0,
-            0,
-            0,
-            0,
-            0,
-            false,
-            false,
-            false,
-            false,
-            0,
-            null
-        );
+        evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         element.dispatchEvent(evt);
 
         return element.value;
@@ -168,9 +136,7 @@ export default () => {
         } while (!element || !config.canFillElement(element));
 
         // Retrieve element type
-        const elementType = Object.keys(config.elementMapTypes).find(selector =>
-            matchesSelector(element, selector)
-        );
+        const elementType = Object.keys(config.elementMapTypes).find(selector => matchesSelector(element, selector));
 
         const value = config.elementMapTypes[elementType](element);
 
@@ -179,14 +145,7 @@ export default () => {
         }
 
         if (config.logger && typeof config.logger.log === 'function') {
-            config.logger.log(
-                'gremlin',
-                'formFiller',
-                'input',
-                value,
-                'in',
-                element
-            );
+            config.logger.log('gremlin', 'formFiller', 'input', value, 'in', element);
         }
     };
 

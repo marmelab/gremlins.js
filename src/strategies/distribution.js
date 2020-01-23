@@ -54,10 +54,7 @@ export default () => {
         const horde = params.horde;
 
         const gremlins = [...newGremlins]; // clone the array to avoid modifying the original
-        const distribution =
-            config.distribution.length === 0
-                ? getUniformDistribution(gremlins)
-                : config.distribution;
+        const distribution = config.distribution.length === 0 ? getUniformDistribution(gremlins) : config.distribution;
 
         if (nb === 0) return Promise.resolve();
         stopped = false;

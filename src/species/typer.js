@@ -111,14 +111,7 @@ export default () => {
         }
 
         if (config.logger && typeof config.logger.log === 'function') {
-            config.logger.log(
-                'gremlin',
-                'typer       type',
-                String.fromCharCode(key),
-                'at',
-                posX,
-                posY
-            );
+            config.logger.log('gremlin', 'typer       type', String.fromCharCode(key), 'at', posX, posY);
         }
     };
 

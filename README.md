@@ -2,10 +2,9 @@
 
 gremlins.js is a monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.
 
-
-> Kate: *What are they, Billy?*
+> Kate: _What are they, Billy?_
 >
-> Billy Peltzer: *They're gremlins, Kate, just like Mr. Futterman said.*
+> Billy Peltzer: _They're gremlins, Kate, just like Mr. Futterman said._
 
 ![TodoMVC attacked by gremlins](http://static.marmelab.com/todo.gif)
 
@@ -15,11 +14,11 @@ While developing an HTML5 application, did you anticipate uncommon user interact
 
 Gremlins.js simulates random user actions: gremlins click anywhere in the window, enter random data in forms, or move the mouse over elements that don't expect it. Their goal: triggering JavaScript errors, or making the application fail. If gremlins can't break an application, congrats! The application is robust enough to be released to real users.
 
-This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monkey_test) or [Fuzz testing](http://en.wikipedia.org/wiki/Fuzz_testing), is very common in mobile application development (see for instance the [Android Monkey program](http://developer.android.com/tools/help/monkey.html)). Now that frontend (MV*, d3.js, Backbone.js, Angular.js, etc.) and backend (Node.js) development use persistent JavaScript applications, this technique becomes valuable for web applications.
+This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monkey_test) or [Fuzz testing](http://en.wikipedia.org/wiki/Fuzz_testing), is very common in mobile application development (see for instance the [Android Monkey program](http://developer.android.com/tools/help/monkey.html)). Now that frontend (MV\*, d3.js, Backbone.js, Angular.js, etc.) and backend (Node.js) development use persistent JavaScript applications, this technique becomes valuable for web applications.
 
 ## Basic Usage
 
-A gremlins *horde* is an army of specialized gremlins ready to mess up your application. *unleash* the gremlins to start the stress test:
+A gremlins _horde_ is an army of specialized gremlins ready to mess up your application. _unleash_ the gremlins to start the stress test:
 
 ```js
 const horde = gremlins.createHorde();
@@ -27,7 +26,7 @@ horde.unleash();
 // gremlins will act randomly, at 10 ms interval, 1000 times
 ```
 
-`gremlins.js` provides several gremlin *species*: some click everywhere on the page, others enter data in form inputs, others scroll the window in every possible direction, etc.
+`gremlins.js` provides several gremlin _species_: some click everywhere on the page, others enter data in form inputs, others scroll the window in every possible direction, etc.
 
 You will see traces of the gremlins actions on the screen (they leave red traces) and in the console log:
 
@@ -39,7 +38,7 @@ gremlin scroller   scroll to 100 25
 ...
 ```
 
-A horde also contains *mogwais*, which are harmless gremlins (or, you could say that gremlins are harmful mogwais). Mogwais only monitor the activity of the application and record it on the logger. For instance, the "fps" mogwai monitors the number of frame per second, every 500ms:
+A horde also contains _mogwais_, which are harmless gremlins (or, you could say that gremlins are harmful mogwais). Mogwais only monitor the activity of the application and record it on the logger. For instance, the "fps" mogwai monitors the number of frame per second, every 500ms:
 
 ```
 mogwai  fps  33.21
@@ -58,7 +57,7 @@ mogwai  fps  15.76
 ...
 ```
 
-After 10 errors, a special mogwai stops the test. He's called *Gizmo*, and he prevents gremlins from breaking applications bad. After all, once gremlins have found the first 10 errors, you already know what you have to do to make your application more robust.
+After 10 errors, a special mogwai stops the test. He's called _Gizmo_, and he prevents gremlins from breaking applications bad. After all, once gremlins have found the first 10 errors, you already know what you have to do to make your application more robust.
 
 If not stopped by Gizmo, the default horde stops after roughly 1 minute. You can increase the number of gremlins actions to make the attack last longer:
 
@@ -72,7 +71,7 @@ Gremlins, just like mogwais, are simple JavaScript functions. If `gremlins.js` d
 ```js
 // add a new custom gremlin to blur the currently focused element
 horde.gremlin(function() {
-  document.activeElement.blur();
+    document.activeElement.blur();
 });
 ```
 
@@ -87,7 +86,7 @@ In the browser, the `gremlins.min.js` file can be used as a standalone library, 
 ```html
 <script src="path/to/gremlins.min.js"></script>
 <script>
-gremlins.createHorde().unleash();
+    gremlins.createHorde().unleash();
 </script>
 ```
 
@@ -95,13 +94,13 @@ Alternately, you can include `gremlins.min.js` as a RequireJS module, leaving th
 
 ```js
 require.config({
-  paths: {
-	gremlins: 'path/to/gremlins.min'
-  }
+    paths: {
+        gremlins: 'path/to/gremlins.min',
+    },
 });
 
 require(['gremlins'], function(gremlins) {
-  gremlins.createHorde().unleash();
+    gremlins.createHorde().unleash();
 });
 ```
 
@@ -116,44 +115,46 @@ By default, all gremlins and mogwais species are added to the horde.
 You can also choose to add only the gremlins species you want, using the `gremlin()` function of the `horde` object:
 
 ```js
-gremlins.createHorde()
-  .gremlin(gremlins.species.formFiller())
-  .gremlin(gremlins.species.clicker().clickTypes(['click']))
-  .gremlin(gremlins.species.toucher())
-  .gremlin(gremlins.species.scroller())
-  .gremlin(function() {
-    window.$ = function() {};
-  })
-  .unleash();
+gremlins
+    .createHorde()
+    .gremlin(gremlins.species.formFiller())
+    .gremlin(gremlins.species.clicker().clickTypes(['click']))
+    .gremlin(gremlins.species.toucher())
+    .gremlin(gremlins.species.scroller())
+    .gremlin(function() {
+        window.$ = function() {};
+    })
+    .unleash();
 ```
 
 If you just want to add your own gremlins in addition to the default ones, use the `allGremlins()` function:
 
 ```js
-gremlins.createHorde()
-  .allGremlins()
-  .gremlin(function() {
-    window.$ = function() {};
-  })
-  .unleash();
+gremlins
+    .createHorde()
+    .allGremlins()
+    .gremlin(function() {
+        window.$ = function() {};
+    })
+    .unleash();
 ```
 
 To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method the same way.
 
 `gremlins.js` currently provides a few gremlins and mogwais:
 
-* [clickerGremlin](src/species/clicker.js) clicks anywhere on the visible area of the document
-* [toucherGremlin](src/species/toucher.js) touches anywhere on the visible area of the document
-* [formFillerGremlin](src/species/formFiller.js) fills forms by entering data, selecting options, clicking checkboxes, etc
-* [scrollerGremlin](src/species/scroller.js) scrolls the viewport to reveal another part of the document
-* [typerGremlin](src/species/typer.js) types keys on the keyboard
-* [alertMogwai](src/mogwais/alert.js) prevents calls to alert() from blocking the test
-* [fpsMogwai](src/mogwais/fps.js) logs the number of frames per seconds (FPS) of the browser
-* [gizmoMogwai](src/mogwais/gizmo.js) can stop the gremlins when they go too far
+-   [clickerGremlin](src/species/clicker.js) clicks anywhere on the visible area of the document
+-   [toucherGremlin](src/species/toucher.js) touches anywhere on the visible area of the document
+-   [formFillerGremlin](src/species/formFiller.js) fills forms by entering data, selecting options, clicking checkboxes, etc
+-   [scrollerGremlin](src/species/scroller.js) scrolls the viewport to reveal another part of the document
+-   [typerGremlin](src/species/typer.js) types keys on the keyboard
+-   [alertMogwai](src/mogwais/alert.js) prevents calls to alert() from blocking the test
+-   [fpsMogwai](src/mogwais/fps.js) logs the number of frames per seconds (FPS) of the browser
+-   [gizmoMogwai](src/mogwais/gizmo.js) can stop the gremlins when they go too far
 
 ### Configuring Gremlins
 
-All the gremlins and mogwais provided by `gremlins.js` are *configurable functions*, i.e. you can alter the way they work by calling methods on them.
+All the gremlins and mogwais provided by `gremlins.js` are _configurable functions_, i.e. you can alter the way they work by calling methods on them.
 
 For instance, the clicker gremlin is a function that you can execute it directly:
 
@@ -165,18 +166,19 @@ clickerGremlin(); // trigger a random mouse event in the screen:
 In JavaScript, functions are objects, and as such can have methods. The clicker gremlin function offers customizing methods:
 
 ```js
-gremlins.species.clicker()
-  .clickTypes(['click']) // which mouse event types will be triggered
-  .canClick(function(element) {
-    // only click elements in bar
-    return $(element).parents('#bar').length;
-    // when canClick returns false, the gremlin will look for another
-    // element to click on until maxNbTries is reached
-  })
-  .showAction(function(x, y) {
-    // by default, the clicker gremlin shows its action by a red circle
-    // overriding showAction() with an empty function makes the gremlin action invisible
-  })
+gremlins.species
+    .clicker()
+    .clickTypes(['click']) // which mouse event types will be triggered
+    .canClick(function(element) {
+        // only click elements in bar
+        return $(element).parents('#bar').length;
+        // when canClick returns false, the gremlin will look for another
+        // element to click on until maxNbTries is reached
+    })
+    .showAction(function(x, y) {
+        // by default, the clicker gremlin shows its action by a red circle
+        // overriding showAction() with an empty function makes the gremlin action invisible
+    });
 ```
 
 Each particular gremlin or mogwai has its own customization methods, check the source for details.
@@ -196,15 +198,15 @@ horde.seed(1234);
 
 Before starting the attack, you may want to execute custom code. This is especially useful to:
 
-* Start a profiler
-* Disable some features to better target the test
-* Bootstrap the application
+-   Start a profiler
+-   Disable some features to better target the test
+-   Bootstrap the application
 
 For this usage, the `horde` object provides a `before()` method, which accepts a callback:
 
 ```js
 horde.before(function startProfiler() {
-  console.profile('gremlins');
+    console.profile('gremlins');
 });
 ```
 
@@ -212,7 +214,7 @@ To clean up the test environment, the `horde` object also provides an `after()` 
 
 ```js
 horde.after(function stopProfiler() {
-  console.profileEnd();
+    console.profileEnd();
 });
 ```
 
@@ -220,7 +222,7 @@ Both `before()` and `after()` support asynchronous callbacks:
 
 ```js
 horde.before(function waitFiveSeconds(done) {
-  window.setTimeout(done, 5000);
+    window.setTimeout(done, 5000);
 });
 ```
 
@@ -229,10 +231,12 @@ horde.before(function waitFiveSeconds(done) {
 By default, gremlins will attack in random order, in a uniform distribution, separated by a delay of 10ms. This attack strategy is called the [distribution](src/strategies/distribution.js) strategy. You can customize it using the `horde.strategy()` method:
 
 ```js
-horde.strategy(gremlins.strategies.distribution()
-  .delay(50) // wait 50 ms between each action
-  .distribution([0.3, 0.3, 0.3, 0.1]) // the first three gremlins have more chances to be executed than the last
-)
+horde.strategy(
+    gremlins.strategies
+        .distribution()
+        .delay(50) // wait 50 ms between each action
+        .distribution([0.3, 0.3, 0.3, 0.1]) // the first three gremlins have more chances to be executed than the last
+);
 ```
 
 Note that if using default gremlins, there are [five type of gremlins](https://github.com/marmelab/gremlins.js/blob/master/src/main.js#L12). The previous example would give a 0 value to last gremlin specie.
@@ -249,10 +253,18 @@ By default, gremlins.js logs all gremlin actions and mogwai observations in the 
 
 ```js
 const customLogger = {
-  log:   function(msg) { /* .. */ },
-  info:  function(msg) { /* .. */ },
-  warn:  function(msg) { /* .. */ },
-  error: function(msg) { /* .. */ }
+    log: function(msg) {
+        /* .. */
+    },
+    info: function(msg) {
+        /* .. */
+    },
+    warn: function(msg) {
+        /* .. */
+    },
+    error: function(msg) {
+        /* .. */
+    },
 };
 horde.logger(customLogger);
 ```
@@ -267,7 +279,7 @@ All contributions are welcome. New gremlins, new mogwais, new strategies, should
 
 While developing, you can use the command `make watch` to prevent from rebuilding at each step. In this case, just include the library using:
 
-``` html
+```html
 <script src="http://localhost:8080/gremlins.min.js"></script>
 ```
 

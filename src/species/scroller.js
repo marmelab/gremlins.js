@@ -105,13 +105,7 @@ export default () => {
         }
 
         if (config.logger && typeof config.logger.log === 'function') {
-            config.logger.log(
-                'gremlin',
-                'scroller  ',
-                'scroll to',
-                scrollX,
-                scrollY
-            );
+            config.logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
         }
     };
 

@@ -145,23 +145,7 @@ export default () => {
 
         const evt = document.createEvent('MouseEvents');
         const clickType = config.randomizer.pick(config.clickTypes);
-        evt.initMouseEvent(
-            clickType,
-            true,
-            true,
-            window,
-            0,
-            0,
-            0,
-            posX,
-            posY,
-            false,
-            false,
-            false,
-            false,
-            0,
-            null
-        );
+        evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, posX, posY, false, false, false, false, 0, null);
         targetElement.dispatchEvent(evt);
 
         if (typeof config.showAction === 'function') {
@@ -169,14 +153,7 @@ export default () => {
         }
 
         if (config.logger && typeof config.logger.log === 'function') {
-            config.logger.log(
-                'gremlin',
-                'clicker   ',
-                clickType,
-                'at',
-                posX,
-                posY
-            );
+            config.logger.log('gremlin', 'clicker   ', clickType, 'at', posX, posY);
         }
     };
 

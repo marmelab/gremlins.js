@@ -200,24 +200,14 @@ export default () => {
             // calculate the radius
             let radius = gesture.radius;
             if (gesture.scale !== 1) {
-                radius =
-                    gesture.radius -
-                    gesture.radius * (1 - gesture.scale) * ((1 / loops) * loop);
+                radius = gesture.radius - gesture.radius * (1 - gesture.scale) * ((1 / loops) * loop);
             }
 
             // calculate new position/rotation
             const posX = startPos[0] + (gesture.distanceX / loops) * loop;
             const posY = startPos[1] + (gesture.distanceY / loops) * loop;
-            const rotation =
-                typeof gesture.rotation === 'number'
-                    ? (gesture.rotation / loops) * loop
-                    : null;
-            const touches = getTouches(
-                [posX, posY],
-                startTouches.length,
-                radius,
-                rotation
-            );
+            const rotation = typeof gesture.rotation === 'number' ? (gesture.rotation / loops) * loop : null;
+            const touches = getTouches([posX, posY], startTouches.length, radius, rotation);
             const isFirst = loop === 1;
             const isLast = loop === loops;
 
@@ -327,15 +317,7 @@ export default () => {
                 config.showAction(touches);
             }
             if (config.logger && typeof config.logger.log === 'function') {
-                config.logger.log(
-                    'gremlin',
-                    'toucher   ',
-                    touchType,
-                    'at',
-                    posX,
-                    posY,
-                    details
-                );
+                config.logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
             }
         };
         touchTypes[touchType](position, targetElement, logGremlin, done);
