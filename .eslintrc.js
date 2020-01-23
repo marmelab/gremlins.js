@@ -19,5 +19,6 @@ module.exports = {
     ],
     rules: {
         'prettier/prettier': 'error',
+        'babel/no-unused-expressions': 'error',
     },
 };

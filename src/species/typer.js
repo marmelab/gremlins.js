@@ -102,9 +102,11 @@ export default () => {
         keyboardEvent.which = key;
         keyboardEvent.keyCodeVal = key;
 
-        targetElement.dispatchEvent
-            ? targetElement.dispatchEvent(keyboardEvent)
-            : targetElement.fireEvent('on' + eventType, keyboardEvent);
+        if (targetElement.dispatchEvent) {
+            targetElement.dispatchEvent(keyboardEvent);
+        } else {
+            targetElement.fireEvent('on' + eventType, keyboardEvent);
+        }
 
         if (typeof config.showAction === 'function') {
             config.showAction(targetElement, posX, posY, key);
