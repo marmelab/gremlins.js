@@ -14,10 +14,10 @@ build: ## Webpack build the project
 	mkdir -p dist
 	npm run build
 
-check-linting: ## lint the code and check coding conventions
+lint: ## lint the code and check coding conventions
 	echo "Running linter..."
 	npm run lint
 
-prettier: ## prettify the source code using prettier
+format: ## prettify the source code using prettier
 	echo "Running prettier..."
-	npm run prettier
+	npm run format

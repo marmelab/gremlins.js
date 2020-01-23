@@ -13,8 +13,8 @@
     "scripts": {
         "start": "webpack-dev-server --config webpack.demo.js --colors --devtool cheap-module-inline-source-map --hot --inline --host=0.0.0.0",
         "build": "webpack",
-        "lint": "eslint src examples",
-        "prettier": "prettier-eslint --write --list-different src/**/*.js examples/**/*.js"
+        "lint": "eslint .",
+        "format": "prettier --write --check \"**/*.+(js|json|md)\""
     },
     "repository": {
         "type": "git",
@@ -37,17 +37,16 @@
         "@babel/core": "^7.1.2",
         "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
         "@babel/preset-env": "^7.1.0",
-        "babel-eslint": "^10.0.1",
+        "babel-eslint": "^10.0.3",
         "babel-loader": "^8.0.4",
         "css-loader": "^1.0.0",
-        "eslint": "^5.6.1",
+        "eslint": "^6.8.0",
         "eslint-config-prettier": "^3.1.0",
         "eslint-plugin-babel": "^5.2.1",
-        "eslint-plugin-import": "^2.14.0",
-        "eslint-plugin-prettier": "^3.0.0",
+        "eslint-plugin-import": "^2.20.0",
+        "eslint-plugin-prettier": "^3.1.2",
         "html-webpack-plugin": "^3.2.0",
-        "prettier": "^1.14.3",
-        "prettier-eslint-cli": "^4.7.1",
+        "prettier": "^1.19.1",
         "style-loader": "^0.23.1",
         "webpack": "^4.20.2",
         "webpack-cli": "^3.1.2",
