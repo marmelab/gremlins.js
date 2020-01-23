@@ -102,23 +102,18 @@ export default () => {
         keyboardEvent.which = key;
         keyboardEvent.keyCodeVal = key;
 
-        targetElement.dispatchEvent
-            ? targetElement.dispatchEvent(keyboardEvent)
-            : targetElement.fireEvent('on' + eventType, keyboardEvent);
+        if (targetElement.dispatchEvent) {
+            targetElement.dispatchEvent(keyboardEvent);
+        } else {
+            targetElement.fireEvent('on' + eventType, keyboardEvent);
+        }
 
         if (typeof config.showAction === 'function') {
             config.showAction(targetElement, posX, posY, key);
         }
 
         if (config.logger && typeof config.logger.log === 'function') {
-            config.logger.log(
-                'gremlin',
-                'typer       type',
-                String.fromCharCode(key),
-                'at',
-                posX,
-                posY
-            );
+            config.logger.log('gremlin', 'typer       type', String.fromCharCode(key), 'at', posX, posY);
         }
     };
 

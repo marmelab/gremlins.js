@@ -51,10 +51,7 @@ export default () => {
     const inject = (services, objects) => {
         for (let i = 0, count = objects.length; i < count; i++) {
             for (let name in services) {
-                if (
-                    typeof objects[i][name] === 'function' &&
-                    !objects[i][name]()
-                ) {
+                if (typeof objects[i][name] === 'function' && !objects[i][name]()) {
                     objects[i][name](services[name]);
                 }
             }
@@ -453,36 +450,23 @@ export default () => {
             gremlins.strategy(gremlins.strategies.bySpecies());
         }
 
-        const gremlinsAndMogwais = [
-            ...gremlins._gremlins,
-            ...gremlins._mogwais,
-        ];
+        const gremlinsAndMogwais = [...gremlins._gremlins, ...gremlins._mogwais];
         const allCallbacks = [
             ...gremlinsAndMogwais,
             ...gremlins._strategies,
             ...gremlins._beforeCallbacks,
             ...gremlins._afterCallbacks,
         ];
-        inject(
-            { logger: gremlins._logger, randomizer: gremlins._randomizer },
-            allCallbacks
-        );
-        const beforeCallbacks = [
-            ...gremlins._beforeCallbacks,
-            ...gremlins._mogwais,
-        ];
+        inject({ logger: gremlins._logger, randomizer: gremlins._randomizer }, allCallbacks);
+        const beforeCallbacks = [...gremlins._beforeCallbacks, ...gremlins._mogwais];
         const afterCallbacks = [
             ...gremlins._afterCallbacks,
-            ...gremlinsAndMogwais
-                .map(beast => beast.cleanUp)
-                .filter(cleanUp => typeof cleanUp === 'function'),
+            ...gremlinsAndMogwais.map(beast => beast.cleanUp).filter(cleanUp => typeof cleanUp === 'function'),
         ];
 
         const horde = gremlins;
 
-        const strategies = horde._strategies.map(strat =>
-            strat(gremlins._gremlins, ...params)
-        );
+        const strategies = horde._strategies.map(strat => strat(gremlins._gremlins, ...params));
 
         await executeInSeries(beforeCallbacks, [], horde);
         await Promise.all(strategies);

@@ -10,7 +10,7 @@
  * @param {Function} done - The final callback to execute once all functions are executed
  */
 export default (callables, args, context) =>
-    new Promise(async (resolve, reject) => {
+    new Promise((resolve, reject) => {
         try {
             callables.forEach(async cb => await cb.apply(context, args));
         } catch (error) {

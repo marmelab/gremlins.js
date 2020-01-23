@@ -75,8 +75,7 @@ export default () => {
             window.requestAnimationFrame(measure);
         };
         const measure = time => {
-            const fps =
-                time - lastTime < NEXT_FRAME_MS ? 60 : 1000 / (time - lastTime);
+            const fps = time - lastTime < NEXT_FRAME_MS ? 60 : 1000 / (time - lastTime);
             const level = config.levelSelector(fps);
             config.logger[level]('mogwai ', 'fps       ', fps);
         };
