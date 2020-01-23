@@ -441,9 +441,8 @@ export default () => {
      *     .unleash();
      *
      * @param {Object} [params] - A list of parameters passed to each strategy.
-     * @param {Function} [done] - A callback to be executed once the stress test is over
      */
-    gremlins.unleash = (params, done) => {
+    gremlins.unleash = async params => {
         if (gremlins._gremlins.length === 0) {
             gremlins.allGremlins();
         }
@@ -451,7 +450,7 @@ export default () => {
             gremlins.allMogwais();
         }
         if (gremlins._strategies.length === 0) {
-            gremlins.strategy(gremlins.strategies.distribution());
+            gremlins.strategy(gremlins.strategies.bySpecies());
         }
 
         const gremlinsAndMogwais = [
@@ -481,20 +480,13 @@ export default () => {
 
         const horde = gremlins;
 
-        executeInSeries(beforeCallbacks, [], horde, () => {
-            executeInSeries(
-                horde._strategies,
-                [gremlins._gremlins, params],
-                horde,
-                () => {
-                    executeInSeries(afterCallbacks, [], horde, () => {
-                        if (typeof done === 'function') {
-                            done();
-                        }
-                    });
-                }
-            );
-        });
+        const strategies = horde._strategies.map(strat =>
+            strat(gremlins._gremlins, ...params)
+        );
+
+        await executeInSeries(beforeCallbacks, [], horde);
+        await Promise.all(strategies);
+        await executeInSeries(afterCallbacks, [], horde);
     };
 
     /**

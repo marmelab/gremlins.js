@@ -1,5 +1,6 @@
 import executeInSeries from '../utils/executeInSeries';
 import configurable from '../utils/configurable';
+import wait from '../utils/wait';
 
 /**
  * Execute all Gremlins species at once ; repeat 10ms after for 100 times
@@ -16,42 +17,24 @@ export default () => {
     };
 
     let stopped;
-    let doneCallback;
 
-    const allTogetherStrategy = (gremlins, params, done) => {
+    const allTogetherStrategy = async (gremlins, params) => {
         const nb = params && params.nb ? params.nb : config.nb;
+        const delay = params && params.delay ? params.delay : config.delay;
         const horde = this;
 
         stopped = false;
-        doneCallback = done; // done can also be called by stop()
-
-        const executeAllGremlins = callback => {
-            executeInSeries(gremlins, [], horde, callback);
-        };
-
-        const executeNextWave = i => {
-            if (stopped) return;
-            if (i >= nb) return callDone();
-            executeAllGremlins(() => {
-                setTimeout(() => {
-                    executeNextWave(++i);
-                }, config.delay);
-            });
-        };
-
-        executeNextWave(0);
-    };
-
-    const callDone = () => {
-        if (typeof doneCallback === 'function') {
-            doneCallback();
+        for (let i = 0; i < nb; i++) {
+            await wait(delay);
+            if (stopped) {
+                return Promise.resolve();
+            }
+            await executeInSeries(gremlins, [], horde);
         }
-        doneCallback = null;
+        return Promise.resolve();
     };
-
     allTogetherStrategy.stop = () => {
         stopped = true;
-        setTimeout(callDone, 4);
     };
 
     configurable(allTogetherStrategy, config);
