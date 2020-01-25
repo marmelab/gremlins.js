@@ -37,6 +37,8 @@
         "@babel/core": "^7.1.2",
         "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
         "@babel/preset-env": "^7.1.0",
+        "@commitlint/cli": "^8.3.5",
+        "@commitlint/config-conventional": "^8.3.4",
         "babel-eslint": "^10.0.3",
         "babel-loader": "^8.0.4",
         "css-loader": "^1.0.0",
@@ -59,11 +61,17 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint-staged"
+            "pre-commit": "lint-staged",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
         }
     },
     "lint-staged": {
         "*.js": "eslint",
         "*.{js,json,md}": "prettier --write"
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ]
     }
 }
