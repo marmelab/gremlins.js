@@ -34,14 +34,13 @@
     },
     "homepage": "https://github.com/marmelab/gremlins.js",
     "devDependencies": {
-        "@babel/core": "^7.1.2",
-        "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-        "@babel/preset-env": "^7.1.0",
+        "@babel/core": "^7.8.3",
+        "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+        "@babel/preset-env": "^7.8.3",
         "@commitlint/cli": "^8.3.5",
         "@commitlint/config-conventional": "^8.3.4",
         "babel-eslint": "^10.0.3",
-        "babel-loader": "^8.0.4",
-        "css-loader": "^1.0.0",
+        "babel-loader": "^8.0.6",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^3.1.0",
         "eslint-plugin-babel": "^5.2.1",
@@ -51,13 +50,12 @@
         "husky": "^4.2.0",
         "lint-staged": "^10.0.2",
         "prettier": "^1.19.1",
-        "style-loader": "^0.23.1",
-        "webpack": "^4.20.2",
-        "webpack-cli": "^3.1.2",
-        "webpack-dev-server": "^3.8.1"
+        "webpack": "^4.41.5",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-server": "^3.10.1"
     },
     "dependencies": {
-        "chance": "^1.0.16"
+        "chance": "^1.1.4"
     },
     "husky": {
         "hooks": {

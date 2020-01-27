@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        basic: ['./examples/basic/basic.css', './examples/basic/basic.js'],
+        basic: './examples/basic/basic.js',
     },
     mode: 'development',
     output: {
@@ -17,11 +17,6 @@ module.exports = {
             {
                 use: 'babel-loader',
                 test: /\.js$/,
-                include: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'examples/basic')],
-            },
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader'],
                 include: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'examples/basic')],
             },
         ],
