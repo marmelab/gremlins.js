@@ -14,6 +14,12 @@ build: ## Webpack build the project
 	mkdir -p dist
 	npm run build
 
+test: ## Run whole tests
+	npm run test
+
+test-watch: ## Watch whole test suites
+	npm run test:watch
+
 lint: ## lint the code and check coding conventions
 	echo "Running linter..."
 	npm run lint
