@@ -16,6 +16,8 @@ module.exports = {
         'plugin:prettier/recommended',
         'plugin:import/errors',
         'plugin:import/warnings',
+        'plugin:jest/recommended',
+        'plugin:jest/style',
     ],
     rules: {
         'prettier/prettier': 'error',
