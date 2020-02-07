@@ -4,10 +4,10 @@ help:
 install: ## Install dependencies
 	npm install
 
-start: run
+start-demo: run
 
-run: ## Run the webpack-dev-server
-	npm start
+run-demo: ## Run the webpack-dev-server
+	npm run start-demo
 
 build: clear ## Rollup build the project
 	npm run build

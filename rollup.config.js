@@ -14,12 +14,14 @@ const umd = [
             name: pkg.name,
             file: pkg.main,
             format: 'umd',
+            sourcemap: isProduction,
         },
         plugins: [
             resolve(),
             commonjs(),
             babel({
                 exclude: /node_modules/,
+                sourceMaps: isProduction,
             }),
             isProduction && terser(),
         ],
