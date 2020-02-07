@@ -7,16 +7,18 @@
         "example": "examples"
     },
     "files": [
-        "dist/",
-        "*.md"
+        "dist"
     ],
     "scripts": {
-        "start": "webpack-dev-server --config webpack.demo.js --colors --devtool cheap-module-inline-source-map --hot --inline --host=0.0.0.0",
-        "build": "webpack",
-        "test": "NODE_ENV=test jest",
-        "test:watch": "NODE_ENV=test jest --watch",
+        "start-demo": "webpack-dev-server --config webpack.demo.js --colors --devtool cheap-module-inline-source-map --hot --inline --host=0.0.0.0",
+        "dev": "rollup -c -w",
+        "build": "cross-env NODE_ENV=production rollup -c",
+        "test": "cross-env NODE_ENV=test jest",
+        "test:watch": "cross-env NODE_ENV=test jest --watch",
         "lint": "eslint .",
-        "format": "prettier --write --check \"**/*.+(js|json|md)\""
+        "format": "prettier --write --check \"**/*.+(js|json|md)\"",
+        "serve": "serve dist",
+        "clear": "rimraf dist"
     },
     "repository": {
         "type": "git",
@@ -37,13 +39,15 @@
     "homepage": "https://github.com/marmelab/gremlins.js",
     "devDependencies": {
         "@babel/core": "^7.8.3",
-        "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
         "@babel/preset-env": "^7.8.3",
         "@commitlint/cli": "^8.3.5",
         "@commitlint/config-conventional": "^8.3.4",
+        "@rollup/plugin-commonjs": "^11.0.2",
+        "@rollup/plugin-node-resolve": "^7.1.1",
         "babel-eslint": "^10.0.3",
         "babel-jest": "^25.1.0",
         "babel-loader": "^8.0.6",
+        "cross-env": "^7.0.0",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.9.0",
         "eslint-plugin-babel": "^5.3.0",
@@ -55,12 +59,19 @@
         "jest": "^25.1.0",
         "lint-staged": "^10.0.3",
         "prettier": "^1.19.1",
+        "rimraf": "^3.0.1",
+        "rollup": "^1.31.0",
+        "rollup-plugin-babel": "^4.3.3",
+        "rollup-plugin-commonjs": "^10.1.0",
+        "rollup-plugin-terser": "^5.2.0",
+        "serve": "^11.3.0",
         "webpack": "^4.41.5",
         "webpack-cli": "^3.3.10",
         "webpack-dev-server": "^3.10.1"
     },
     "dependencies": {
-        "chance": "^1.1.4"
+        "chance": "^1.1.4",
+        "core-js": "^3.6.4"
     },
     "husky": {
         "hooks": {

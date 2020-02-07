@@ -1,12 +1,14 @@
 const path = require('path');
 
+const MODE = process.env.NODE_ENV || 'development';
+
 module.exports = {
     entry: {
         index: './src/index.js',
     },
-    mode: 'production',
+    mode: MODE,
     output: {
-        filename: 'gremlins.min.js',
+        filename: 'gremlins.min2.js',
         path: path.resolve(__dirname, 'dist'),
         library: 'gremlins',
         libraryTarget: 'umd',

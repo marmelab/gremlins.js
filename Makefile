@@ -9,10 +9,11 @@ start: run
 run: ## Run the webpack-dev-server
 	npm start
 
-build: ## Webpack build the project
-	rm -rf dist/
-	mkdir -p dist
+build: clear ## Rollup build the project
 	npm run build
+
+clear: ## Clear dist directory
+	npm run clear
 
 test: ## Run whole tests
 	npm run test
@@ -27,3 +28,6 @@ lint: ## lint the code and check coding conventions
 format: ## prettify the source code using prettier
 	echo "Running prettier..."
 	npm run format
+
+serve: build ## Serve dist directory
+	npm run serve
