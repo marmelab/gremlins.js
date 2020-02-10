@@ -75,8 +75,6 @@ horde.gremlin(function() {
 });
 ```
 
-Check the [examples](examples) directory for examples.
-
 Everything in `gremlins.js` is configurable ; you will find it very easy to extend and adapt to you use cases.
 
 ## Installation
@@ -275,7 +273,7 @@ horde.logger(customLogger);
 
 Your feedback about the usage of gremlins.js in your specific context is valuable, don't hesitate to [open GitHub Issues](https://github.com/marmelab/gremlins.js/issues) for any problem or question you may have.
 
-All contributions are welcome. New gremlins, new mogwais, new strategies, should all be tested against the two examples bundled in the application. Try to follow the functional programming style. Also, don't forget to rebuild the minified version of the library using `make`.
+All contributions are welcome. New gremlins, new mogwais, new strategies. Try to follow the functional programming style. Also, don't forget to rebuild the minified version of the library using `make`.
 
 While developing, you can use the command `make watch` to prevent from rebuilding at each step. In this case, just include the library using:
 
