@@ -17,15 +17,13 @@
         [
             "@babel/preset-env",
             {
-                "loose": true,
-                "modules": false,
                 "useBuiltIns": "usage",
                 "shippedProposals": true,
+                "corejs": 3,
                 "targets": {
-                    "browsers": [">0.25%", "not dead"]
+                    "browsers": ["last 2 major versions", "not dead", "not IE 11"]
                 }
             }
         ]
-    ],
-    "plugins": ["@babel/plugin-proposal-object-rest-spread"]
+    ]
 }

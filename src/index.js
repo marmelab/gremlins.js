@@ -466,7 +466,7 @@ export default () => {
 
         const horde = gremlins;
 
-        const strategies = horde._strategies.map(strat => strat(gremlins._gremlins, ...params));
+        const strategies = horde._strategies.map(strat => strat.apply(void 0, [gremlins._gremlins].concat(params)));
 
         await executeInSeries(beforeCallbacks, [], horde);
         await Promise.all(strategies);
