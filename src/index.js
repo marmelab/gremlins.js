@@ -50,16 +50,16 @@ export default userConfig => {
 
     const unleash = async params => {
         const gremlinsAndMogwais = [...config.gremlins, ...config.mogwais];
-        const beforeCallbacks = [...config.mogwais];
-        const afterCallbacks = gremlinsAndMogwais
+        const beforeHorde = [...config.mogwais];
+        const afterHorde = gremlinsAndMogwais
             .map(beast => beast.cleanUp)
             .filter(cleanUp => typeof cleanUp === 'function');
 
         const horde = config.strategies.map(strat => strat.apply(null, [config.gremlins].concat(params)));
 
-        await executeInSeries(beforeCallbacks, []);
+        await executeInSeries(beforeHorde, []);
         await Promise.all(horde);
-        await executeInSeries(afterCallbacks, []);
+        await executeInSeries(afterHorde, []);
     };
 
     const stop = () => config.strategies.forEach(strat => strat.stop());
