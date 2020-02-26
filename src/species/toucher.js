@@ -67,6 +67,7 @@ const getDefaultConfig = randomizer => {
         log: false,
     };
 };
+
 export default userConfig => (logger, randomizer) => {
     const document = window.document;
     const config = { ...getDefaultConfig(randomizer), ...userConfig };
