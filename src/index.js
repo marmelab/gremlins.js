@@ -16,11 +16,11 @@ import distribution from './strategies/distribution';
 
 import executeInSeries from './utils/executeInSeries';
 
-const species = [typer()];
+const species = [clicker(), formFiller()];
 
 const mogwais = [fps()];
 
-const strategies = [bySpecies()];
+const strategies = [distribution()];
 
 const defaultConfig = {
     species,
@@ -36,7 +36,7 @@ export default userConfig => {
     const { logger, randomizer } = config;
     const species = config.species.map(specie => specie(logger, randomizer));
     const mogwais = config.mogwais.map(mogwai => mogwai(logger));
-    const strategies = config.strategies.map(strat => strat(species));
+    const strategies = config.strategies.map(strat => strat(randomizer));
 
     const unleash = async () => {
         const gremlinsAndMogwais = [...species, ...mogwais];
@@ -47,7 +47,8 @@ export default userConfig => {
 
         // const horde = config.strategies.map(strat => strat.apply(null, [species].concat(params)));
         await executeInSeries(beforeHorde, []);
-        await Promise.all(strategies);
+        const unleashedStrategies = strategies.map(strat => strat(species));
+        await Promise.all(unleashedStrategies);
         // await executeInSeries(afterHorde, []);
     };
 

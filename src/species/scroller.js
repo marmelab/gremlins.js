@@ -53,6 +53,7 @@ const getDefaultConfig = randomizer => {
     return {
         positionSelector: defaultPositionSelector,
         showAction: defaultShowAction,
+        log: false,
     };
 };
 
@@ -69,7 +70,7 @@ export default userConfig => (logger, randomizer) => {
             config.showAction(scrollX, scrollY);
         }
 
-        if (logger && typeof logger.log === 'function') {
+        if (logger && config.log) {
             logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
         }
     };

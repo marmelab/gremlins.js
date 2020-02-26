@@ -108,6 +108,7 @@ const getDefaultConfig = randomizer => {
         showAction: defaultShowAction,
         canFillElement: defaultCanFillElement,
         maxNbTries: 10,
+        log: false,
     };
 };
 
@@ -141,7 +142,7 @@ export default userConfig => (logger, randomizer) => {
             config.showAction(element);
         }
 
-        if (logger && typeof logger.log === 'function') {
+        if (logger && config.log) {
             logger.log('gremlin', 'formFiller', 'input', value, 'in', element);
         }
     };

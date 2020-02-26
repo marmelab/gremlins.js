@@ -63,6 +63,7 @@ const getDefaultConfig = randomizer => {
         showAction: defaultShowAction,
         canClick: defaultCanClick,
         maxNbTries: 10,
+        log: false,
     };
 };
 
@@ -97,7 +98,7 @@ export default userConfig => (logger, randomizer) => {
             config.showAction(posX, posY, clickType);
         }
 
-        if (logger && typeof logger.log === 'function') {
+        if (logger && config.log) {
             logger.log('gremlin', 'clicker   ', clickType, 'at', posX, posY);
         }
     };
