@@ -34,4 +34,4 @@ publish-dry-run: ## Publish dry-run
 	npm run release -- --dry-run
 
 publish-next: ## Publish on next tag
-	npm run release -- --release-as next
+	npm run release -- --prerelease next

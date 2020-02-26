@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-next.0](https://github.com/marmelab/gremlins.js/compare/v2.0.0-next...v2.0.0-next.0) (2020-02-26)
+
+### Features
+
+-   add standard-version package ([137eb96](https://github.com/marmelab/gremlins.js/commit/137eb96e4f635fb6f5a1bc348dce430dfa31c990))
+
 ## [2.0.0-next](https://github.com/marmelab/gremlins.js/compare/v0.1.0...v2.0.0-next) (2020-02-26)
 
 ### Features
