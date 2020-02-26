@@ -16,7 +16,7 @@ import distribution from './strategies/distribution';
 
 import executeInSeries from './utils/executeInSeries';
 
-const species = [clicker()];
+const species = [formFiller()];
 
 const mogwais = [fps()];
 
