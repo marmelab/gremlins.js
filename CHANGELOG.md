@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-next.2](https://github.com/marmelab/gremlins.js/compare/v2.0.0-next.1...v2.0.0-next.2) (2020-02-26)
+
+### Features
+
+-   add bookmarklet.html file ([96b26a0](https://github.com/marmelab/gremlins.js/commit/96b26a080605d42149afa669447523ff774b5b1a))
+-   deploy to gh-pages ([2399363](https://github.com/marmelab/gremlins.js/commit/2399363ac114037a5292d520eeb55e5883cdaaeb))
+
+### Bug Fixes
+
+-   custom config, logger & exceptions ([fc1ca4b](https://github.com/marmelab/gremlins.js/commit/fc1ca4b7728227f463a4c49706c66f237df24c88))
+
 ## [2.0.0-next.1](https://github.com/marmelab/gremlins.js/compare/v2.0.0-next...v2.0.0-next.1) (2020-02-26)
 
 ### Features
