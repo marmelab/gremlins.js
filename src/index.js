@@ -10,31 +10,27 @@ import alert from './mogwais/alert';
 import fps from './mogwais/fps';
 import gizmo from './mogwais/gizmo';
 
+import distribution from './strategies/distribution';
+import bySpecies from './strategies/bySpecies';
 import allTogether from './strategies/allTogether';
 
 import executeInSeries from './utils/executeInSeries';
 
-const species = [clicker(), formFiller(), toucher(), scroller(), typer()];
-
-const mogwais = [fps(), alert(), gizmo()];
-
-const strategies = [allTogether()];
-
 const defaultConfig = {
-    species,
-    mogwais,
-    strategies,
+    species: [clicker(), formFiller(), toucher(), scroller(), typer()],
+    mogwais: [fps(), alert(), gizmo()],
+    strategies: [allTogether()],
     logger: console,
     randomizer: new Chance(),
 };
 
-// do not export anything else here to keep window.gremlins as a function
-export default userConfig => {
+export const createHorde = userConfig => {
     const config = { ...defaultConfig, ...userConfig };
     const { logger, randomizer } = config;
     const species = config.species.map(specie => specie(logger, randomizer));
-    const mogwais = config.mogwais.map(mogwai => mogwai(logger, randomizer));
     const strategies = config.strategies.map(strat => strat(randomizer));
+    const stop = () => strategies.forEach(strat => strat.stop());
+    const mogwais = config.mogwais.map(mogwai => mogwai(logger, randomizer, stop));
 
     const unleash = async () => {
         const beforeHorde = [...mogwais];
@@ -46,10 +42,12 @@ export default userConfig => {
         await executeInSeries(cleansUps, []);
     };
 
-    const stop = () => config.strategies.forEach(strat => strat.stop());
-
     return {
         unleash,
         stop,
     };
 };
+
+export const species = { clicker, toucher, formFiller, scroller, typer };
+export const mogwais = { alert, fps, gizmo };
+export const strategies = { distribution, bySpecies, allTogether };

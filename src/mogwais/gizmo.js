@@ -1,4 +1,4 @@
-export default userConfig => logger => {
+export default userConfig => (logger, _ignore, stop) => {
     const defaultConfig = { maxErrors: 10 };
     const config = { ...defaultConfig, ...userConfig };
 
@@ -7,11 +7,10 @@ export default userConfig => logger => {
 
     const gizmoMogwai = () => {
         let nbErrors = 0;
-        const horde = this; // this is exceptional - don't use 'this' for mogwais in general
         const incrementNbErrors = () => {
             nbErrors++;
             if (nbErrors === config.maxErrors) {
-                horde.stop();
+                stop();
                 if (!logger) return;
                 window.setTimeout(() => {
                     // display the mogwai error after the caught error
