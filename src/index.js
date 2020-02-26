@@ -27,6 +27,7 @@ const defaultConfig = {
 export const createHorde = userConfig => {
     const config = { ...defaultConfig, ...userConfig };
     const { logger, randomizer } = config;
+
     const species = config.species.map(specie => specie(logger, randomizer));
     const strategies = config.strategies.map(strat => strat(randomizer));
     const stop = () => strategies.forEach(strat => strat.stop());

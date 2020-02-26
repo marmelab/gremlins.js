@@ -70,7 +70,7 @@ const getDefaultConfig = randomizer => {
 export default userConfig => (logger, randomizer) => {
     const config = {
         ...getDefaultConfig(randomizer),
-        userConfig,
+        ...userConfig,
     };
 
     return () => {
