@@ -9,10 +9,10 @@
  * @param {Object|null} context - The object the functions must be bound to
  * @param {Function} done - The final callback to execute once all functions are executed
  */
-export default (callables, args, context) =>
+export default (callables, args) =>
     new Promise((resolve, reject) => {
         try {
-            callables.forEach(async cb => await cb.apply(context, args));
+            callables.forEach(async cb => await cb.apply(null, args));
         } catch (error) {
             return reject(error);
         }

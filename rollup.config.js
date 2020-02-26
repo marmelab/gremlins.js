@@ -11,7 +11,7 @@ const umd = [
     {
         input: 'src/index.js',
         output: {
-            name: pkg.name,
+            name: 'gremlins',
             file: pkg.main,
             format: 'umd',
             sourcemap: isProduction,

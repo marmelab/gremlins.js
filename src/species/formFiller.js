@@ -1,42 +1,39 @@
-import Chance from 'chance';
-
-import configurable from '../utils/configurable';
-import RandomizerRequiredException from '../exceptions/randomizerRequiredException';
-
-/**
- * The formFiller gremlin fills forms by entering data, selecting options, clicking checkboxes, etc
- *
- * As much as possible, the form filling is done using mouse and keyboard
- * events, to trigger any listener bound to it.
- *
- * By default, the formFiller gremlin activity is showed by changing the
- * element border to solid red.
- *
- *   const formFillerGremlin = gremlins.species.formFiller();
- *   horde.gremlin(formFillerGremlin);
- *
- * The formFiller gremlin can be customized as follows:
- *
- *   formFillerGremlin.elementMapTypes({'select': function selectFiller(element) {} }); // form element filler functions
- *   formFillerGremlin.showAction(function(element) { // show the gremlin activity on screen });
- *   formFillerGremlin.canFillElement(function(element) { return true }); // to limit where the gremlin can fill
- *   formFillerGremlin.maxNbTries(5); // How many times the gremlin must look for a fillable element before quitting
- *   formFillerGremlin.logger(loggerObject); // inject a logger
- *   formFillerGremlin.randomizer(randomizerObject); // inject a randomizer
- */
-export default () => {
+const getDefaultConfig = randomizer => {
     const document = window.document;
 
+    /**
+     * Hacky function to trigger react, angular & vue.js onChange on input
+     */
+    const triggerInputOnChange = (element, newValue) => {
+        const lastValue = element.value;
+        element.value = newValue;
+
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        nativeInputValueSetter.call(element, newValue);
+        const event = new Event('input', { bubbles: true });
+
+        // React 15
+        event.simulated = true;
+        // React >= 16
+        let tracker = element._valueTracker;
+        if (tracker) {
+            tracker.setValue(lastValue);
+        }
+        element.dispatchEvent(event);
+    };
+
     const fillTextElement = element => {
-        const character = config.randomizer.character();
-        element.value += character;
+        const character = randomizer.character();
+        const newValue = element.value + character;
+        triggerInputOnChange(element, newValue);
 
         return character;
     };
 
     const fillNumberElement = element => {
-        const number = config.randomizer.character({ pool: '0123456789' });
-        element.value += number;
+        const number = randomizer.character({ pool: '0123456789' });
+        const newValue = element.value + number;
+        triggerInputOnChange(element, newValue);
 
         return number;
     };
@@ -44,7 +41,7 @@ export default () => {
     const fillSelect = element => {
         const options = element.querySelectorAll('option');
         if (options.length === 0) return;
-        const randomOption = config.randomizer.pick(options);
+        const randomOption = randomizer.pick(options);
         options.forEach(option => {
             option.selected = option.value === randomOption.value;
         });
@@ -71,8 +68,8 @@ export default () => {
     };
 
     const fillEmail = element => {
-        const email = config.randomizer.email();
-        element.value = email;
+        const email = randomizer.email();
+        triggerInputOnChange(element, email);
 
         return email;
     };
@@ -106,20 +103,21 @@ export default () => {
         return true;
     };
 
-    const config = {
+    return {
         elementMapTypes: defaultMapElements,
         showAction: defaultShowAction,
         canFillElement: defaultCanFillElement,
         maxNbTries: 10,
-        logger: null,
-        randomizer: new Chance(),
+        log: false,
     };
+};
 
-    const formFillerGremlin = () => {
-        if (!config.randomizer) {
-            throw new RandomizerRequiredException();
-        }
+export default userConfig => (logger, randomizer) => {
+    const document = window.document;
 
+    const config = { ...getDefaultConfig(randomizer), ...userConfig };
+
+    return () => {
         // Retrieve all selectors
         const elementTypes = Object.keys(config.elementMapTypes);
 
@@ -130,13 +128,13 @@ export default () => {
             // Find a random element within all selectors
             const elements = document.querySelectorAll(elementTypes.join(','));
             if (elements.length === 0) return;
-            element = config.randomizer.pick(elements);
+            element = randomizer.pick(elements);
             nbTries++;
             if (nbTries > config.maxNbTries) return;
         } while (!element || !config.canFillElement(element));
 
         // Retrieve element type
-        const elementType = Object.keys(config.elementMapTypes).find(selector => matchesSelector(element, selector));
+        const elementType = Object.keys(config.elementMapTypes).find(selector => element.matches(selector));
 
         const value = config.elementMapTypes[elementType](element);
 
@@ -144,35 +142,8 @@ export default () => {
             config.showAction(element);
         }
 
-        if (config.logger && typeof config.logger.log === 'function') {
-            config.logger.log('gremlin', 'formFiller', 'input', value, 'in', element);
+        if (logger && config.log) {
+            logger.log('gremlin', 'formFiller', 'input', value, 'in', element);
         }
     };
-
-    let matchesSelector = (el, selector) => {
-        if (el.webkitMatchesSelector) {
-            matchesSelector = (el, selector) => {
-                return el.webkitMatchesSelector(selector);
-            };
-        } else if (el.mozMatchesSelector) {
-            matchesSelector = (el, selector) => {
-                return el.mozMatchesSelector(selector);
-            };
-        } else if (el.msMatchesSelector) {
-            matchesSelector = (el, selector) => {
-                return el.msMatchesSelector(selector);
-            };
-        } else if (el.oMatchesSelector) {
-            matchesSelector = (el, selector) => {
-                return el.oMatchesSelector(selector);
-            };
-        } else {
-            throw new Error('Unsupported browser');
-        }
-        return matchesSelector(el, selector);
-    };
-
-    configurable(formFillerGremlin, config);
-
-    return formFillerGremlin;
 };

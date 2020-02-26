@@ -1,38 +1,11 @@
-import Chance from 'chance';
-
-import configurable from '../utils/configurable';
-import RandomizerRequiredException from '../exceptions/randomizerRequiredException';
-
-/**
- * The typer gremlin types keys on the keyboard
- *
- * Note that keyboard events must be localized somewhere on screen, so this
- * gremlins picks a random screen location first.
- *
- * By default, the typer gremlin activity is showed by a letter surrounded by
- * a orange circle with a keyname on it.
- *
- *   const typerGremlin = gremlins.species.typer();
- *   horde.gremlin(typerGremlin);
- *
- * The typerGremlin gremlin can be customized as follows:
- *
- *   typerGremlin.eventTypes(['keypress', 'keyup', 'keydown']); // types of events to trigger
- *   typerGremlin.showAction(function(element) { // show the gremlin activity on screen });
- *   typerGremlin.logger(loggerObject); // inject a logger
- *   typerGremlin.randomizer(randomizerObject); // inject a randomizer
- *
- */
-
-export default () => {
+const getDefaultConfig = randomizer => {
     const document = window.document;
-    const documentElement = document.documentElement;
     const body = document.body;
 
     const defaultEventTypes = ['keypress', 'keyup', 'keydown'];
 
     const defaultKeyGenerator = () => {
-        return config.randomizer.natural({ min: 3, max: 254 });
+        return randomizer.natural({ min: 3, max: 254 });
     };
 
     const defaultTargetElement = (x, y) => {
@@ -67,29 +40,30 @@ export default () => {
         }, 50);
     };
 
-    const config = {
+    return {
         eventTypes: defaultEventTypes,
         showAction: defaultShowAction,
         keyGenerator: defaultKeyGenerator,
         targetElement: defaultTargetElement,
-        logger: null,
-        randomizer: new Chance(),
+        log: false,
     };
+};
 
-    const typerGremlin = () => {
-        if (!config.randomizer) {
-            throw new RandomizerRequiredException();
-        }
+export default userConfig => (logger, randomizer) => {
+    const document = window.document;
+    const documentElement = document.documentElement;
+    const config = { ...getDefaultConfig(randomizer), ...userConfig };
 
+    return () => {
         const keyboardEvent = document.createEventObject
             ? document.createEventObject()
             : document.createEvent('Events');
-        const eventType = config.randomizer.pick(config.eventTypes);
+        const eventType = randomizer.pick(config.eventTypes);
         const key = config.keyGenerator();
-        const posX = config.randomizer.natural({
+        const posX = randomizer.natural({
             max: documentElement.clientWidth - 1,
         });
-        const posY = config.randomizer.natural({
+        const posY = randomizer.natural({
             max: documentElement.clientHeight - 1,
         });
         const targetElement = config.targetElement(posX, posY);
@@ -112,12 +86,8 @@ export default () => {
             config.showAction(targetElement, posX, posY, key);
         }
 
-        if (config.logger && typeof config.logger.log === 'function') {
-            config.logger.log('gremlin', 'typer       type', String.fromCharCode(key), 'at', posX, posY);
+        if (config.log && logger) {
+            logger.log('gremlin', 'typer type', String.fromCharCode(key), 'at', posX, posY);
         }
     };
-
-    configurable(typerGremlin, config);
-
-    return typerGremlin;
 };
