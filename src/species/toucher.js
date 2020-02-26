@@ -1,49 +1,4 @@
-import Chance from 'chance';
-
-import configurable from '../utils/configurable';
-import RandomizerRequiredException from '../exceptions/randomizerRequiredException';
-
-/**
- * The toucher gremlin touches anywhere on the visible area of the document.
- *
- * The toucher gremlin triggers touch events (touchstart, touchmove, touchcancel
- * and touchend), by doing gestures on random targets displayed on the viewport.
- * Touch gestures can last several seconds, so this gremlin isn't instantaneous.
- *
- * By default, the touch gremlin activity is showed by a red disc.
- *
- *   const toucherGremlin = gremlins.species.toucher();
- *   horde.gremlin(toucherGremlin);
- *
- * The toucher gremlin can be customized as follows:
- *
- *   toucherGremlin.touchTypes(['tap', 'gesture']); // the mouse event types to trigger
- *   toucherGremlin.positionSelector(function() { // find a random pair of coordinates to touch });
- *   toucherGremlin.showAction(function(x, y) { // show the gremlin activity on screen });
- *   toucherGremlin.canTouch(function(element) { return true }); // to limit where the gremlin can touch
- *   toucherGremlin.maxNbTries(5); // How many times the gremlin must look for a touchable element before quitting
- *   toucherGremlin.logger(loggerObject); // inject a logger
- *   toucherGremlin.randomizer(randomizerObject); // inject a randomizer
- *
- * Example usage:
- *
- *   horde.gremlin(gremlins.species.toucher()
- *     .touchTypes(['gesture'])
- *     .positionSelector(function() {
- *        // only touch inside the foo element area
- *        const $el = $('#foo');
- *        const offset = $el.offset();
- *        return [
- *          parseInt(Math.random() * $el.outerWidth() + offset.left),
- *          parseInt(Math.random() * $el.outerHeight() + offset.top)
- *        ];
- *     })
- *     . showAction(function(x, y) {
- *       // do nothing (hide the gremlin action on screen)
- *     })
- *   );
- */
-export default () => {
+const getDefaultConfig = randomizer => {
     const document = window.document;
     const body = document.body;
 
@@ -61,10 +16,10 @@ export default () => {
 
     const defaultPositionSelector = () => {
         return [
-            config.randomizer.natural({
+            randomizer.natural({
                 max: document.documentElement.clientWidth - 1,
             }),
-            config.randomizer.natural({
+            randomizer.natural({
                 max: document.documentElement.clientHeight - 1,
             }),
         ];
@@ -102,24 +57,20 @@ export default () => {
         return true;
     };
 
-    const config = {
+    return {
         touchTypes: defaultTouchTypes,
         positionSelector: defaultPositionSelector,
         showAction: defaultShowAction,
         canTouch: defaultCanTouch,
         maxNbTries: 10,
-        logger: null,
-        randomizer: new Chance(),
         maxTouches: 2,
+        log: false,
     };
+};
+export default userConfig => (logger, randomizer) => {
+    const document = window.document;
+    const config = { ...getDefaultConfig(randomizer), ...userConfig };
 
-    /**
-     * generate a list of x/y around the center
-     * @param center
-     * @param points
-     * @param [radius=100]
-     * @param [rotation=0]
-     */
     const getTouches = (center, points, radius, degrees) => {
         const cx = center[0];
         const cy = center[1];
@@ -144,21 +95,11 @@ export default () => {
         return touches;
     };
 
-    /**
-     * trigger a touchevent
-     * @param touches
-     * @param element
-     * @param type
-     */
     const triggerTouch = (touches, element, type) => {
         const touchlist = [];
         const event = document.createEvent('Event');
 
         event.initEvent('touch' + type, true, true);
-
-        touchlist.identifiedTouch = touchlist.item = index => {
-            return this[index] || {};
-        };
 
         touches.forEach((touch, i) => {
             const x = Math.round(touch.x);
@@ -183,14 +124,6 @@ export default () => {
         config.showAction(touches);
     };
 
-    /**
-     * trigger a gesture
-     * @param element
-     * @param startPos
-     * @param startTouches
-     * @param gesture
-     * @param done
-     */
     const triggerGesture = (element, startPos, startTouches, gesture, done) => {
         const interval = 10;
         const loops = Math.ceil(gesture.duration / interval);
@@ -232,7 +165,7 @@ export default () => {
         tap(position, element, done) {
             const touches = getTouches(position, 1);
             const gesture = {
-                duration: config.randomizer.integer({ min: 20, max: 700 }),
+                duration: randomizer.integer({ min: 20, max: 700 }),
             };
 
             triggerTouch(touches, element, 'start');
@@ -256,9 +189,9 @@ export default () => {
         // single touch gesture, could be a drag and swipe, with 1 points
         gesture(position, element, done) {
             const gesture = {
-                distanceX: config.randomizer.integer({ min: -100, max: 200 }),
-                distanceY: config.randomizer.integer({ min: -100, max: 200 }),
-                duration: config.randomizer.integer({ min: 20, max: 500 }),
+                distanceX: randomizer.integer({ min: -100, max: 200 }),
+                distanceY: randomizer.integer({ min: -100, max: 200 }),
+                duration: randomizer.integer({ min: 20, max: 500 }),
             };
             const touches = getTouches(position, 1, gesture.radius);
 
@@ -269,17 +202,17 @@ export default () => {
 
         // multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
         multitouch(position, element, done) {
-            const points = config.randomizer.integer({
+            const points = randomizer.integer({
                 min: 2,
                 max: config.maxTouches,
             });
             const gesture = {
-                scale: config.randomizer.floating({ min: 0, max: 2 }),
-                rotation: config.randomizer.natural({ min: 0, max: 100 }),
-                radius: config.randomizer.integer({ min: 50, max: 200 }),
-                distanceX: config.randomizer.integer({ min: -20, max: 20 }),
-                distanceY: config.randomizer.integer({ min: -20, max: 20 }),
-                duration: config.randomizer.integer({ min: 100, max: 1500 }),
+                scale: randomizer.floating({ min: 0, max: 2 }),
+                rotation: randomizer.natural({ min: 0, max: 100 }),
+                radius: randomizer.integer({ min: 50, max: 200 }),
+                distanceX: randomizer.integer({ min: -20, max: 20 }),
+                distanceY: randomizer.integer({ min: -20, max: 20 }),
+                duration: randomizer.integer({ min: 100, max: 1500 }),
             };
             const touches = getTouches(position, points, gesture.radius);
 
@@ -289,13 +222,7 @@ export default () => {
         },
     };
 
-    const toucherGremlin = (done = () => {}) => {
-        if (!config.randomizer) {
-            throw new RandomizerRequiredException(
-                'This gremlin requires a randomizer to run. Please call randomizer(randomizerObject) before executing the gremlin.'
-            );
-        }
-
+    return (done = () => {}) => {
         let position;
         let posX;
         let posY;
@@ -311,19 +238,15 @@ export default () => {
             if (nbTries > config.maxNbTries) return;
         } while (!targetElement || !config.canTouch(targetElement));
 
-        const touchType = config.randomizer.pick(config.touchTypes);
+        const touchType = randomizer.pick(config.touchTypes);
         const logGremlin = (touches, details) => {
             if (typeof config.showAction === 'function') {
                 config.showAction(touches);
             }
-            if (config.logger && typeof config.logger.log === 'function') {
-                config.logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
+            if (logger && config.log) {
+                logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
             }
         };
         touchTypes[touchType](position, targetElement, logGremlin, done);
     };
-
-    configurable(toucherGremlin, config);
-
-    return toucherGremlin;
 };

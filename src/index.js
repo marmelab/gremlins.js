@@ -16,7 +16,7 @@ import distribution from './strategies/distribution';
 
 import executeInSeries from './utils/executeInSeries';
 
-const species = [scroller()];
+const species = [toucher()];
 
 const mogwais = [fps()];
 
