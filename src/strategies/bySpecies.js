@@ -45,6 +45,7 @@ export default () => {
     let stopped;
 
     const bySpeciesStrategy = async (newGremlins, params) => {
+        console.log('by species called');
         const nb = params && params.nb ? params.nb : config.nb;
         const delay = params && params.delay ? params.delay : config.delay;
 

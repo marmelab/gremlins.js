@@ -16,30 +16,16 @@ import distribution from './strategies/distribution';
 
 import executeInSeries from './utils/executeInSeries';
 
-export const species = {
-    clicker,
-    toucher,
-    formFiller,
-    scroller,
-    typer,
-};
+const species = [clicker()];
 
-export const mogwais = {
-    alert,
-    fps,
-    gizmo,
-};
+const mogwais = [fps()];
 
-export const strategies = {
-    allTogether,
-    bySpecies,
-    distribution,
-};
+const strategies = [bySpecies()];
 
 const defaultConfig = {
-    gremlins: Object.values(species),
-    mogwais: Object.values(mogwais),
-    strategies: [strategies.bySpecies],
+    species,
+    mogwais,
+    strategies,
     logger: console,
     randomizer: new Chance(),
 };
@@ -47,19 +33,22 @@ const defaultConfig = {
 // do not export anything else here to keep window.gremlins as a function
 export default userConfig => {
     const config = { ...defaultConfig, ...userConfig };
+    const { logger, randomizer } = config;
+    const species = config.species.map(specie => specie(logger, randomizer));
+    const mogwais = config.mogwais.map(mogwai => mogwai(logger));
+    const strategies = config.strategies.map(strat => strat(species));
 
-    const unleash = async params => {
-        const gremlinsAndMogwais = [...config.gremlins, ...config.mogwais];
-        const beforeHorde = [...config.mogwais];
-        const afterHorde = gremlinsAndMogwais
-            .map(beast => beast.cleanUp)
-            .filter(cleanUp => typeof cleanUp === 'function');
+    const unleash = async () => {
+        const gremlinsAndMogwais = [...species, ...mogwais];
+        const beforeHorde = [...mogwais];
+        // const afterHorde = gremlinsAndMogwais
+        //     .map(beast => beast.cleanUp)
+        //     .filter(cleanUp => typeof cleanUp === 'function');
 
-        const horde = config.strategies.map(strat => strat.apply(null, [config.gremlins].concat(params)));
-
+        // const horde = config.strategies.map(strat => strat.apply(null, [species].concat(params)));
         await executeInSeries(beforeHorde, []);
-        await Promise.all(horde);
-        await executeInSeries(afterHorde, []);
+        await Promise.all(strategies);
+        // await executeInSeries(afterHorde, []);
     };
 
     const stop = () => config.strategies.forEach(strat => strat.stop());
