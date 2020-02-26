@@ -17,13 +17,16 @@ const getDefaultConfig = randomizer => {
 };
 
 export default userConfig => (logger, randomizer) => {
-    const config = { ...getDefaultConfig(randomizer), userConfig };
+    const config = { ...getDefaultConfig(randomizer), ...userConfig };
 
     const alert = window.alert;
     const confirm = window.confirm;
     const prompt = window.prompt;
 
     const alertMogwai = () => {
+        if (!logger) {
+            return;
+        }
         if (config.watchEvents.includes('alert')) {
             window.alert = msg => {
                 logger.warn('mogwai ', 'alert ', msg, 'alert');

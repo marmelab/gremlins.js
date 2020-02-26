@@ -47,7 +47,9 @@ export default userConfig => logger => {
         const measure = time => {
             const fps = time - lastTime < NEXT_FRAME_MS ? 60 : 1000 / (time - lastTime);
             const level = config.levelSelector(fps);
-            logger[level]('mogwai ', 'fps       ', fps);
+            if (logger) {
+                logger[level]('mogwai ', 'fps       ', fps);
+            }
         };
         window.requestAnimationFrame(init);
     };
