@@ -1,36 +1,4 @@
-import Chance from 'chance';
-
-import configurable from '../utils/configurable';
-import RandomizerRequiredException from '../exceptions/randomizerRequiredException';
-
-/**
- * The scroller gremlin scrolls the viewport to reveal another part of the document
- *
- *   const scrollerGremlin = gremlins.species.scroller();
- *   horde.gremlin(scrollerGremlin);
- *
- * The scrollerGremlin gremlin can be customized as follows:
- *
- *   scrollerGremlin.positionSelector(function() { // return a random position to scroll to });
- *   scrollerGremlin.showAction(function(element) { // show the gremlin activity on screen });
- *   scrollerGremlin.logger(loggerObject); // inject a logger
- *   scrollerGremlin.randomizer(randomizerObject); // inject a randomizer
- *
- * Example usage:
- *
- *   horde.gremlin(gremlins.species.scroller()
- *     .positionSelector(function() {
- *       // only click in the app
- *       const $list = $('#todoapp');
- *       const offset = $list.offset();
- *       return [
- *         parseInt(Math.random() * $list.outerWidth() + offset.left),
- *         parseInt(Math.random() * ($list.outerHeight() + $('#info').outerHeight()) + offset.top)
- *       ];
- *     })
- *   )
- */
-export default () => {
+const getDefaultConfig = randomizer => {
     const document = window.document;
     const documentElement = document.documentElement;
     const body = document.body;
@@ -52,10 +20,10 @@ export default () => {
         );
 
         return [
-            config.randomizer.natural({
+            randomizer.natural({
                 max: documentWidth - documentElement.clientWidth,
             }),
-            config.randomizer.natural({
+            randomizer.natural({
                 max: documentHeight - documentElement.clientHeight,
             }),
         ];
@@ -82,18 +50,15 @@ export default () => {
         }, 50);
     };
 
-    const config = {
+    return {
         positionSelector: defaultPositionSelector,
         showAction: defaultShowAction,
-        logger: null,
-        randomizer: new Chance(),
     };
+};
 
-    const scrollerGremlin = () => {
-        if (!config.randomizer) {
-            throw new RandomizerRequiredException();
-        }
-
+export default userConfig => (logger, randomizer) => {
+    const config = { ...getDefaultConfig(randomizer), ...userConfig };
+    return () => {
         const position = config.positionSelector();
         const scrollX = position[0];
         const scrollY = position[1];
@@ -104,12 +69,8 @@ export default () => {
             config.showAction(scrollX, scrollY);
         }
 
-        if (config.logger && typeof config.logger.log === 'function') {
-            config.logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
+        if (logger && typeof logger.log === 'function') {
+            logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
         }
     };
-
-    configurable(scrollerGremlin, config);
-
-    return scrollerGremlin;
 };
