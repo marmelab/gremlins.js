@@ -14,7 +14,8 @@
         "lint": "eslint .",
         "format": "prettier --write --check \"**/*.+(js|json|md)\"",
         "serve": "serve dist",
-        "clear": "rimraf dist"
+        "clear": "rimraf dist",
+        "release": "standard-version"
     },
     "repository": {
         "type": "git",
@@ -58,7 +59,8 @@
         "rollup-plugin-babel": "^4.3.3",
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-terser": "^5.2.0",
-        "serve": "^11.3.0"
+        "serve": "^11.3.0",
+        "standard-version": "^7.1.0"
     },
     "dependencies": {
         "chance": "^1.1.4",

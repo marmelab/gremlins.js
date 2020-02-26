@@ -29,3 +29,9 @@ format: ## prettify the source code using prettier
 
 serve: build ## Serve dist directory
 	npm run serve
+
+publish-dry-run: ## Publish dry-run
+	npm run release -- --dry-run
+
+publish-next: ## Publish on next tag
+	npm run release -- --release-as next
