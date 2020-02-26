@@ -11,16 +11,14 @@ import fps from './mogwais/fps';
 import gizmo from './mogwais/gizmo';
 
 import allTogether from './strategies/allTogether';
-import bySpecies from './strategies/bySpecies';
-import distribution from './strategies/distribution';
 
 import executeInSeries from './utils/executeInSeries';
 
-const species = [clicker(), formFiller()];
+const species = [clicker(), formFiller(), toucher(), scroller(), typer()];
 
-const mogwais = [fps()];
+const mogwais = [fps(), alert(), gizmo()];
 
-const strategies = [distribution()];
+const strategies = [allTogether()];
 
 const defaultConfig = {
     species,
@@ -35,21 +33,17 @@ export default userConfig => {
     const config = { ...defaultConfig, ...userConfig };
     const { logger, randomizer } = config;
     const species = config.species.map(specie => specie(logger, randomizer));
-    const mogwais = config.mogwais.map(mogwai => mogwai(logger));
+    const mogwais = config.mogwais.map(mogwai => mogwai(logger, randomizer));
     const strategies = config.strategies.map(strat => strat(randomizer));
 
     const unleash = async () => {
-        const gremlinsAndMogwais = [...species, ...mogwais];
         const beforeHorde = [...mogwais];
-        // const afterHorde = gremlinsAndMogwais
-        //     .map(beast => beast.cleanUp)
-        //     .filter(cleanUp => typeof cleanUp === 'function');
+        const cleansUps = mogwais.map(mogwai => mogwai.cleanUp).filter(cleanUp => typeof cleanUp === 'function');
 
-        // const horde = config.strategies.map(strat => strat.apply(null, [species].concat(params)));
         await executeInSeries(beforeHorde, []);
         const unleashedStrategies = strategies.map(strat => strat(species));
         await Promise.all(unleashedStrategies);
-        // await executeInSeries(afterHorde, []);
+        await executeInSeries(cleansUps, []);
     };
 
     const stop = () => config.strategies.forEach(strat => strat.stop());

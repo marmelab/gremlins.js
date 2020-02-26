@@ -1,79 +1,44 @@
-import Chance from 'chance';
-
-import configurable from '../utils/configurable';
-import LoggerRequiredException from '../exceptions/loggerRequiredException';
-
-/**
- * The alert mogwai answers calls to alert()
- *
- * The alert mogwai overrides window.alert, window.confirm, and window.prompt
- * to avoid stopping the stress test with blocking JavaScript calls. Instead
- * of displaying a dialog, these methods are simply replaced by a write in the
- * logger.
- *
- *   const alertMogwai = gremlins.mogwais.alert();
- *   horde.mogwai(alertMogwai);
- *
- * The alert mogwai can be customized as follows:
- *
- *   alertMogwai.watchEvents(['alert', 'confirm', 'prompt']); // select the events to catch
- *   alertMogwai.confirmResponse(function() { // what a call to confirm() should return });
- *   alertMogwai.promptResponse(function() { // what a call to prompt() should return });
- *   alertMogwai.logger(loggerObject); // inject a logger
- *   alertMogwai.randomizer(randomizerObject); // inject a randomizer
- *
- * Example usage:
- *
- *   horde.mogwai(gremlins.mogwais.alert()
- *     .watchEvents(['prompt'])
- *     .promptResponse(function() { return 'I typed garbage'; })
- *   );
- */
-export default () => {
+const getDefaultConfig = randomizer => {
     const defaultWatchEvents = ['alert', 'confirm', 'prompt'];
 
     const defaultConfirmResponse = () => {
-        // Random OK or cancel
-        return config.randomizer.bool();
+        return randomizer.bool();
     };
 
     const defaultPromptResponse = () => {
-        // Return a random string
-        return config.randomizer.sentence();
+        return randomizer.sentence();
     };
 
-    const config = {
+    return {
         watchEvents: defaultWatchEvents,
         confirmResponse: defaultConfirmResponse,
         promptResponse: defaultPromptResponse,
-        logger: console,
-        randomizer: new Chance(),
     };
+};
+
+export default userConfig => (logger, randomizer) => {
+    const config = { ...getDefaultConfig(randomizer), userConfig };
 
     const alert = window.alert;
     const confirm = window.confirm;
     const prompt = window.prompt;
 
     const alertMogwai = () => {
-        if (!config.logger) {
-            throw new LoggerRequiredException();
-        }
-
         if (config.watchEvents.includes('alert')) {
             window.alert = msg => {
-                config.logger.warn('mogwai ', 'alert     ', msg, 'alert');
+                logger.warn('mogwai ', 'alert ', msg, 'alert');
             };
         }
         if (config.watchEvents.includes('confirm')) {
             window.confirm = msg => {
                 config.confirmResponse();
-                config.logger.warn('mogwai ', 'alert     ', msg, 'confirm');
+                logger.warn('mogwai ', 'alert ', msg, 'confirm');
             };
         }
         if (config.watchEvents.includes('prompt')) {
             window.prompt = msg => {
                 config.promptResponse();
-                config.logger.warn('mogwai ', 'alert     ', msg, 'prompt');
+                logger.warn('mogwai ', 'alert ', msg, 'prompt');
             };
         }
     };
@@ -84,8 +49,6 @@ export default () => {
         window.prompt = prompt;
         return alertMogwai;
     };
-
-    configurable(alertMogwai, config);
 
     return alertMogwai;
 };

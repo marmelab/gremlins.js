@@ -54,7 +54,7 @@ export default userConfig => (logger, randomizer) => {
     const documentElement = document.documentElement;
     const config = { ...getDefaultConfig(randomizer), ...userConfig };
 
-    const typerGremlin = () => {
+    return () => {
         const keyboardEvent = document.createEventObject
             ? document.createEventObject()
             : document.createEvent('Events');
@@ -90,6 +90,4 @@ export default userConfig => (logger, randomizer) => {
             logger.log('gremlin', 'typer type', String.fromCharCode(key), 'at', posX, posY);
         }
     };
-
-    return typerGremlin;
 };
