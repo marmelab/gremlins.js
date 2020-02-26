@@ -102,7 +102,7 @@ require(['gremlins'], function(gremlins) {
 });
 ```
 
-`gremlins.js` is also available as a **bookmarklet**. Go to [this page](https://rawgithub.com/marmelab/gremlins.js/master/bookmarklet.html), grab it, and unleash hordes on any web page.
+`gremlins.js` is also available as a **bookmarklet**. Go to [this page](https://marmelab.com/gremlins.js/), grab it, and unleash hordes on any web page.
 
 ## Advanced Usage
 

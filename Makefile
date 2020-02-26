@@ -35,3 +35,6 @@ publish-dry-run: ## Publish dry-run
 
 publish-next: ## Publish on next tag
 	npm run release -- --prerelease next
+
+deploy-gh-pages: ## Deploy bookmaklet to gh-pages
+	npm run deploy-gh-pages

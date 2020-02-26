@@ -15,7 +15,8 @@
         "format": "prettier --write --check \"**/*.+(js|json|md)\"",
         "serve": "serve dist",
         "clear": "rimraf dist",
-        "release": "standard-version"
+        "release": "standard-version",
+        "deploy-gh-pages": "gh-pages --dist bookmarklet"
     },
     "repository": {
         "type": "git",
@@ -50,6 +51,7 @@
         "eslint-plugin-import": "^2.20.0",
         "eslint-plugin-jest": "^23.6.0",
         "eslint-plugin-prettier": "^3.1.2",
+        "gh-pages": "^2.2.0",
         "husky": "^4.2.1",
         "jest": "^25.1.0",
         "lint-staged": "^10.0.3",
