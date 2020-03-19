@@ -13,17 +13,6 @@ const getDefaultConfig = () => {
 };
 
 export default userConfig => logger => {
-    if (!window.requestAnimationFrame) {
-        // shim layer with setTimeout fallback
-        window.requestAnimationFrame =
-            window.mozRequestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            (callback => {
-                window.setTimeout(callback, 1000 / 60);
-            });
-    }
-
     const config = { ...getDefaultConfig(), ...userConfig };
 
     let initialTime = -Infinity; // force initial measure

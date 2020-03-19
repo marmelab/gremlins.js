@@ -1,5 +1,6 @@
+const defaultConfig = { maxErrors: 10 };
+
 export default userConfig => (logger, _ignore, stop) => {
-    const defaultConfig = { maxErrors: 10 };
     const config = { ...defaultConfig, ...userConfig };
 
     let realOnError;
@@ -13,24 +14,21 @@ export default userConfig => (logger, _ignore, stop) => {
                 stop();
                 if (!logger) return;
                 window.setTimeout(() => {
-                    // display the mogwai error after the caught error
                     logger.warn('mogwai ', 'gizmo     ', 'stopped test execution after ', config.maxErrors, 'errors');
                 }, 4);
             }
         };
 
-        // general JavaScript errors
         realOnError = window.onerror;
-        window.onerror = (message, url, linenumber) => {
+        window.onerror = (...args) => {
             incrementNbErrors();
-            return realOnError ? realOnError(message, url, linenumber) : false;
+            return realOnError ? realOnError(...args) : false;
         };
 
-        // console errors
         realLoggerError = console.error;
-        console.error = () => {
+        console.error = (...args) => {
             incrementNbErrors();
-            realLoggerError.apply(console, arguments); // eslint-disable-line no-undef
+            realLoggerError(...args);
         };
     };
 
