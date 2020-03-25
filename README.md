@@ -72,7 +72,7 @@ horde.unleash();
 Gremlins, just like mogwais, are simple JavaScript functions. If `gremlins.js` doesn't provide the gremlin that can break your application, it's very easy to develop it:
 
 ```js
-// add a new custom gremlin to blur an input randomly selected
+// Create a new custom gremlin to blur an input randomly selected
 function customGremlin(logger, randomizer) {
     // Code executed once at initialization
     logger.log('Input blur gremlin initialized');
@@ -140,13 +140,12 @@ gremlins
     .unleash();
 ```
 
-If you just want to add your own gremlins in addition to the default ones, use the `allGremlins` constant:
+If you just want to add your own gremlins in addition to the default ones, use the `allSpecies` constant:
 
 ```js
-var species = gremlins.allSpecies.push(customGremlin);
 gremlins
     .createHorde({
-        species: species,
+        species: [...gremlins.allSpecies, customGremlin],
     })
     .unleash();
 ```
@@ -171,18 +170,14 @@ All the gremlins and mogwais provided by `gremlins.js` are _configurable_, i.e. 
 For instance, the clicker gremlin is a function that take an object as custom configuration:
 
 ```js
-var customClicker = gremlins.species.clicker({
-    clickTypes: ['click'], // which mouse event types will be triggered
-    canClick: function(element) {
-        // Click only if parent is has class test-class
-        return element.parentElement.className === 'test-class';
-        // when canClick returns false, the gremlin will look for another
-        // element to click on until maxNbTries is reached
-    },
-    showAction: function(x, y) {
-        // by default, the clicker gremlin shows its action by a red circle
-        // overriding showAction() with an empty function makes the gremlin action invisible
-    },
+const customClicker = gremlins.species.clicker({
+    // which mouse event types will be triggered
+    clickTypes: ['click'],
+    // Click only if parent is has class test-class
+    canClick: element => element.parentElement.className === 'test-class',
+    // by default, the clicker gremlin shows its action by a red circle
+    // overriding showAction() with an empty function makes the gremlin action invisible
+    showAction: (x, y) => {},
 });
 gremlins.createHorde({
     species: [customClicker],
@@ -191,15 +186,15 @@ gremlins.createHorde({
 
 Each particular gremlin or mogwai has its own customization methods, check the source for details.
 
-**Tip**: For more information on configurable functions check [this blog post about service closures](http://redotheweb.com/2013/11/13/from-objects-to-functions-service-closures.html).
-
 ### Seeding The Randomizer
 
-If you want the attack to be repeatable, you need to seed the random number generator. Gremlins.js depends on [Chance.js](http://chancejs.com/) for random data generation, so it supports seeding:
+If you want the attack to be repeatable, you need to seed the random number generator :
 
 ```js
 // seed the randomizer
-horde.seed(1234);
+horde.createHorde({
+    randomizer: new gremlins.Chance(1234);
+});
 ```
 
 ### Executing Code Before or After The Attack
@@ -210,50 +205,35 @@ Before starting the attack, you may want to execute custom code. This is especia
 -   Disable some features to better target the test
 -   Bootstrap the application
 
-For this usage, the `horde` object provides a `before()` method, which accepts a callback:
+Fortunately, `unleashHorde` is a Promise. So if you want to execute code before and after the unleash just do:
 
 ```js
-horde.before(function startProfiler() {
-    console.profile('gremlins');
-});
-```
+const horde = gremlins.createHorde();
 
-To clean up the test environment, the `horde` object also provides an `after()` method.
-
-```js
-horde.after(function stopProfiler() {
+console.profile('gremlins');
+horde.unleash().then(() => {
     console.profileEnd();
-});
-```
-
-Both `before()` and `after()` support asynchronous callbacks:
-
-```js
-horde.before(function waitFiveSeconds(done) {
-    window.setTimeout(done, 5000);
 });
 ```
 
 ### Setting Up a Strategy
 
-By default, gremlins will attack in random order, in a uniform distribution, separated by a delay of 10ms. This attack strategy is called the [distribution](src/strategies/distribution.js) strategy. You can customize it using the `horde.strategy()` method:
+By default, gremlins will attack in random order, in a uniform distribution, separated by a delay of 10ms. This attack strategy is called the [distribution](src/strategies/distribution.js) strategy. You can customize it using the strategies custom object:
 
 ```js
-horde.strategy(
-    gremlins.strategies
-        .distribution()
-        .delay(50) // wait 50 ms between each action
-        .distribution([0.3, 0.3, 0.3, 0.1]) // the first three gremlins have more chances to be executed than the last
-);
+const distributionStrategy = gremlins.strategies.distribution({
+    distribution: [0.3, 0.3, 0.3, 0.1], // the first three gremlins have more chances to be executed than the last
+    delay: 50, // wait 50 ms between each action
+});
 ```
 
-Note that if using default gremlins, there are [five type of gremlins](https://github.com/marmelab/gremlins.js/blob/master/src/main.js#L12). The previous example would give a 0 value to last gremlin specie.
+Note that if using default gremlins, there are [five type of gremlins](https://github.com/marmelab/gremlins.js/blob/master/src/index.js#L52). The previous example would give a 0 value to last gremlin specie.
 
-You can also use another strategy. A strategy is just a callback expecting three parameters: an array of gremlins, a parameter object (the one passed to `unleash()`), and a final callback. Two other strategies are bundled ([allTogether](src/strategies/allTogether.js) and [bySpecies](src/strategies/bySpecies.js)), and it should be fairly easy to implement a custom strategy for more sophisticated attack scenarios.
+You can also use another strategy. A strategy is just a function expecting one parameter: an array of gremlins. Two other strategies are bundled ([allTogether](src/strategies/allTogether.js) and [bySpecies](src/strategies/bySpecies.js)), and it should be fairly easy to implement a custom strategy for more sophisticated attack scenarios.
 
 ### Stopping The Attack
 
-The horde can stop the attack in case of emergency using the `horde.stop()` method. Gizmo uses this method to prevent further damages to the application after 10 errors, and you can use it, too, if you don't want the attack to continue.
+The horde can stop the attack in case of emergency using the `horde.stop()` method Gizmo uses this method to prevent further damages to the application after 10 errors, and you can use it, too, if you don't want the attack to continue.
 
 ### Customizing The Logger
 
@@ -274,24 +254,8 @@ const customLogger = {
         /* .. */
     },
 };
-horde.logger(customLogger);
+horde.createHorde({ logger: customLogger });
 ```
-
-**Tip**: Instead of reimplementing your custom logger, you may want to look at [Minilog](https://github.com/mixu/minilog).
-
-## Contributing
-
-Your feedback about the usage of gremlins.js in your specific context is valuable, don't hesitate to [open GitHub Issues](https://github.com/marmelab/gremlins.js/issues) for any problem or question you may have.
-
-All contributions are welcome. New gremlins, new mogwais, new strategies. Try to follow the functional programming style. Also, don't forget to rebuild the minified version of the library using `make`.
-
-While developing, you can use the command `make watch` to prevent from rebuilding at each step. In this case, just include the library using:
-
-```html
-<script src="http://localhost:8080/gremlins.min.js"></script>
-```
-
-To build library, use `make build`.
 
 ## License
 
