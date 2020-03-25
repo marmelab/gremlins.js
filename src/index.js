@@ -50,5 +50,7 @@ export const createHorde = userConfig => {
 };
 
 export const species = { clicker, toucher, formFiller, scroller, typer };
+export const allSpecies = Object.values(species).map(specie => specie());
 export const mogwais = { alert, fps, gizmo };
+export const allMogwais = Object.values(mogwais).map(mogwai => mogwai());
 export const strategies = { distribution, bySpecies, allTogether };

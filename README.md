@@ -62,16 +62,31 @@ After 10 errors, a special mogwai stops the test. He's called _Gizmo_, and he pr
 If not stopped by Gizmo, the default horde stops after roughly 1 minute. You can increase the number of gremlins actions to make the attack last longer:
 
 ```js
-horde.unleash({ nb: 10000 });
+horde.createHorde({
+    strategies: [gremlins.strategies.allTogether({ nb: 10000 })],
+});
+horde.unleash();
 // gremlins will attack at 10 ms interval, 10,000 times
 ```
 
 Gremlins, just like mogwais, are simple JavaScript functions. If `gremlins.js` doesn't provide the gremlin that can break your application, it's very easy to develop it:
 
 ```js
-// add a new custom gremlin to blur the currently focused element
-horde.gremlin(function() {
-    document.activeElement.blur();
+// add a new custom gremlin to blur an input randomly selected
+function customGremlin(logger, randomizer) {
+    // Code executed once at initialization
+    logger.log('Input blur gremlin initialized');
+    // Return a function that will be executed at each attack
+    return function attack() {
+        var inputs = document.querySelectorAll('input');
+        var element = randomizer.pick(element);
+        element.blur();
+    };
+}
+
+// Add it to your horde
+horde.createHorde({
+    species: [customGremlin],
 });
 ```
 
@@ -88,18 +103,17 @@ In the browser, the `gremlins.min.js` file can be used as a standalone library, 
 </script>
 ```
 
-Alternately, you can include `gremlins.min.js` as a RequireJS module, leaving the global namespace clean:
+Alternately, you can include `gremlins.min.js` as a module, leaving the global namespace clean:
 
 ```js
-require.config({
-    paths: {
-        gremlins: 'path/to/gremlins.min',
-    },
+const gremlins = require('gremlins');
 });
+```
 
-require(['gremlins'], function(gremlins) {
-    gremlins.createHorde().unleash();
-});
+Or in ES6 syntax :
+
+```js
+import gremlins from 'gremlins';
 ```
 
 `gremlins.js` is also available as a **bookmarklet**. Go to [this page](https://marmelab.com/gremlins.js/), grab it, and unleash hordes on any web page.
@@ -110,34 +124,34 @@ require(['gremlins'], function(gremlins) {
 
 By default, all gremlins and mogwais species are added to the horde.
 
-You can also choose to add only the gremlins species you want, using the `gremlin()` function of the `horde` object:
+You can also choose to add only the gremlins species you want, using a custom configuration object:
 
 ```js
 gremlins
-    .createHorde()
-    .gremlin(gremlins.species.formFiller())
-    .gremlin(gremlins.species.clicker().clickTypes(['click']))
-    .gremlin(gremlins.species.toucher())
-    .gremlin(gremlins.species.scroller())
-    .gremlin(function() {
-        window.$ = function() {};
+    .createHorde({
+        species: [
+            gremlins.species.formFiller(),
+            gremlins.species.clicker({
+                clickTypes: ['click'],
+            }),
+            gremlins.species.toucher(),
+        ],
     })
     .unleash();
 ```
 
-If you just want to add your own gremlins in addition to the default ones, use the `allGremlins()` function:
+If you just want to add your own gremlins in addition to the default ones, use the `allGremlins` constant:
 
 ```js
+var species = gremlins.allSpecies.push(customGremlin);
 gremlins
-    .createHorde()
-    .allGremlins()
-    .gremlin(function() {
-        window.$ = function() {};
+    .createHorde({
+        species: species,
     })
     .unleash();
 ```
 
-To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method the same way.
+To add just the mogwais you want, use the `mogwai` configuration and `allMogwais()` constant the same way.
 
 `gremlins.js` currently provides a few gremlins and mogwais:
 
@@ -152,31 +166,27 @@ To add just the mogwais you want, use the `mogwai()` and `allMogwais()` method t
 
 ### Configuring Gremlins
 
-All the gremlins and mogwais provided by `gremlins.js` are _configurable functions_, i.e. you can alter the way they work by calling methods on them.
+All the gremlins and mogwais provided by `gremlins.js` are _configurable_, i.e. you can alter the way they work by injecting a custom configuration.
 
-For instance, the clicker gremlin is a function that you can execute it directly:
-
-```js
-const clickerGremlin = gremlins.species.clicker();
-clickerGremlin(); // trigger a random mouse event in the screen:
-```
-
-In JavaScript, functions are objects, and as such can have methods. The clicker gremlin function offers customizing methods:
+For instance, the clicker gremlin is a function that take an object as custom configuration:
 
 ```js
-gremlins.species
-    .clicker()
-    .clickTypes(['click']) // which mouse event types will be triggered
-    .canClick(function(element) {
-        // only click elements in bar
-        return $(element).parents('#bar').length;
+var customClicker = gremlins.species.clicker({
+    clickTypes: ['click'], // which mouse event types will be triggered
+    canClick: function(element) {
+        // Click only if parent is has class test-class
+        return element.parentElement.className === 'test-class';
         // when canClick returns false, the gremlin will look for another
         // element to click on until maxNbTries is reached
-    })
-    .showAction(function(x, y) {
+    },
+    showAction: function(x, y) {
         // by default, the clicker gremlin shows its action by a red circle
         // overriding showAction() with an empty function makes the gremlin action invisible
-    });
+    },
+});
+gremlins.createHorde({
+    species: [customClicker],
+});
 ```
 
 Each particular gremlin or mogwai has its own customization methods, check the source for details.
