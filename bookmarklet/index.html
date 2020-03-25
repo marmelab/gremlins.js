@@ -1,15 +1,131 @@
 <html>
     <head>
         <title>Gremlins.js Bookmarklet</title>
+        <link rel="stylesheet" type="text/css" href="index.css" />
     </head>
     <body>
-        <div>Drag and drop the link below to your bookmarks toolbar</div>
-        <div>
-            <a
-                href='javascript:(function(){function callback(){gremlins.createHorde().unleash()} var s=document.createElement("script");s.src="https://unpkg.com/gremlins.js@next";if(s.addEventListener){s.addEventListener("load",callback,false)}else if(s.readyState){s.onreadystatechange=callback}document.body.appendChild(s);})()'
-                title="gremlins.js"
-                >gremlins.js</a
-            >
+        <div class="bookmarklet">
+            <form id="gremlins-form" class="form">
+                <div>
+                    <h2>Species</h2>
+                    <div>
+                        <input id="clicker" name="clicker" type="checkbox" checked />
+                        <label for="clicker">Clicker</label>
+                    </div>
+                    <div>
+                        <input id="toucher" name="toucher" type="checkbox" checked />
+                        <label for="toucher">Toucher</label>
+                    </div>
+                    <div>
+                        <input id="formFiller" name="formFiller" type="checkbox" checked />
+                        <label for="formFiller">Form Filler</label>
+                    </div>
+                    <div>
+                        <input id="scroller" name="scroller" type="checkbox" checked />
+                        <label for="scroller">Scroller</label>
+                    </div>
+                    <div>
+                        <input id="typer" name="typer" type="checkbox" checked />
+                        <label for="typer">Typer</label>
+                    </div>
+                </div>
+                <div>
+                    <h2>Mogwais</h2>
+                    <div>
+                        <input id="alert" name="alert" type="checkbox" checked />
+                        <label for="alert">Alert</label>
+                    </div>
+                    <div>
+                        <input id="fps" name="fps" type="checkbox" checked />
+                        <label for="fps">Fps</label>
+                    </div>
+                    <div>
+                        <input id="gizmo" name="gizmo" type="checkbox" checked />
+                        <label for="gizmo">Gizmo</label>
+                    </div>
+                </div>
+                <div>
+                    <h2>Strategies</h2>
+                    <div>
+                        <input id="distribution" name="distribution" type="checkbox" checked />
+                        <label for="distribution">Distribution</label>
+                    </div>
+                    <div>
+                        <input id="allTogether" name="allTogether" type="checkbox" />
+                        <label for="allTogether">All Together</label>
+                    </div>
+                    <div>
+                        <input id="bySpecies" name="bySpecies" type="checkbox" />
+                        <label for="bySpecies">By Species</label>
+                    </div>
+                </div>
+            </form>
+
+            <div class="bookmarklet-container">
+                <p>Drag and drop the link below to your bookmarks toolbar</p>
+                <a id="bookmarklet" title="gremlins.js">gremlins.js</a>
+            </div>
+        </div>
+        <div class="code-container">
+            <h2 class="code-title">Bookmarklet Code</h2>
+            <p id="code" class="code"></p>
         </div>
     </body>
 </html>
+
+<script>
+    function setBookmarkletScript() {
+        const speciesNames = ['clicker', 'toucher', 'formFiller', 'scroller', 'typer'];
+        const mogwaisNames = ['alert', 'fps', 'gizmo'];
+        const strategiesNames = ['distribution', 'allTogether', 'bySpecies'];
+        const species = speciesNames
+            .map(name => {
+                const isActive = document.getElementById(name).checked;
+                return isActive ? `gremlins.species.${name}()` : null;
+            })
+            .filter(value => value)
+            .join(',');
+
+        const mogwais = mogwaisNames
+            .map(name => {
+                const isActive = document.getElementById(name).checked;
+                return isActive ? `gremlins.mogwais.${name}()` : null;
+            })
+            .filter(value => value)
+            .join(',');
+
+        const strategies = strategiesNames
+            .map(name => {
+                const isActive = document.getElementById(name).checked;
+                return isActive ? `gremlins.strategies.${name}()` : null;
+            })
+            .filter(value => value)
+            .join(',');
+
+        const script = `
+    javascript: (function() {
+    function callback() {
+        gremlins.createHorde({
+            species: [${species}],
+            mogwais: [${mogwais}],
+            strategies: [${strategies}]
+        }).unleash();
+    }
+    var s = document.createElement("script");
+    s.src = "https://unpkg.com/gremlins.js@next";
+    if (s.addEventListener) {
+        s.addEventListener("load", callback, false);
+    } else if (s.readyState) {
+        s.onreadystatechange = callback;
+    }
+    document.body.appendChild(s);
+    })()`;
+
+        document.getElementById('code').innerHTML = script;
+        document.getElementById('bookmarklet').href = script.replace(/\s\s+/g, ' ');
+    }
+
+    document.getElementById('gremlins-form').addEventListener('input', setBookmarkletScript);
+
+    setBookmarkletScript();
+</script>
