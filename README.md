@@ -107,7 +107,6 @@ Alternately, you can include `gremlins.min.js` as a module, leaving the global n
 
 ```js
 const gremlins = require('gremlins');
-});
 ```
 
 Or in ES6 syntax :
