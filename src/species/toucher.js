@@ -122,7 +122,9 @@ export default userConfig => (logger, randomizer) => {
         event.changedTouches = touchlist;
 
         element.dispatchEvent(event);
-        config.showAction(touches);
+        if (typeof config.showAction === 'function') {
+            config.showAction(touches);
+        }
     };
 
     const triggerGesture = (element, startPos, startTouches, gesture, done) => {
@@ -163,7 +165,7 @@ export default userConfig => (logger, randomizer) => {
     const touchTypes = {
         // tap, like a click event, only 1 touch
         // could also be a slow tap, that could turn out to be a hold
-        tap(position, element, done) {
+        tap(position, element, log) {
             const touches = getTouches(position, 1);
             const gesture = {
                 duration: randomizer.integer({ min: 20, max: 700 }),
@@ -173,22 +175,23 @@ export default userConfig => (logger, randomizer) => {
 
             setTimeout(() => {
                 triggerTouch(touches, element, 'end');
-                done(touches, gesture);
+
+                log(touches, gesture);
             }, gesture.duration);
         },
 
         // doubletap, like a dblclick event, only 1 touch
         // could also be a slow doubletap, that could turn out to be a hold
-        doubletap(position, element, done) {
+        doubletap(position, element, log) {
             touchTypes.tap(position, element, () => {
                 setTimeout(() => {
-                    touchTypes.tap(position, element, done);
+                    touchTypes.tap(position, element, log);
                 }, 30);
             });
         },
 
         // single touch gesture, could be a drag and swipe, with 1 points
-        gesture(position, element, done) {
+        gesture(position, element, log) {
             const gesture = {
                 distanceX: randomizer.integer({ min: -100, max: 200 }),
                 distanceY: randomizer.integer({ min: -100, max: 200 }),
@@ -197,12 +200,12 @@ export default userConfig => (logger, randomizer) => {
             const touches = getTouches(position, 1, gesture.radius);
 
             triggerGesture(element, position, touches, gesture, touches => {
-                done(touches, gesture);
+                log(touches, gesture);
             });
         },
 
         // multitouch gesture, could be a drag, swipe, pinch and rotate, with 2 or more points
-        multitouch(position, element, done) {
+        multitouch(position, element, log) {
             const points = randomizer.integer({
                 min: 2,
                 max: config.maxTouches,
@@ -218,12 +221,12 @@ export default userConfig => (logger, randomizer) => {
             const touches = getTouches(position, points, gesture.radius);
 
             triggerGesture(element, position, touches, gesture, touches => {
-                done(touches, gesture);
+                log(touches, gesture);
             });
         },
     };
 
-    return (done = () => {}) => {
+    return () => {
         let position;
         let posX;
         let posY;
@@ -240,7 +243,7 @@ export default userConfig => (logger, randomizer) => {
         } while (!targetElement || !config.canTouch(targetElement));
 
         const touchType = randomizer.pick(config.touchTypes);
-        const logGremlin = (touches, details) => {
+        const log = (touches, details) => {
             if (typeof config.showAction === 'function') {
                 config.showAction(touches);
             }
@@ -248,6 +251,6 @@ export default userConfig => (logger, randomizer) => {
                 logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
             }
         };
-        touchTypes[touchType](position, targetElement, logGremlin, done);
+        touchTypes[touchType](position, targetElement, log);
     };
 };

@@ -6,8 +6,6 @@
  *
  * @param {Function[]} callbacks - The functions to execute
  * @param {Array} args - The arguments passed to each function
- * @param {Object|null} context - The object the functions must be bound to
- * @param {Function} done - The final callback to execute once all functions are executed
  */
 export default (callables, args) =>
     new Promise((resolve, reject) => {
