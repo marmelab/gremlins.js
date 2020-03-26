@@ -1,24 +1,20 @@
-import Chance from 'chance';
-
 import typer from './typer';
 
 jest.useFakeTimers();
-jest.mock('chance', () => {
-    return function() {
-        const natural = ({ min, max }) => (min ? 65 : max); // 65 = a
-        const pick = types => types[0]; // return click types
-        return { natural, pick };
-    };
-});
 
 describe('typer', () => {
     const dispatchEventSpy = jest.fn();
     const initMouseEventSpy = jest.fn();
-    let consoleSpy;
+    let console;
     let inputText;
+    let chance;
 
     beforeEach(() => {
-        consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+        console = { log: jest.fn() };
+        chance = {
+            natural: ({ min, max }) => (min ? 65 : max), // 65 = a
+            pick: types => types[0],
+        };
 
         inputText = document.createElement('input');
         inputText.setAttribute('type', 'text');
@@ -49,16 +45,16 @@ describe('typer', () => {
     });
 
     it('should log the typer', () => {
-        const species = typer({ log: true })(console, new Chance());
+        const species = typer({ log: true })(console, chance);
 
         species();
 
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
-        expect(consoleSpy).toHaveBeenCalledWith('gremlin', 'typer type', 'A', 'at', 10, 10);
+        expect(console.log).toHaveBeenCalledTimes(1);
+        expect(console.log).toHaveBeenCalledWith('gremlin', 'typer type', 'A', 'at', 10, 10);
     });
 
     it("should type on element but don't show element", () => {
-        const species = typer({ showAction: false })(console, new Chance());
+        const species = typer({ showAction: false })(console, chance);
 
         species();
 
@@ -73,7 +69,7 @@ describe('typer', () => {
     });
 
     it('should type on myid element and add new element', () => {
-        const species = typer()(console, new Chance());
+        const species = typer()(console, chance);
 
         species();
 

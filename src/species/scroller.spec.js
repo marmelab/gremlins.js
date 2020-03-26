@@ -1,21 +1,19 @@
-import Chance from 'chance';
-
 import scroller from './scroller';
 
 jest.useFakeTimers();
-jest.mock('chance', () => {
-    return function() {
-        const natural = ({ max }) => max;
-        return { natural };
-    };
-});
 
 describe('scroller', () => {
-    let consoleSpy;
+    let consoleMock;
+    let chanceMock;
+
     const scrollToSpy = jest.fn();
 
     beforeEach(() => {
-        consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+        consoleMock = { log: jest.fn() };
+        chanceMock = {
+            natural: ({ max }) => max,
+        };
+
         Object.defineProperty(window, 'scrollTo', { value: scrollToSpy, writable: true });
 
         const documentElementProps = {
@@ -32,16 +30,16 @@ describe('scroller', () => {
     });
 
     it('should log the scroller', () => {
-        const species = scroller({ log: true })(console, new Chance());
+        const species = scroller({ log: true })(consoleMock, chanceMock);
 
         species();
 
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
-        expect(consoleSpy).toHaveBeenCalledWith('gremlin', 'scroller  ', 'scroll to', 5, 5);
+        expect(consoleMock.log).toHaveBeenCalledTimes(1);
+        expect(consoleMock.log).toHaveBeenCalledWith('gremlin', 'scroller  ', 'scroll to', 5, 5);
     });
 
     it("should scroll but don't show element", () => {
-        const species = scroller({ showAction: false })(console, new Chance());
+        const species = scroller({ showAction: false })(consoleMock, chanceMock);
 
         species();
 
@@ -51,7 +49,7 @@ describe('scroller', () => {
     });
 
     it('should scroll and add new element', () => {
-        const species = scroller()(console, new Chance());
+        const species = scroller()(consoleMock, chanceMock);
 
         species();
 

@@ -1,26 +1,20 @@
-import Chance from 'chance';
-
 import toucher from './toucher';
 
 jest.useFakeTimers();
-jest.mock('chance', () => {
-    return function() {
-        const natural = ({ max }) => max;
-        const floating = ({ max }) => max;
-        const integer = ({ max }) => max;
-        const pick = types => types[0]; // return click types
-        return { natural, floating, integer, pick };
-    };
-});
 
 describe('toucher', () => {
     const dispatchEventSpy = jest.fn();
     const initEventSpy = jest.fn();
     let inputText;
+    let chanceMock;
 
     beforeEach(() => {
-        // todo unskip test
-        // consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+        chanceMock = {
+            natural: ({ max }) => max,
+            floating: ({ max }) => max,
+            integer: ({ max }) => max,
+            pick: types => types[0],
+        };
 
         inputText = document.createElement('input');
         inputText.setAttribute('type', 'text');
@@ -51,14 +45,14 @@ describe('toucher', () => {
     });
 
     it.skip('should log the toucher', () => {
-        // const species = toucher({ log: true })(console, new Chance());
+        // const species = toucher({ log: true })(console, chanceMock);
         // species();
         // expect(consoleSpy).toHaveBeenCalledTimes(1);
         // expect(consoleSpy).toHaveBeenCalledWith('gremlin', 'toucher type', 'A', 'at', 10, 10);
     });
 
     it("should touch the element but don't show element", () => {
-        const species = toucher({ showAction: false })(console, new Chance());
+        const species = toucher({ showAction: false })(console, chanceMock);
 
         species();
 
@@ -67,7 +61,7 @@ describe('toucher', () => {
     });
 
     it('should touch on myid element and add new element', () => {
-        const species = toucher()(console, new Chance());
+        const species = toucher()(console, chanceMock);
 
         species();
 

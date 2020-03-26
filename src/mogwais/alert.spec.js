@@ -1,91 +1,88 @@
-import Chance from 'chance';
-
 import alert from './alert';
 
-const mockChanceBool = jest.fn();
-const mockChanceSentence = jest.fn();
-jest.mock('chance', () => {
-    return function() {
-        return { bool: mockChanceBool, sentence: mockChanceSentence };
-    };
-});
-
 describe('alert', () => {
-    let consoleSpy;
+    const chanceBoolMock = jest.fn();
+    const chanceSentenceMock = jest.fn();
+    let consoleMock;
+    let chanceMock;
 
     beforeEach(() => {
-        consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+        consoleMock = { warn: jest.fn() };
+        chanceMock = {
+            bool: chanceBoolMock,
+            sentence: chanceSentenceMock,
+        };
     });
 
     it('should call logger warn when window.alert is call', () => {
-        const mogwais = alert()(console, new Chance());
+        const mogwais = alert()(consoleMock, chanceMock);
 
         mogwais();
         window.alert('new alert');
 
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
-        expect(consoleSpy).toHaveBeenCalledWith('mogwai ', 'alert ', 'new alert', 'alert');
+        expect(consoleMock.warn).toHaveBeenCalledTimes(1);
+        expect(consoleMock.warn).toHaveBeenCalledWith('mogwai ', 'alert ', 'new alert', 'alert');
     });
 
     it('should call logger warn when window.confirm is call', () => {
-        const mogwais = alert()(console, new Chance());
+        const mogwais = alert()(consoleMock, chanceMock);
 
         mogwais();
         window.confirm('new confirm');
 
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
-        expect(consoleSpy).toHaveBeenCalledWith('mogwai ', 'alert ', 'new confirm', 'confirm');
+        expect(consoleMock.warn).toHaveBeenCalledTimes(1);
+        expect(consoleMock.warn).toHaveBeenCalledWith('mogwai ', 'alert ', 'new confirm', 'confirm');
     });
 
     it('should call logger warn when window.prompt is call', () => {
-        const mogwais = alert()(console, new Chance());
+        const mogwais = alert()(consoleMock, chanceMock);
 
         mogwais();
         window.prompt('new prompt');
 
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
-        expect(consoleSpy).toHaveBeenCalledWith('mogwai ', 'alert ', 'new prompt', 'prompt');
+        expect(consoleMock.warn).toHaveBeenCalledTimes(1);
+        expect(consoleMock.warn).toHaveBeenCalledWith('mogwai ', 'alert ', 'new prompt', 'prompt');
     });
 
     it('should call randomize bool when window.confirm is call', () => {
-        const mogwais = alert()(console, new Chance());
+        const mogwais = alert()(consoleMock, chanceMock);
 
         mogwais();
         window.confirm('new confirm');
 
-        expect(mockChanceBool).toHaveBeenCalledTimes(1);
+        expect(chanceBoolMock).toHaveBeenCalledTimes(1);
     });
 
     it('should call randomize sentence when window.prompt is call', () => {
-        const mogwais = alert()(console, new Chance());
+        const mogwais = alert()(consoleMock, chanceMock);
 
         mogwais();
         window.prompt('new prompt');
 
-        expect(mockChanceSentence).toHaveBeenCalledTimes(1);
+        expect(chanceSentenceMock).toHaveBeenCalledTimes(1);
     });
 
     it('should cleanup the window prop when cleanUp function is call', () => {
         jest.spyOn(window, 'alert').mockImplementation();
-        const mogwais = alert()(console, new Chance());
+        const mogwais = alert()(consoleMock, chanceMock);
 
         mogwais();
         window.alert('new alert');
 
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
+        expect(consoleMock.warn).toHaveBeenCalledTimes(1);
 
         mogwais.cleanUp();
 
         window.alert('new alert');
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
+        expect(consoleMock.warn).toHaveBeenCalledTimes(1);
     });
 
     it('should not override the window object when logger is not defined ', () => {
-        const mogwais = alert()(null, new Chance());
+        const mogwais = alert()(null, chanceMock);
 
         mogwais();
         window.alert('new alert');
 
-        expect(mockChanceSentence).toHaveBeenCalledTimes(0);
+        expect(chanceSentenceMock).toHaveBeenCalledTimes(0);
     });
 });

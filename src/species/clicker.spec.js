@@ -1,23 +1,19 @@
-import Chance from 'chance';
-
 import clicker from './clicker';
 
 jest.useFakeTimers();
-jest.mock('chance', () => {
-    return function() {
-        const natural = ({ max }) => max;
-        const pick = types => types[0]; // return click types
-        return { natural, pick };
-    };
-});
 
 describe('clicker', () => {
     const dispatchEventSpy = jest.fn();
     const initMouseEventSpy = jest.fn();
-    let consoleSpy;
+    let consoleMock;
+    let chanceMock;
 
     beforeEach(() => {
-        consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+        consoleMock = { log: jest.fn() };
+        chanceMock = {
+            natural: ({ max }) => max,
+            pick: types => types[0], // return click types
+        };
 
         document.body.innerHTML = '<div id="myid">my div</div>';
 
@@ -41,16 +37,16 @@ describe('clicker', () => {
     });
 
     it('should log the cliker', () => {
-        const species = clicker({ log: true })(console, new Chance());
+        const species = clicker({ log: true })(consoleMock, chanceMock);
 
         species();
 
-        expect(consoleSpy).toHaveBeenCalledTimes(1);
-        expect(consoleSpy).toHaveBeenCalledWith('gremlin', 'clicker   ', 'click', 'at', 10, 10);
+        expect(consoleMock.log).toHaveBeenCalledTimes(1);
+        expect(consoleMock.log).toHaveBeenCalledWith('gremlin', 'clicker   ', 'click', 'at', 10, 10);
     });
 
     it("should click on element but don't show element", () => {
-        const species = clicker({ showAction: false })(console, new Chance());
+        const species = clicker({ showAction: false })(consoleMock, chanceMock);
 
         species();
 
@@ -60,7 +56,7 @@ describe('clicker', () => {
 
     it("should try to click twice on element but can't click at the end", () => {
         const canClickSpy = jest.fn();
-        const species = clicker({ canClick: canClickSpy, maxNbTries: 2 })(console, new Chance());
+        const species = clicker({ canClick: canClickSpy, maxNbTries: 2 })(consoleMock, chanceMock);
 
         species();
 
@@ -69,7 +65,7 @@ describe('clicker', () => {
     });
 
     it('should click on myid element and add new element', () => {
-        const species = clicker()(console, new Chance());
+        const species = clicker()(consoleMock, chanceMock);
 
         species();
 
