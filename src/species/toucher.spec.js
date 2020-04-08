@@ -1,5 +1,4 @@
 import toucher from './toucher';
-jest.useFakeTimers();
 
 describe('toucher', () => {
     const dispatchEventSpy = jest.fn();
@@ -39,6 +38,8 @@ describe('toucher', () => {
             value: 11,
         });
         jest.spyOn(document, 'createEvent').mockImplementation(() => ({ initEvent: initEventSpy }));
+
+        jest.useFakeTimers();
     });
 
     afterEach(() => {
