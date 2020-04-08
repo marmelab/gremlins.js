@@ -4,19 +4,10 @@ const getDefaultConfig = randomizer => {
     /**
      * Hacky function to trigger react, angular & vue.js onChange on input
      */
-    const triggerSimulatedOnChange = (element, newValue, elementType = 'input') => {
+    const triggerSimulatedOnChange = (element, newValue, prototype) => {
         const lastValue = element.value;
         element.value = newValue;
 
-        const htmlPrototypes = {
-            textarea: window.HTMLTextAreaElement.prototype,
-            input: window.HTMLInputElement.prototype,
-        };
-
-        const prototype = htmlPrototypes[elementType];
-        if (!prototype) {
-            return;
-        }
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
         nativeInputValueSetter.call(element, newValue);
         const event = new Event('input', { bubbles: true });
@@ -34,7 +25,7 @@ const getDefaultConfig = randomizer => {
     const fillTextElement = element => {
         const character = randomizer.character();
         const newValue = element.value + character;
-        triggerSimulatedOnChange(element, newValue);
+        triggerSimulatedOnChange(element, newValue, window.HTMLInputElement.prototype);
 
         return character;
     };
@@ -42,7 +33,7 @@ const getDefaultConfig = randomizer => {
     const fillTextAreaElement = element => {
         const character = randomizer.character();
         const newValue = element.value + character;
-        triggerSimulatedOnChange(element, newValue, 'textarea');
+        triggerSimulatedOnChange(element, newValue, window.HTMLTextAreaElement.prototype);
 
         return character;
     };
@@ -86,7 +77,7 @@ const getDefaultConfig = randomizer => {
 
     const fillEmail = element => {
         const email = randomizer.email();
-        triggerSimulatedOnChange(element, email);
+        triggerSimulatedOnChange(element, email, window.HTMLInputElement.prototype);
 
         return email;
     };
