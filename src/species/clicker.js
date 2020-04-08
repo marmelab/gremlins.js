@@ -34,6 +34,7 @@ const getDefaultConfig = randomizer => {
         const clickSignal = document.createElement('div');
         clickSignal.style.zIndex = 2000;
         clickSignal.style.border = '3px solid red';
+        // todo clean chrome/mozilla hack
         clickSignal.style['border-radius'] = '50%'; // Chrome
         clickSignal.style.borderRadius = '50%'; // Mozilla
         clickSignal.style.width = '40px';
@@ -91,6 +92,7 @@ export default userConfig => (logger, randomizer) => {
 
         const evt = document.createEvent('MouseEvents');
         const clickType = randomizer.pick(config.clickTypes);
+        // todo remove deprecated https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/initMouseEvent
         evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, posX, posY, false, false, false, false, 0, null);
         targetElement.dispatchEvent(evt);
 
