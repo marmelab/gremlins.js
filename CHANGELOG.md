@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/marmelab/gremlins.js/compare/v2.0.0-next.2...v2.0.0) (2020-04-08)
+
+### Features
+
+-   add customisable bookmarklet ([96db4be](https://github.com/marmelab/gremlins.js/commit/96db4be3608068a0ff56390859d6c2e0c54dce10))
+-   add guide, issue, bug template ([16016df](https://github.com/marmelab/gremlins.js/commit/16016df1219aab461d0a79d2e9fc3059ae286212))
+-   expose gremlins in bookmarklet page ([a03d429](https://github.com/marmelab/gremlins.js/commit/a03d429ad95e87f45889aa2bd0f1db1fc44aef86))
+-   refaco executeInSeries function ([aa03316](https://github.com/marmelab/gremlins.js/commit/aa03316df05419bfa811cda3d4800570dce6ac5b))
+-   update babel and rolup dep ([d6b439b](https://github.com/marmelab/gremlins.js/commit/d6b439b8637d8057673cd61c7b21b091dc8b4fa1))
+-   update readme ([ae11c93](https://github.com/marmelab/gremlins.js/commit/ae11c937f7f3bc92aff61644dca60998df971ca1))
+-   update seed, stop and custom logger documentation ([13c9920](https://github.com/marmelab/gremlins.js/commit/13c99203cf2712248ffceb4cde80d705096c1787))
+-   update to prettier 2.0 and eslint last version ([af374d4](https://github.com/marmelab/gremlins.js/commit/af374d4a5dd5789eacec5d543f6d0fe7ec335e62))
+
+### Bug Fixes
+
+-   change next to master branch ([f66ffeb](https://github.com/marmelab/gremlins.js/commit/f66ffebc20715c386b087f88c35b75e4b0112cf3))
+-   illegal invocation on text area ([a877e46](https://github.com/marmelab/gremlins.js/commit/a877e46245292fa068eb209ed69f6a1f88d5b337))
+-   simulated on change usage ([24ea017](https://github.com/marmelab/gremlins.js/commit/24ea017b0b20e00403adace3caf17df1ea4b416a))
+-   toucher log test ([c7f2abd](https://github.com/marmelab/gremlins.js/commit/c7f2abdbc7c8a870241144d34675de4fa4d7a61f))
+-   typo in readme ([9cbb8e5](https://github.com/marmelab/gremlins.js/commit/9cbb8e553047739e7ff8b77f5f3ce20804afb144))
+-   update babel to fix test on node 13.10.1 ([ffc6542](https://github.com/marmelab/gremlins.js/commit/ffc654235c577d54e69bfbbc02b2b55242525a52))
+-   use fake timers usage ([c404ed8](https://github.com/marmelab/gremlins.js/commit/c404ed81941d361e6fb1845573054336f10a1462))
+
 ## [2.0.0-next.2](https://github.com/marmelab/gremlins.js/compare/v2.0.0-next.1...v2.0.0-next.2) (2020-02-26)
 
 ### Features
