@@ -13,7 +13,7 @@ describe('typer', () => {
         console = { log: jest.fn() };
         chance = {
             natural: ({ min, max }) => (min ? 65 : max), // 65 = a
-            pick: types => types[0],
+            pick: (types) => types[0],
         };
 
         inputText = document.createElement('input');

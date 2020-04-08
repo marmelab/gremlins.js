@@ -1,4 +1,4 @@
-const getDefaultConfig = randomizer => {
+const getDefaultConfig = (randomizer) => {
     const document = window.document;
 
     /**
@@ -22,7 +22,7 @@ const getDefaultConfig = randomizer => {
         element.dispatchEvent(event);
     };
 
-    const fillTextElement = element => {
+    const fillTextElement = (element) => {
         const character = randomizer.character();
         const newValue = element.value + character;
         triggerSimulatedOnChange(element, newValue, window.HTMLInputElement.prototype);
@@ -30,7 +30,7 @@ const getDefaultConfig = randomizer => {
         return character;
     };
 
-    const fillTextAreaElement = element => {
+    const fillTextAreaElement = (element) => {
         const character = randomizer.character();
         const newValue = element.value + character;
         triggerSimulatedOnChange(element, newValue, window.HTMLTextAreaElement.prototype);
@@ -38,7 +38,7 @@ const getDefaultConfig = randomizer => {
         return character;
     };
 
-    const fillNumberElement = element => {
+    const fillNumberElement = (element) => {
         const number = randomizer.character({ pool: '0123456789' });
         const newValue = element.value + number;
         triggerSimulatedOnChange(element, newValue);
@@ -46,18 +46,18 @@ const getDefaultConfig = randomizer => {
         return number;
     };
 
-    const fillSelect = element => {
+    const fillSelect = (element) => {
         const options = element.querySelectorAll('option');
         if (options.length === 0) return;
         const randomOption = randomizer.pick(options);
-        options.forEach(option => {
+        options.forEach((option) => {
             option.selected = option.value === randomOption.value;
         });
 
         return randomOption.value;
     };
 
-    const fillRadio = element => {
+    const fillRadio = (element) => {
         // using mouse events to trigger listeners
         const evt = document.createEvent('MouseEvents');
         evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
@@ -66,7 +66,7 @@ const getDefaultConfig = randomizer => {
         return element.value;
     };
 
-    const fillCheckbox = element => {
+    const fillCheckbox = (element) => {
         // using mouse events to trigger listeners
         const evt = document.createEvent('MouseEvents');
         evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
@@ -75,7 +75,7 @@ const getDefaultConfig = randomizer => {
         return element.value;
     };
 
-    const fillEmail = element => {
+    const fillEmail = (element) => {
         const email = randomizer.email();
         triggerSimulatedOnChange(element, email, window.HTMLInputElement.prototype);
 
@@ -94,7 +94,7 @@ const getDefaultConfig = randomizer => {
         'input:not([type])': fillTextElement,
     };
 
-    const defaultShowAction = element => {
+    const defaultShowAction = (element) => {
         if (typeof element.attributes['data-old-border'] === 'undefined') {
             element.attributes['data-old-border'] = element.style.border;
         }
@@ -120,7 +120,7 @@ const getDefaultConfig = randomizer => {
     };
 };
 
-export default userConfig => (logger, randomizer) => {
+export default (userConfig) => (logger, randomizer) => {
     const document = window.document;
 
     const config = { ...getDefaultConfig(randomizer), ...userConfig };
@@ -142,7 +142,7 @@ export default userConfig => (logger, randomizer) => {
         } while (!element || !config.canFillElement(element));
 
         // Retrieve element type
-        const elementType = Object.keys(config.elementMapTypes).find(selector => element.matches(selector));
+        const elementType = Object.keys(config.elementMapTypes).find((selector) => element.matches(selector));
 
         const value = config.elementMapTypes[elementType](element);
 

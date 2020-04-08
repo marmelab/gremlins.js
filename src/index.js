@@ -24,21 +24,21 @@ const defaultConfig = {
     randomizer: new Chance(),
 };
 
-export const createHorde = userConfig => {
+export const createHorde = (userConfig) => {
     const config = { ...defaultConfig, ...userConfig };
     const { logger, randomizer } = config;
 
-    const species = config.species.map(specie => specie(logger, randomizer));
-    const strategies = config.strategies.map(strat => strat(randomizer));
-    const stop = () => strategies.forEach(strat => strat.stop());
-    const mogwais = config.mogwais.map(mogwai => mogwai(logger, randomizer, stop));
+    const species = config.species.map((specie) => specie(logger, randomizer));
+    const strategies = config.strategies.map((strat) => strat(randomizer));
+    const stop = () => strategies.forEach((strat) => strat.stop());
+    const mogwais = config.mogwais.map((mogwai) => mogwai(logger, randomizer, stop));
 
     const unleash = async () => {
         const beforeHorde = [...mogwais];
-        const cleansUps = mogwais.map(mogwai => mogwai.cleanUp).filter(cleanUp => typeof cleanUp === 'function');
+        const cleansUps = mogwais.map((mogwai) => mogwai.cleanUp).filter((cleanUp) => typeof cleanUp === 'function');
 
         await executeInSeries(beforeHorde, []);
-        const unleashedStrategies = strategies.map(strat => strat(species));
+        const unleashedStrategies = strategies.map((strat) => strat(species));
         await Promise.all(unleashedStrategies);
         await executeInSeries(cleansUps, []);
     };
@@ -50,8 +50,8 @@ export const createHorde = userConfig => {
 };
 
 export const species = { clicker, toucher, formFiller, scroller, typer };
-export const allSpecies = Object.values(species).map(specie => specie());
+export const allSpecies = Object.values(species).map((specie) => specie());
 export const mogwais = { alert, fps, gizmo };
-export const allMogwais = Object.values(mogwais).map(mogwai => mogwai());
+export const allMogwais = Object.values(mogwais).map((mogwai) => mogwai());
 export const strategies = { distribution, bySpecies, allTogether };
 export { default as Chance } from 'chance';

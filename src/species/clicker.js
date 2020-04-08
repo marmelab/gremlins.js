@@ -1,4 +1,4 @@
-const getDefaultConfig = randomizer => {
+const getDefaultConfig = (randomizer) => {
     const defaultClickTypes = [
         'click',
         'click',
@@ -68,7 +68,7 @@ const getDefaultConfig = randomizer => {
     };
 };
 
-export default userConfig => (logger, randomizer) => {
+export default (userConfig) => (logger, randomizer) => {
     const config = {
         ...getDefaultConfig(randomizer),
         ...userConfig,

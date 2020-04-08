@@ -1,6 +1,6 @@
 const defaultConfig = { maxErrors: 10 };
 
-export default userConfig => (logger, _ignore, stop) => {
+export default (userConfig) => (logger, _ignore, stop) => {
     const config = { ...defaultConfig, ...userConfig };
 
     let realOnError;

@@ -8,7 +8,7 @@ describe('fps', () => {
         consoleMock = { warn: jest.fn() };
 
         time = 0;
-        jest.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => {
+        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
             time += 100;
             if (time < 1000) {
                 return cb(time);

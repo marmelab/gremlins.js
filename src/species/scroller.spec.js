@@ -22,7 +22,7 @@ describe('scroller', () => {
             scrollWidth: 15,
             scrollHeight: 15,
         };
-        Object.keys(documentElementProps).forEach(key => {
+        Object.keys(documentElementProps).forEach((key) => {
             Object.defineProperty(document.documentElement, key, {
                 value: documentElementProps[key],
             });

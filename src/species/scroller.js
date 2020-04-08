@@ -1,4 +1,4 @@
-const getDefaultConfig = randomizer => {
+const getDefaultConfig = (randomizer) => {
     const document = window.document;
     const documentElement = document.documentElement;
     const body = document.body;
@@ -57,7 +57,7 @@ const getDefaultConfig = randomizer => {
     };
 };
 
-export default userConfig => (logger, randomizer) => {
+export default (userConfig) => (logger, randomizer) => {
     const config = { ...getDefaultConfig(randomizer), ...userConfig };
     return () => {
         const position = config.positionSelector();

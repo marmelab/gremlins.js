@@ -12,7 +12,7 @@ describe('formFiller', () => {
         chanceMock = {
             character: () => 1,
             email: () => 'cofveve@cofveve.com',
-            pick: types => types[0], // return click types
+            pick: (types) => types[0], // return click types
         };
 
         inputText = document.createElement('input');
