@@ -112,7 +112,7 @@
         }).unleash();
     }
     var s = document.createElement("script");
-    s.src = "https://unpkg.com/gremlins.js@next";
+    s.src = "https://unpkg.com/gremlins.js";
     if (s.addEventListener) {
         s.addEventListener("load", callback, false);
     } else if (s.readyState) {
@@ -125,7 +125,20 @@
         document.getElementById('bookmarklet').href = script.replace(/\s\s+/g, ' ');
     }
 
+    function displayExposedGremlins () {
+        console.log(`Gremlins is available in your Console. Try gremlins.createHorde().unleash() to unleash the horde !`);
+    }
+
+    function exposeGremlins() {
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "https://unpkg.com/gremlins.js";
+        script.addEventListener('load', displayExposedGremlins, false)
+        document.body.appendChild(script);
+    }
+
     document.getElementById('gremlins-form').addEventListener('input', setBookmarkletScript);
 
+    exposeGremlins();
     setBookmarkletScript();
 </script>
