@@ -9,12 +9,11 @@ export default userConfig => () => {
 
     const config = { ...defaultConfig, ...userConfig };
 
-    let stopped;
+    let stopped = false;
 
     const allTogetherStrategy = async gremlins => {
         const { nb, delay } = config;
 
-        stopped = false;
         for (let i = 0; i < nb; i++) {
             await wait(delay);
             if (stopped) {
@@ -24,6 +23,7 @@ export default userConfig => () => {
         }
         return Promise.resolve();
     };
+
     allTogetherStrategy.stop = () => {
         stopped = true;
     };

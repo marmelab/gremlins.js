@@ -10,7 +10,7 @@ export default userConfig => randomizer => {
 
     const config = { ...defaultConfig, ...userConfig };
 
-    let stopped;
+    let stopped = false;
 
     const distributionStrategy = async newGremlins => {
         const { nb, delay } = config;
@@ -19,7 +19,6 @@ export default userConfig => randomizer => {
         const distribution = config.distribution.length === 0 ? getUniformDistribution(gremlins) : config.distribution;
 
         if (nb === 0) return Promise.resolve();
-        stopped = false;
 
         for (let i = 0; i < nb; i++) {
             const gremlin = pickGremlin(gremlins, distribution);

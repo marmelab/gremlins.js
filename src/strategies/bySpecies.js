@@ -9,14 +9,12 @@ export default userConfig => () => {
 
     const config = { ...defaultConfig, ...userConfig };
 
-    let stopped;
+    let stopped = false;
 
     const bySpeciesStrategy = async newGremlins => {
         const { nb, delay } = config;
 
         const gremlins = [...newGremlins]; // clone the array to avoid modifying the original
-
-        stopped = false;
 
         for (let gremlinIndex in gremlins) {
             const gremlin = gremlins[gremlinIndex];
