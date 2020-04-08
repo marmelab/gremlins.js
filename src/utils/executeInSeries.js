@@ -8,11 +8,4 @@
  * @param {Array} args - The arguments passed to each function
  */
 export default (callables, args) =>
-    new Promise((resolve, reject) => {
-        try {
-            callables.forEach(async cb => await cb.apply(null, args));
-        } catch (error) {
-            return reject(error);
-        }
-        return resolve();
-    });
+    callables.reduce((promise, cb) => promise.then(() => cb(...args)), Promise.resolve());
