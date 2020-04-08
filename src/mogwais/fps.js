@@ -1,7 +1,7 @@
 const NEXT_FRAME_MS = 16;
 
 const getDefaultConfig = () => {
-    const defaultLevelSelector = fps => {
+    const defaultLevelSelector = (fps) => {
         if (fps < 10) return 'error';
         if (fps < 20) return 'warn';
         return 'log';
@@ -12,13 +12,13 @@ const getDefaultConfig = () => {
     };
 };
 
-export default userConfig => logger => {
+export default (userConfig) => (logger) => {
     const config = { ...getDefaultConfig(), ...userConfig };
 
     let initialTime = -Infinity; // force initial measure
     let enabled;
 
-    const loop = time => {
+    const loop = (time) => {
         if (time - initialTime > config.delay) {
             measureFPS(time);
             initialTime = time;
@@ -29,11 +29,11 @@ export default userConfig => logger => {
 
     const measureFPS = () => {
         let lastTime;
-        const init = time => {
+        const init = (time) => {
             lastTime = time;
             window.requestAnimationFrame(measure);
         };
-        const measure = time => {
+        const measure = (time) => {
             const fps = time - lastTime < NEXT_FRAME_MS ? 60 : 1000 / (time - lastTime);
             const level = config.levelSelector(fps);
             if (logger) {

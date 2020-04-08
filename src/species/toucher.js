@@ -1,4 +1,4 @@
-const getDefaultConfig = randomizer => {
+const getDefaultConfig = (randomizer) => {
     const document = window.document;
     const body = document.body;
 
@@ -25,9 +25,9 @@ const getDefaultConfig = randomizer => {
         ];
     };
 
-    const defaultShowAction = touches => {
+    const defaultShowAction = (touches) => {
         const fragment = document.createDocumentFragment();
-        touches.forEach(touch => {
+        touches.forEach((touch) => {
             const touchSignal = document.createElement('div');
             touchSignal.style.zIndex = 2000;
             touchSignal.style.background = 'red';
@@ -68,7 +68,7 @@ const getDefaultConfig = randomizer => {
     };
 };
 
-export default userConfig => (logger, randomizer) => {
+export default (userConfig) => (logger, randomizer) => {
     const document = window.document;
     const config = { ...getDefaultConfig(randomizer), ...userConfig };
 
@@ -199,7 +199,7 @@ export default userConfig => (logger, randomizer) => {
             };
             const touches = getTouches(position, 1, gesture.radius);
 
-            triggerGesture(element, position, touches, gesture, touches => {
+            triggerGesture(element, position, touches, gesture, (touches) => {
                 log(touches, gesture);
             });
         },
@@ -220,7 +220,7 @@ export default userConfig => (logger, randomizer) => {
             };
             const touches = getTouches(position, points, gesture.radius);
 
-            triggerGesture(element, position, touches, gesture, touches => {
+            triggerGesture(element, position, touches, gesture, (touches) => {
                 log(touches, gesture);
             });
         },

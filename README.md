@@ -218,7 +218,7 @@ const customClicker = gremlins.species.clicker({
     // which mouse event types will be triggered
     clickTypes: ['click'],
     // Click only if parent is has class test-class
-    canClick: element => element.parentElement.className === 'test-class',
+    canClick: (element) => element.parentElement.className === 'test-class',
     // by default, the clicker gremlin shows its action by a red circle
     // overriding showAction() with an empty function makes the gremlin action invisible
     showAction: (x, y) => {},
@@ -285,16 +285,16 @@ By default, gremlins.js logs all gremlin actions and mogwai observations in the 
 
 ```js
 const customLogger = {
-    log: function(msg) {
+    log: function (msg) {
         /* .. */
     },
-    info: function(msg) {
+    info: function (msg) {
         /* .. */
     },
-    warn: function(msg) {
+    warn: function (msg) {
         /* .. */
     },
-    error: function(msg) {
+    error: function (msg) {
         /* .. */
     },
 };

@@ -1,7 +1,7 @@
 import executeInSeries from '../utils/executeInSeries';
 import wait from '../utils/wait';
 
-export default userConfig => randomizer => {
+export default (userConfig) => (randomizer) => {
     const defaultConfig = {
         distribution: [], // percentage of each gremlin species ; the sum of all values should equal to 1
         delay: 10,
@@ -12,7 +12,7 @@ export default userConfig => randomizer => {
 
     let stopped = false;
 
-    const distributionStrategy = async newGremlins => {
+    const distributionStrategy = async (newGremlins) => {
         const { nb, delay } = config;
 
         const gremlins = [...newGremlins]; // clone the array to avoid modifying the original
@@ -31,7 +31,7 @@ export default userConfig => randomizer => {
         return Promise.resolve();
     };
 
-    const getUniformDistribution = newGremlins => {
+    const getUniformDistribution = (newGremlins) => {
         const len = newGremlins.length;
         if (len === 0) return [];
         const distribution = [];

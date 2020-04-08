@@ -12,7 +12,7 @@ describe('clicker', () => {
         consoleMock = { log: jest.fn() };
         chanceMock = {
             natural: ({ max }) => max,
-            pick: types => types[0], // return click types
+            pick: (types) => types[0], // return click types
         };
 
         document.body.innerHTML = '<div id="myid">my div</div>';

@@ -1,4 +1,4 @@
-const getDefaultConfig = randomizer => {
+const getDefaultConfig = (randomizer) => {
     const defaultWatchEvents = ['alert', 'confirm', 'prompt'];
 
     const defaultConfirmResponse = () => {
@@ -16,7 +16,7 @@ const getDefaultConfig = randomizer => {
     };
 };
 
-export default userConfig => (logger, randomizer) => {
+export default (userConfig) => (logger, randomizer) => {
     const config = { ...getDefaultConfig(randomizer), ...userConfig };
 
     const alert = window.alert;
@@ -28,18 +28,18 @@ export default userConfig => (logger, randomizer) => {
             return;
         }
         if (config.watchEvents.includes('alert')) {
-            window.alert = msg => {
+            window.alert = (msg) => {
                 logger.warn('mogwai ', 'alert ', msg, 'alert');
             };
         }
         if (config.watchEvents.includes('confirm')) {
-            window.confirm = msg => {
+            window.confirm = (msg) => {
                 config.confirmResponse();
                 logger.warn('mogwai ', 'alert ', msg, 'confirm');
             };
         }
         if (config.watchEvents.includes('prompt')) {
-            window.prompt = msg => {
+            window.prompt = (msg) => {
                 config.promptResponse();
                 logger.warn('mogwai ', 'alert ', msg, 'prompt');
             };

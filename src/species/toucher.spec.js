@@ -13,7 +13,7 @@ describe('toucher', () => {
             natural: ({ max }) => max,
             floating: ({ max }) => max,
             integer: ({ max }) => max,
-            pick: types => types[0],
+            pick: (types) => types[0],
         };
 
         inputText = document.createElement('input');

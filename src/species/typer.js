@@ -1,4 +1,4 @@
-const getDefaultConfig = randomizer => {
+const getDefaultConfig = (randomizer) => {
     const document = window.document;
     const body = document.body;
 
@@ -49,7 +49,7 @@ const getDefaultConfig = randomizer => {
     };
 };
 
-export default userConfig => (logger, randomizer) => {
+export default (userConfig) => (logger, randomizer) => {
     const document = window.document;
     const documentElement = document.documentElement;
     const config = { ...getDefaultConfig(randomizer), ...userConfig };
