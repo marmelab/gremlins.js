@@ -125,7 +125,20 @@
         document.getElementById('bookmarklet').href = script.replace(/\s\s+/g, ' ');
     }
 
+    function displayExposedGremlins () {
+        console.log(`Gremlins is available in your Console. Try gremlins.createHorde().unleash() to unleash the horde !`);
+    }
+
+    function exposeGremlins() {
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "https://unpkg.com/gremlins.js@next";
+        script.addEventListener('load', displayExposedGremlins, false)
+        document.body.appendChild(script);
+    }
+
     document.getElementById('gremlins-form').addEventListener('input', setBookmarkletScript);
 
+    exposeGremlins();
     setBookmarkletScript();
 </script>
