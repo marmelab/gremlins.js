@@ -30,6 +30,9 @@ format: ## prettify the source code using prettier
 serve: build ## Serve dist directory
 	npm run serve
 
+publish: ## Publish
+	npm run release
+
 publish-dry-run: ## Publish dry-run
 	npm run release -- --dry-run
 
