@@ -1,109 +1,77 @@
-/**
- * The scroller gremlin scrolls the viewport to reveal another part of the document
- *
- *   var scrollerGremlin = gremlins.species.scroller();
- *   horde.gremlin(scrollerGremlin);
- *
- * The scrollerGremlin gremlin can be customized as follows:
- *
- *   scrollerGremlin.positionSelector(function() { // return a random position to scroll to });
- *   scrollerGremlin.showAction(function(element) { // show the gremlin activity on screen });
- *   scrollerGremlin.logger(loggerObject); // inject a logger
- *   scrollerGremlin.randomizer(randomizerObject); // inject a randomizer
- *
- * Example usage:
- *
- *   horde.gremlin(gremlins.species.scroller()
- *     .positionSelector(function() {
- *       // only click in the app
- *       var $list = $('#todoapp');
- *       var offset = $list.offset();
- *       return [
- *         parseInt(Math.random() * $list.outerWidth() + offset.left),
- *         parseInt(Math.random() * ($list.outerHeight() + $('#info').outerHeight()) + offset.top)
- *       ];
- *     })
- *   )
- */
-define(function(require) {
-    "use strict";
+const getDefaultConfig = (randomizer) => {
+    const document = window.document;
+    const documentElement = document.documentElement;
+    const body = document.body;
 
-    var configurable = require('../utils/configurable');
-    var Chance = require('../vendor/chance');
-    var RandomizerRequiredException = require('../exceptions/randomizerRequired');
+    const defaultPositionSelector = () => {
+        const documentWidth = Math.max(
+            body.scrollWidth,
+            body.offsetWidth,
+            documentElement.scrollWidth,
+            documentElement.offsetWidth,
+            documentElement.clientWidth
+        );
+        const documentHeight = Math.max(
+            body.scrollHeight,
+            body.offsetHeight,
+            documentElement.scrollHeight,
+            documentElement.offsetHeight,
+            documentElement.clientHeight
+        );
 
-    return function() {
-
-        var document = window.document,
-            documentElement = document.documentElement,
-            body = document.body;
-
-        function defaultPositionSelector() {
-            var documentWidth = Math.max(body.scrollWidth, body.offsetWidth, documentElement.scrollWidth, documentElement.offsetWidth, documentElement.clientWidth),
-                documentHeight = Math.max(body.scrollHeight, body.offsetHeight, documentElement.scrollHeight, documentElement.offsetHeight, documentElement.clientHeight);
-
-            return [
-                config.randomizer.natural({ max: documentWidth  - documentElement.clientWidth }),
-                config.randomizer.natural({ max: documentHeight  - documentElement.clientHeight })
-            ];
-        }
-
-        function defaultShowAction(scrollX, scrollY) {
-            var scrollSignal = document.createElement('div');
-            scrollSignal.style.zIndex = 2000;
-            scrollSignal.style.border = "3px solid red";
-            scrollSignal.style.width = (documentElement.clientWidth - 25) + "px";
-            scrollSignal.style.height = (documentElement.clientHeight - 25) + "px";
-            scrollSignal.style.position = "absolute";
-            scrollSignal.style.webkitTransition = 'opacity 1s ease-out';
-            scrollSignal.style.mozTransition = 'opacity 1s ease-out';
-            scrollSignal.style.transition = 'opacity 1s ease-out';
-            scrollSignal.style.left = (scrollX + 10) + 'px';
-            scrollSignal.style.top = (scrollY + 10) + 'px';
-            var element = body.appendChild(scrollSignal);
-            setTimeout(function() {
-                body.removeChild(element);
-            }, 1000);
-            setTimeout(function() {
-                element.style.opacity = 0;
-            }, 50);
-        }
-
-        /**
-         * @mixin
-         */
-        var config = {
-            positionSelector: defaultPositionSelector,
-            showAction:       defaultShowAction,
-            logger:           null,
-            randomizer:       null
-        };
-
-        /**
-         * @mixes config
-         */
-        function scrollerGremlin() {
-            if (!config.randomizer) {
-                throw new RandomizerRequiredException();
-            }
-
-            var position = config.positionSelector(),
-                scrollX = position[0],
-                scrollY = position[1];
-
-            window.scrollTo(scrollX, scrollY);
-
-            if (typeof config.showAction == 'function') {
-                config.showAction(scrollX, scrollY);
-            }
-
-            if (typeof config.logger.log == 'function') {
-                config.logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
-            }
-        }
-
-        configurable(scrollerGremlin, config);
-
-        return scrollerGremlin;
+        return [
+            randomizer.natural({
+                max: documentWidth - documentElement.clientWidth,
+            }),
+            randomizer.natural({
+                max: documentHeight - documentElement.clientHeight,
+            }),
+        ];
     };
-});
+
+    const defaultShowAction = (scrollX, scrollY) => {
+        const scrollSignal = document.createElement('div');
+        scrollSignal.style.zIndex = 2000;
+        scrollSignal.style.border = '3px solid red';
+        scrollSignal.style.width = documentElement.clientWidth - 25 + 'px';
+        scrollSignal.style.height = documentElement.clientHeight - 25 + 'px';
+        scrollSignal.style.position = 'absolute';
+        scrollSignal.style.webkitTransition = 'opacity 1s ease-out';
+        scrollSignal.style.mozTransition = 'opacity 1s ease-out';
+        scrollSignal.style.transition = 'opacity 1s ease-out';
+        scrollSignal.style.left = scrollX + 10 + 'px';
+        scrollSignal.style.top = scrollY + 10 + 'px';
+        const element = body.appendChild(scrollSignal);
+        setTimeout(() => {
+            body.removeChild(element);
+        }, 1000);
+        setTimeout(() => {
+            element.style.opacity = 0;
+        }, 50);
+    };
+
+    return {
+        positionSelector: defaultPositionSelector,
+        showAction: defaultShowAction,
+        log: false,
+    };
+};
+
+export default (userConfig) => (logger, randomizer) => {
+    const config = { ...getDefaultConfig(randomizer), ...userConfig };
+    return () => {
+        const position = config.positionSelector();
+        const scrollX = position[0];
+        const scrollY = position[1];
+
+        window.scrollTo(scrollX, scrollY);
+
+        if (typeof config.showAction === 'function') {
+            config.showAction(scrollX, scrollY);
+        }
+
+        if (logger && config.log) {
+            logger.log('gremlin', 'scroller  ', 'scroll to', scrollX, scrollY);
+        }
+    };
+};

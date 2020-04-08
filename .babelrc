@@ -1,0 +1,29 @@
+{
+    "env": {
+        "test": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "targets": {
+                            "node": "current"
+                        }
+                    }
+                ]
+            ]
+        }
+    },
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "useBuiltIns": "usage",
+                "shippedProposals": true,
+                "corejs": 3,
+                "targets": {
+                    "browsers": ["last 2 major versions", "not dead", "not IE 11"]
+                }
+            }
+        ]
+    ]
+}

@@ -1,32 +1,89 @@
 {
-  "name": "gremlins.js",
-  "version": "0.1.0",
-  "description": "A monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.",
-  "main": "gremlins.min.js",
-  "directories": {
-    "example": "examples"
-  },
-  "scripts": {
-    "test": "make test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/marmelab/gremlins.js.git"
-  },
-  "keywords": [
-    "monkey",
-    "test",
-    "testing",
-    "stress",
-    "gremlin"
-  ],
-  "author": "Francois Zaninotto",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/marmelab/gremlins.js/issues"
-  },
-  "devDependencies": {
-    "webpack": "^1.8.11",
-    "webpack-dev-server": "^1.8.2"
-  }
+    "name": "gremlins.js",
+    "version": "2.0.0-next.2",
+    "description": "A monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.",
+    "main": "dist/gremlins.min.js",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "start": "rollup -c -w",
+        "build": "cross-env NODE_ENV=production rollup -c",
+        "test": "cross-env NODE_ENV=test jest",
+        "test:watch": "cross-env NODE_ENV=test jest --watch",
+        "lint": "eslint .",
+        "format": "prettier --write --check \"**/*.+(js|json|md)\"",
+        "serve": "serve dist",
+        "clear": "rimraf dist",
+        "release": "standard-version",
+        "deploy-gh-pages": "gh-pages --dist bookmarklet",
+        "doctoc": "doctoc README.md"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/marmelab/gremlins.js"
+    },
+    "keywords": [
+        "monkey",
+        "test",
+        "testing",
+        "stress",
+        "gremlin"
+    ],
+    "author": "Francois Zaninotto",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/marmelab/gremlins.js/issues"
+    },
+    "homepage": "https://github.com/marmelab/gremlins.js",
+    "devDependencies": {
+        "@babel/core": "^7.9.0",
+        "@babel/preset-env": "^7.9.5",
+        "@commitlint/cli": "^8.3.5",
+        "@commitlint/config-conventional": "^8.3.4",
+        "@rollup/plugin-commonjs": "^11.0.2",
+        "@rollup/plugin-node-resolve": "^7.1.1",
+        "babel-eslint": "^10.1.0",
+        "babel-jest": "^25.3.0",
+        "cross-env": "^7.0.2",
+        "doctoc": "^1.4.0",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.10.1",
+        "eslint-plugin-babel": "^5.3.0",
+        "eslint-plugin-import": "^2.20.2",
+        "eslint-plugin-jest": "^23.8.2",
+        "eslint-plugin-prettier": "^3.1.2",
+        "gh-pages": "^2.2.0",
+        "husky": "^4.2.3",
+        "jest": "^25.3.0",
+        "lint-staged": "^10.1.2",
+        "prettier": "^2.0.4",
+        "rimraf": "^3.0.2",
+        "rollup": "^2.3.4",
+        "rollup-plugin-babel": "^4.4.0",
+        "rollup-plugin-commonjs": "^10.1.0",
+        "rollup-plugin-terser": "^5.3.0",
+        "serve": "^11.3.0",
+        "standard-version": "^7.1.0"
+    },
+    "dependencies": {
+        "chance": "^1.1.4",
+        "core-js": "^3.6.4"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
+    },
+    "lint-staged": {
+        "*.js": "eslint",
+        "*.{js,json,md}": "prettier --write",
+        "README.md": "npm run doctoc"
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ]
+    }
 }
