@@ -16,7 +16,8 @@
         "serve": "serve dist",
         "clear": "rimraf dist",
         "release": "standard-version",
-        "deploy-gh-pages": "gh-pages --dist bookmarklet"
+        "deploy-gh-pages": "gh-pages --dist bookmarklet",
+        "doctoc": "doctoc README.md"
     },
     "repository": {
         "type": "git",
@@ -45,6 +46,7 @@
         "babel-eslint": "^10.1.0",
         "babel-jest": "^25.1.0",
         "cross-env": "^7.0.0",
+        "doctoc": "^1.4.0",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.9.0",
         "eslint-plugin-babel": "^5.3.0",
@@ -76,7 +78,8 @@
     },
     "lint-staged": {
         "*.js": "eslint",
-        "*.{js,json,md}": "prettier --write"
+        "*.{js,json,md}": "prettier --write",
+        "README.md": "npm run doctoc"
     },
     "commitlint": {
         "extends": [
