@@ -19,13 +19,13 @@
 
 <hr />
 
-[![version][https://img.shields.io/npm/v/gremlins.js.svg?style=flat-square]][https://www.npmjs.com/package/gremlins.js] [![downloads][https://img.shields.io/npm/dm/gremlins.js.svg?style=flat-square]][https://www.npmtrends.com/gremlins.js]
-[![Build Status][https://img.shields.io/travis/marmelab/gremlins.js.svg?style=flat-square]][https://travis-ci.org/github/marmelab/gremlins.js]
+[![version](https://img.shields.io/npm/v/gremlins.js.svg?style=flat-square)](https://www.npmjs.com/package/gremlins.js) [![downloads](https://img.shields.io/npm/dm/gremlins.js.svg?style=flat-square)](https://www.npmtrends.com/gremlins.js)
+[![Build Status](https://img.shields.io/travis/marmelab/gremlins.js.svg?style=flat-square)](https://travis-ci.org/github/marmelab/gremlins.js)
 
-[![PRs Welcome][https://img.shields.io/badge/prs-welcome-brightgreen.svg?style=flat-square]][http://makeapullrequest.com] [![Code of Conduct][https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square]][https://github.com/marmelab/gremlins.js/blob/master/code_of_conduct.md]
-[![MIT License][https://img.shields.io/npm/l/gremlins.js.svg?style=flat-square]][https://github.com/marmelab/gremlins.js/blob/master/license]
+[![PRs Welcome](https://img.shields.io/badge/prs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Code of Conduct](https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square)](https://github.com/marmelab/gremlins.js/blob/master/code_of_conduct.md)
+[![MIT License](https://img.shields.io/npm/l/gremlins.js.svg?style=flat-square)](https://github.com/marmelab/gremlins.js/blob/master/license)
 
-[![Tweet][https://img.shields.io/twitter/url/https/github.com/marmelab/gremlins.js.svg?style=social]][https://twitter.com/intent/tweet?text=check%20out%20gremlins.js%20by%20%40marmelab%20https%3a%2f%2fgithub.com%2fmarmelab%2fgremlins.js%20%f0%9f%91%8d]
+[![Tweet](https://img.shields.io/twitter/url/https/github.com/marmelab/gremlins.js.svg?style=social)](https://twitter.com/intent/tweet?text=check%20out%20gremlins.js%20by%20%40marmelab%20https%3a%2f%2fgithub.com%2fmarmelab%2fgremlins.js%20%f0%9f%91%8d)
 
 <div align="center">
 <img
@@ -41,13 +41,14 @@
 
 ## Table of Contents
 
+<!-- prettier-ignore-start -->
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
 - [Purpose](#purpose)
-- [Basic Usage](#basic-usage)
 - [Installation](#installation)
+- [Basic Usage](#basic-usage)
 - [Advanced Usage](#advanced-usage)
   - [Setting Gremlins and Mogwais To Use In A Test](#setting-gremlins-and-mogwais-to-use-in-a-test)
   - [Configuring Gremlins](#configuring-gremlins)
@@ -63,6 +64,7 @@
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<!-- prettier-ignore-end -->
 
 ## Purpose
 
@@ -71,6 +73,18 @@ While developing an HTML5 application, did you anticipate uncommon user interact
 Gremlins.js simulates random user actions: gremlins click anywhere in the window, enter random data in forms, or move the mouse over elements that don't expect it. Their goal: triggering JavaScript errors, or making the application fail. If gremlins can't break an application, congrats! The application is robust enough to be released to real users.
 
 This practice, also known as [Monkey testing](http://en.wikipedia.org/wiki/Monkey_test) or [Fuzz testing](http://en.wikipedia.org/wiki/Fuzz_testing), is very common in mobile application development (see for instance the [Android Monkey program](http://developer.android.com/tools/help/monkey.html)). Now that frontend (MV\*, d3.js, Backbone.js, Angular.js, etc.) and backend (Node.js) development use persistent JavaScript applications, this technique becomes valuable for web applications.
+
+## Installation
+
+This module is distributed via [npm](https://www.npmjs.com/) which is bundled with [node](https://nodejs.org/en/) and should be installed as one of your project's `dependencies`:
+
+```
+npm i gremlins.js
+```
+
+This library has `dependencies` listings for `chance`.
+
+`gremlins.js` is also available as a **bookmarklet**. Go to [this page](https://marmelab.com/gremlins.js/), grab it, and unleash hordes on any web page.
 
 ## Basic Usage
 
@@ -147,31 +161,6 @@ horde.createHorde({
 ```
 
 Everything in `gremlins.js` is configurable ; you will find it very easy to extend and adapt to you use cases.
-
-## Installation
-
-In the browser, the `gremlins.min.js` file can be used as a standalone library, and adds `gremlins` to the global namespace:
-
-```html
-<script src="path/to/gremlins.min.js"></script>
-<script>
-    gremlins.createHorde().unleash();
-</script>
-```
-
-Alternately, you can include `gremlins.min.js` as a module, leaving the global namespace clean:
-
-```js
-const gremlins = require('gremlins');
-```
-
-Or in ES6 syntax :
-
-```js
-import gremlins from 'gremlins';
-```
-
-`gremlins.js` is also available as a **bookmarklet**. Go to [this page](https://marmelab.com/gremlins.js/), grab it, and unleash hordes on any web page.
 
 ## Advanced Usage
 
@@ -316,21 +305,21 @@ horde.createHorde({ logger: customLogger });
 
 ### Issues
 
-_Looking to contribute? Look for the [Good First Issue][https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+is%3aopen+sort%3areactions-%2b1-desc]
+_Looking to contribute? Look for the [Good First Issue](https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+is%3aopen+sort%3areactions-%2b1-desc)
 label._
 
 ### 🐛 Bugs
 
 Please file an issue for bugs, missing documentation, or unexpected behavior.
 
-[**See Bugs**][https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+is%3aopen+label%3abug+sort%3acreated-desc]
+[**See Bugs**](https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+is%3aopen+label%3abug+sort%3acreated-desc)
 
 ### 💡 Feature Requests
 
 Please file an issue to suggest new features. Vote on feature requests by adding
 a 👍. This helps maintainers prioritize what to work on.
 
-[**See Feature Requests**][https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+sort%3areactions-%2b1-desc+label%3aenhancement+is%3aopen]
+[**See Feature Requests**](https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+sort%3areactions-%2b1-desc+label%3aenhancement+is%3aopen)
 
 ## License
 
