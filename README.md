@@ -1,12 +1,68 @@
-# gremlins.js
+<div align="center">
+<h1>gremlins.js</h1>
 
-gremlins.js is a monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.
+<img
+    height="80"
+    width="80"
+    alt="gremlins"
+    src="https://raw.githubusercontent.com/marmelab/gremlins.js/master/other/gremlins.png"
+/>
+
+<p>A monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.</p>
+
+<br />
+
+[**Generate bookmarklet**](https://marmelab.com/gremlins.js/) | [Install docs](#Installation)
+
+<br />
+</div>
+
+<hr />
+
+[![version][https://img.shields.io/npm/v/gremlins.js.svg?style=flat-square]][https://www.npmjs.com/package/gremlins.js] [![downloads][https://img.shields.io/npm/dm/gremlins.js.svg?style=flat-square]][https://www.npmtrends.com/gremlins.js]
+[![Build Status][https://img.shields.io/travis/marmelab/gremlins.js.svg?style=flat-square]][https://travis-ci.org/github/marmelab/gremlins.js]
+
+[![PRs Welcome][https://img.shields.io/badge/prs-welcome-brightgreen.svg?style=flat-square]][http://makeapullrequest.com] [![Code of Conduct][https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square]][https://github.com/marmelab/gremlins.js/blob/master/code_of_conduct.md]
+[![MIT License][https://img.shields.io/npm/l/gremlins.js.svg?style=flat-square]][https://github.com/marmelab/gremlins.js/blob/master/license]
+
+[![Tweet][https://img.shields.io/twitter/url/https/github.com/marmelab/gremlins.js.svg?style=social]][https://twitter.com/intent/tweet?text=check%20out%20gremlins.js%20by%20%40marmelab%20https%3a%2f%2fgithub.com%2fmarmelab%2fgremlins.js%20%f0%9f%91%8d]
+
+<div align="center">
+<img
+    width="500"
+    alt="TodoMVC attacked by gremlins"
+    src="http://static.marmelab.com/todo.gif"
+/>
+</div>
 
 > Kate: _What are they, Billy?_
 >
 > Billy Peltzer: _They're gremlins, Kate, just like Mr. Futterman said._
 
-![TodoMVC attacked by gremlins](http://static.marmelab.com/todo.gif)
+## Table of Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Purpose](#purpose)
+- [Basic Usage](#basic-usage)
+- [Installation](#installation)
+- [Advanced Usage](#advanced-usage)
+  - [Setting Gremlins and Mogwais To Use In A Test](#setting-gremlins-and-mogwais-to-use-in-a-test)
+  - [Configuring Gremlins](#configuring-gremlins)
+  - [Seeding The Randomizer](#seeding-the-randomizer)
+  - [Executing Code Before or After The Attack](#executing-code-before-or-after-the-attack)
+  - [Setting Up a Strategy](#setting-up-a-strategy)
+  - [Stopping The Attack](#stopping-the-attack)
+  - [Customizing The Logger](#customizing-the-logger)
+- [Docs](#docs)
+  - [Issues](#issues)
+  - [🐛 Bugs](#-bugs)
+  - [💡 Feature Requests](#-feature-requests)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Purpose
 
@@ -255,6 +311,26 @@ const customLogger = {
 };
 horde.createHorde({ logger: customLogger });
 ```
+
+## Docs
+
+### Issues
+
+_Looking to contribute? Look for the [Good First Issue][https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+is%3aopen+sort%3areactions-%2b1-desc]
+label._
+
+### 🐛 Bugs
+
+Please file an issue for bugs, missing documentation, or unexpected behavior.
+
+[**See Bugs**][https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+is%3aopen+label%3abug+sort%3acreated-desc]
+
+### 💡 Feature Requests
+
+Please file an issue to suggest new features. Vote on feature requests by adding
+a 👍. This helps maintainers prioritize what to work on.
+
+[**See Feature Requests**][https://github.com/marmelab/gremlins.js/issues?q=is%3aissue+sort%3areactions-%2b1-desc+label%3aenhancement+is%3aopen]
 
 ## License
 
