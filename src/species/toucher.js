@@ -248,7 +248,7 @@ export default (userConfig) => (logger, randomizer) => {
                 config.showAction(touches);
             }
             if (logger && config.log) {
-                logger.log('gremlin', 'toucher   ', touchType, 'at', posX, posY, details);
+                logger.log('gremlin', 'toucher', touchType, 'at', posX, posY, details);
             }
         };
         touchTypes[touchType](position, targetElement, log);

@@ -1,12 +1,11 @@
 import toucher from './toucher';
 
-jest.useFakeTimers();
-
 describe('toucher', () => {
     const dispatchEventSpy = jest.fn();
     const initEventSpy = jest.fn();
     let inputText;
     let chanceMock;
+    let consoleMock;
 
     beforeEach(() => {
         chanceMock = {
@@ -15,6 +14,7 @@ describe('toucher', () => {
             integer: ({ max }) => max,
             pick: (types) => types[0],
         };
+        consoleMock = { log: jest.fn() };
 
         inputText = document.createElement('input');
         inputText.setAttribute('type', 'text');
@@ -38,17 +38,21 @@ describe('toucher', () => {
             value: 11,
         });
         jest.spyOn(document, 'createEvent').mockImplementation(() => ({ initEvent: initEventSpy }));
+
+        jest.useFakeTimers();
     });
 
     afterEach(() => {
         document.body.innerHTML = '';
     });
 
-    it.skip('should log the toucher', () => {
-        // const species = toucher({ log: true })(console, chanceMock);
-        // species();
-        // expect(consoleSpy).toHaveBeenCalledTimes(1);
-        // expect(consoleSpy).toHaveBeenCalledWith('gremlin', 'toucher type', 'A', 'at', 10, 10);
+    it('should log the toucher', () => {
+        const species = toucher({ log: true })(consoleMock, chanceMock);
+
+        species();
+        jest.runAllTimers();
+        expect(consoleMock.log).toHaveBeenCalledTimes(1);
+        expect(consoleMock.log).toHaveBeenCalledWith('gremlin', 'toucher', 'tap', 'at', 10, 10, { duration: 700 });
     });
 
     it("should touch the element but don't show element", () => {
