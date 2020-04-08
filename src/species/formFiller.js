@@ -4,11 +4,11 @@ const getDefaultConfig = randomizer => {
     /**
      * Hacky function to trigger react, angular & vue.js onChange on input
      */
-    const triggerInputOnChange = (element, newValue) => {
+    const triggerSimulatedOnChange = (element, newValue, prototype) => {
         const lastValue = element.value;
         element.value = newValue;
 
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
         nativeInputValueSetter.call(element, newValue);
         const event = new Event('input', { bubbles: true });
 
@@ -25,7 +25,15 @@ const getDefaultConfig = randomizer => {
     const fillTextElement = element => {
         const character = randomizer.character();
         const newValue = element.value + character;
-        triggerInputOnChange(element, newValue);
+        triggerSimulatedOnChange(element, newValue, window.HTMLInputElement.prototype);
+
+        return character;
+    };
+
+    const fillTextAreaElement = element => {
+        const character = randomizer.character();
+        const newValue = element.value + character;
+        triggerSimulatedOnChange(element, newValue, window.HTMLTextAreaElement.prototype);
 
         return character;
     };
@@ -33,7 +41,7 @@ const getDefaultConfig = randomizer => {
     const fillNumberElement = element => {
         const number = randomizer.character({ pool: '0123456789' });
         const newValue = element.value + number;
-        triggerInputOnChange(element, newValue);
+        triggerSimulatedOnChange(element, newValue);
 
         return number;
     };
@@ -69,13 +77,13 @@ const getDefaultConfig = randomizer => {
 
     const fillEmail = element => {
         const email = randomizer.email();
-        triggerInputOnChange(element, email);
+        triggerSimulatedOnChange(element, email, window.HTMLInputElement.prototype);
 
         return email;
     };
 
     const defaultMapElements = {
-        textarea: fillTextElement,
+        textarea: fillTextAreaElement,
         'input[type="text"]': fillTextElement,
         'input[type="password"]': fillTextElement,
         'input[type="number"]': fillNumberElement,
