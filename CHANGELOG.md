@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/marmelab/gremlins.js/compare/v2.0.1...v2.1.0) (2020-04-22)
+
+### Features
+
+-   make scroll signal unclickable ([e526549](https://github.com/marmelab/gremlins.js/commit/e52654911dc2c3d7b6d8adb134ba916a6937a938))
+
+### Bug Fixes
+
+-   chance RangeError ([3856336](https://github.com/marmelab/gremlins.js/commit/38563366603c39a759a5df6c04195ffb5217738a))
+
 ### [2.0.1](https://github.com/marmelab/gremlins.js/compare/v2.0.0...v2.0.1) (2020-04-08)
 
 ## [2.0.0](https://github.com/marmelab/gremlins.js/compare/v2.0.0-next.2...v2.0.0) (2020-04-08)
