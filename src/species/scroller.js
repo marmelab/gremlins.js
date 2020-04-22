@@ -41,6 +41,8 @@ const getDefaultConfig = (randomizer) => {
         scrollSignal.style.transition = 'opacity 1s ease-out';
         scrollSignal.style.left = scrollX + 10 + 'px';
         scrollSignal.style.top = scrollY + 10 + 'px';
+        scrollSignal.style['pointer-events'] = 'none';
+
         const element = body.appendChild(scrollSignal);
         setTimeout(() => {
             body.removeChild(element);
