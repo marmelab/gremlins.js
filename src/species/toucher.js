@@ -17,10 +17,10 @@ const getDefaultConfig = (randomizer) => {
     const defaultPositionSelector = () => {
         return [
             randomizer.natural({
-                max: document.documentElement.clientWidth - 1,
+                max: Math.max(0, document.documentElement.clientWidth - 1),
             }),
             randomizer.natural({
-                max: document.documentElement.clientHeight - 1,
+                max: Math.max(0, document.documentElement.clientHeight - 1),
             }),
         ];
     };
