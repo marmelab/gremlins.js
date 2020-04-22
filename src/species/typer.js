@@ -61,10 +61,10 @@ export default (userConfig) => (logger, randomizer) => {
         const eventType = randomizer.pick(config.eventTypes);
         const key = config.keyGenerator();
         const posX = randomizer.natural({
-            max: documentElement.clientWidth - 1,
+            max: Math.max(0, documentElement.clientWidth - 1),
         });
         const posY = randomizer.natural({
-            max: documentElement.clientHeight - 1,
+            max: Math.max(0, documentElement.clientHeight - 1),
         });
         const targetElement = config.targetElement(posX, posY);
 
