@@ -41,7 +41,7 @@ const getDefaultConfig = (randomizer) => {
     const fillNumberElement = (element) => {
         const number = randomizer.character({ pool: '0123456789' });
         const newValue = element.value + number;
-        triggerSimulatedOnChange(element, newValue);
+        triggerSimulatedOnChange(element, newValue, window.HTMLInputElement.prototype);
 
         return number;
     };
