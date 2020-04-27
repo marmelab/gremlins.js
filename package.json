@@ -1,6 +1,6 @@
 {
     "name": "gremlins.js",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "A monkey testing library written in JavaScript, for Node.js and the browser. Use it to check the robustness of web applications by unleashing a horde of undisciplined gremlins.",
     "main": "dist/gremlins.min.js",
     "files": [

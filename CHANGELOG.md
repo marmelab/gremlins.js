@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.1](https://github.com/marmelab/gremlins.js/compare/v2.1.0...v2.1.1) (2020-04-27)
+
+### Bug Fixes
+
+-   add hmtl prototype for numbers elements ([e415936](https://github.com/marmelab/gremlins.js/commit/e4159365515fb1068e6f0a98e4c008e79d7e6653))
+
 ## [2.1.0](https://github.com/marmelab/gremlins.js/compare/v2.0.1...v2.1.0) (2020-04-22)
 
 ### Features
