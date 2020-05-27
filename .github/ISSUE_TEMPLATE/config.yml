@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+- name: 📝 Code of Conduct
+  url: https://github.com/marmelab/gremlins.js/blob/master/CODE_OF_CONDUCT.md
+  about: ❤ Be nice to other members of the community. ☮ Behave.
