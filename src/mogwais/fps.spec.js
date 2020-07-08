@@ -2,6 +2,7 @@ import fps from './fps';
 
 describe('fps', () => {
     let consoleMock;
+    let config;
     let time;
 
     beforeEach(() => {
@@ -14,10 +15,14 @@ describe('fps', () => {
                 return cb(time);
             }
         });
+        config = {
+            logger: consoleMock,
+            window,
+        };
     });
 
     it('should log two times the fps mogwais', async () => {
-        const mogwais = fps()(consoleMock);
+        const mogwais = fps()(config);
 
         mogwais();
         mogwais.cleanUp();

@@ -57,6 +57,7 @@
   - [Setting Up a Strategy](#setting-up-a-strategy)
   - [Stopping The Attack](#stopping-the-attack)
   - [Customizing The Logger](#customizing-the-logger)
+  - [Cypress](#cypress)
 - [Docs](#docs)
   - [Issues](#issues)
   - [🐛 Bugs](#-bugs)
@@ -299,6 +300,27 @@ const customLogger = {
     },
 };
 horde.createHorde({ logger: customLogger });
+```
+
+### Cypress
+
+To run gremlins.js inside a cypress test, you need to provide the tested window:
+
+```js
+import { createHorde } from 'gremlins.js';
+
+describe('Run gremlins.js inside a cypress test', () => {
+    let horde;
+    beforeEach(() =>
+        cy.window().then((testedWindow) => {
+            horde = createHorde({ window: testedWindow });
+        })
+    );
+    it('should run gremlins.js', async () => {
+        await horde.unleash();
+        /* ... */
+    });
+});
 ```
 
 ## Docs

@@ -3,6 +3,7 @@ import toucher from './toucher';
 describe('toucher', () => {
     const dispatchEventSpy = jest.fn();
     const initEventSpy = jest.fn();
+    let config;
     let inputText;
     let chanceMock;
     let consoleMock;
@@ -40,6 +41,12 @@ describe('toucher', () => {
         jest.spyOn(document, 'createEvent').mockImplementation(() => ({ initEvent: initEventSpy }));
 
         jest.useFakeTimers();
+
+        config = {
+            logger: consoleMock,
+            randomizer: chanceMock,
+            window,
+        };
     });
 
     afterEach(() => {
@@ -47,7 +54,7 @@ describe('toucher', () => {
     });
 
     it('should log the toucher', () => {
-        const species = toucher({ log: true })(consoleMock, chanceMock);
+        const species = toucher({ log: true })(config);
 
         species();
         jest.runAllTimers();
@@ -56,7 +63,7 @@ describe('toucher', () => {
     });
 
     it("should touch the element but don't show element", () => {
-        const species = toucher({ showAction: false })(console, chanceMock);
+        const species = toucher({ showAction: false })(config);
 
         species();
 
@@ -65,7 +72,7 @@ describe('toucher', () => {
     });
 
     it('should touch on myid element and add new element', () => {
-        const species = toucher()(console, chanceMock);
+        const species = toucher()(config);
 
         species();
 

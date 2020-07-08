@@ -12,7 +12,7 @@ const getDefaultConfig = () => {
     };
 };
 
-export default (userConfig) => (logger) => {
+export default (userConfig) => ({ logger, window }) => {
     const config = { ...getDefaultConfig(), ...userConfig };
 
     let initialTime = -Infinity; // force initial measure

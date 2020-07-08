@@ -22,16 +22,26 @@ const defaultConfig = {
     strategies: [distribution()],
     logger: console,
     randomizer: new Chance(),
+    window: window,
 };
 
 export const createHorde = (userConfig) => {
     const config = { ...defaultConfig, ...userConfig };
-    const { logger, randomizer } = config;
+    const { logger, randomizer, window } = config;
 
-    const species = config.species.map((specie) => specie(logger, randomizer));
+    const speciesConfig = {
+        logger,
+        randomizer,
+        window,
+    };
+    const species = config.species.map((specie) => specie(speciesConfig));
     const strategies = config.strategies.map((strat) => strat(randomizer));
     const stop = () => strategies.forEach((strat) => strat.stop());
-    const mogwais = config.mogwais.map((mogwai) => mogwai(logger, randomizer, stop));
+    const mogwaisConfig = {
+        ...speciesConfig,
+        stop,
+    };
+    const mogwais = config.mogwais.map((mogwai) => mogwai(mogwaisConfig));
 
     const unleash = async () => {
         const beforeHorde = [...mogwais];

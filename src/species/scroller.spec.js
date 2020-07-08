@@ -5,6 +5,7 @@ jest.useFakeTimers();
 describe('scroller', () => {
     let consoleMock;
     let chanceMock;
+    let config;
 
     const scrollToSpy = jest.fn();
 
@@ -27,10 +28,15 @@ describe('scroller', () => {
                 value: documentElementProps[key],
             });
         });
+        config = {
+            logger: consoleMock,
+            randomizer: chanceMock,
+            window,
+        };
     });
 
     it('should log the scroller', () => {
-        const species = scroller({ log: true })(consoleMock, chanceMock);
+        const species = scroller({ log: true })(config);
 
         species();
 
@@ -39,7 +45,7 @@ describe('scroller', () => {
     });
 
     it("should scroll but don't show element", () => {
-        const species = scroller({ showAction: false })(consoleMock, chanceMock);
+        const species = scroller({ showAction: false })(config);
 
         species();
 
@@ -49,7 +55,7 @@ describe('scroller', () => {
     });
 
     it('should scroll and add new element', () => {
-        const species = scroller()(consoleMock, chanceMock);
+        const species = scroller()(config);
 
         species();
 

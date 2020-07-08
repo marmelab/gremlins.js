@@ -3,6 +3,7 @@ import alert from './alert';
 describe('alert', () => {
     const chanceBoolMock = jest.fn();
     const chanceSentenceMock = jest.fn();
+    let config;
     let consoleMock;
     let chanceMock;
 
@@ -12,10 +13,15 @@ describe('alert', () => {
             bool: chanceBoolMock,
             sentence: chanceSentenceMock,
         };
+        config = {
+            logger: consoleMock,
+            randomizer: chanceMock,
+            window,
+        };
     });
 
     it('should call logger warn when window.alert is call', () => {
-        const mogwais = alert()(consoleMock, chanceMock);
+        const mogwais = alert()(config);
 
         mogwais();
         window.alert('new alert');
@@ -25,7 +31,7 @@ describe('alert', () => {
     });
 
     it('should call logger warn when window.confirm is call', () => {
-        const mogwais = alert()(consoleMock, chanceMock);
+        const mogwais = alert()(config);
 
         mogwais();
         window.confirm('new confirm');
@@ -35,7 +41,7 @@ describe('alert', () => {
     });
 
     it('should call logger warn when window.prompt is call', () => {
-        const mogwais = alert()(consoleMock, chanceMock);
+        const mogwais = alert()(config);
 
         mogwais();
         window.prompt('new prompt');
@@ -45,7 +51,7 @@ describe('alert', () => {
     });
 
     it('should call randomize bool when window.confirm is call', () => {
-        const mogwais = alert()(consoleMock, chanceMock);
+        const mogwais = alert()(config);
 
         mogwais();
         window.confirm('new confirm');
@@ -54,7 +60,7 @@ describe('alert', () => {
     });
 
     it('should call randomize sentence when window.prompt is call', () => {
-        const mogwais = alert()(consoleMock, chanceMock);
+        const mogwais = alert()(config);
 
         mogwais();
         window.prompt('new prompt');
@@ -64,7 +70,7 @@ describe('alert', () => {
 
     it('should cleanup the window prop when cleanUp function is call', () => {
         jest.spyOn(window, 'alert').mockImplementation();
-        const mogwais = alert()(consoleMock, chanceMock);
+        const mogwais = alert()(config);
 
         mogwais();
         window.alert('new alert');
@@ -78,7 +84,7 @@ describe('alert', () => {
     });
 
     it('should not override the window object when logger is not defined ', () => {
-        const mogwais = alert()(null, chanceMock);
+        const mogwais = alert()(config);
 
         mogwais();
         window.alert('new alert');
