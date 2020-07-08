@@ -316,9 +316,10 @@ describe('Run gremlins.js inside a cypress test', () => {
             horde = createHorde({ window: testedWindow });
         })
     );
-    it('should run gremlins.js', async () => {
-        await horde.unleash();
-        /* ... */
+    it('should run gremlins.js', () => {
+        return cy.wrap(horde.unleash()).then(() => {
+            /* ... */
+        });
     });
 });
 ```
