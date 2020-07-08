@@ -1,4 +1,4 @@
-const getDefaultConfig = (randomizer) => {
+const getDefaultConfig = (randomizer, window) => {
     const document = window.document;
     const body = document.body;
 
@@ -68,9 +68,9 @@ const getDefaultConfig = (randomizer) => {
     };
 };
 
-export default (userConfig) => (logger, randomizer) => {
+export default (userConfig) => ({ logger, randomizer, window }) => {
     const document = window.document;
-    const config = { ...getDefaultConfig(randomizer), ...userConfig };
+    const config = { ...getDefaultConfig(randomizer, window), ...userConfig };
 
     const getTouches = (center, points, radius, degrees) => {
         const cx = center[0];

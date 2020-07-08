@@ -1,4 +1,4 @@
-const getDefaultConfig = (randomizer) => {
+const getDefaultConfig = (randomizer, window) => {
     const document = window.document;
     const body = document.body;
 
@@ -49,10 +49,10 @@ const getDefaultConfig = (randomizer) => {
     };
 };
 
-export default (userConfig) => (logger, randomizer) => {
+export default (userConfig) => ({ logger, randomizer, window }) => {
     const document = window.document;
     const documentElement = document.documentElement;
-    const config = { ...getDefaultConfig(randomizer), ...userConfig };
+    const config = { ...getDefaultConfig(randomizer, window), ...userConfig };
 
     return () => {
         const keyboardEvent = document.createEventObject

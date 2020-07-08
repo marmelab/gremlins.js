@@ -1,4 +1,4 @@
-const getDefaultConfig = (randomizer) => {
+const getDefaultConfig = (randomizer, window) => {
     const document = window.document;
     const documentElement = document.documentElement;
     const body = document.body;
@@ -59,8 +59,8 @@ const getDefaultConfig = (randomizer) => {
     };
 };
 
-export default (userConfig) => (logger, randomizer) => {
-    const config = { ...getDefaultConfig(randomizer), ...userConfig };
+export default (userConfig) => ({ logger, randomizer, window }) => {
+    const config = { ...getDefaultConfig(randomizer, window), ...userConfig };
     return () => {
         const position = config.positionSelector();
         const scrollX = position[0];
