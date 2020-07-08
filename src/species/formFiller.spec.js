@@ -6,6 +6,7 @@ describe('formFiller', () => {
     let consoleMock;
     let inputText;
     let chanceMock;
+    let config;
 
     beforeEach(() => {
         consoleMock = { log: jest.fn() };
@@ -19,6 +20,11 @@ describe('formFiller', () => {
         inputText.setAttribute('type', 'text');
         inputText.setAttribute('id', 'myid');
         document.body.appendChild(inputText);
+        config = {
+            logger: consoleMock,
+            randomizer: chanceMock,
+            window,
+        };
     });
 
     afterEach(() => {
@@ -26,7 +32,7 @@ describe('formFiller', () => {
     });
 
     it('should log the formFiller', () => {
-        const species = formFiller({ log: true })(consoleMock, chanceMock);
+        const species = formFiller({ log: true })(config);
 
         species();
 
@@ -35,7 +41,7 @@ describe('formFiller', () => {
     });
 
     it("should fill element but don't show element", () => {
-        const species = formFiller({ showAction: false })(consoleMock, chanceMock);
+        const species = formFiller({ showAction: false })(config);
 
         species();
 
@@ -45,7 +51,7 @@ describe('formFiller', () => {
 
     it("should try to fill twice on element but can't fill at the end", () => {
         const canFillElementSpy = jest.fn();
-        const species = formFiller({ canFillElement: canFillElementSpy, maxNbTries: 2 })(consoleMock, chanceMock);
+        const species = formFiller({ canFillElement: canFillElementSpy, maxNbTries: 2 })(config);
 
         species();
 
@@ -54,7 +60,7 @@ describe('formFiller', () => {
     });
 
     it('should fill element and add new element', () => {
-        const species = formFiller()(consoleMock, chanceMock);
+        const species = formFiller()(config);
 
         species();
 

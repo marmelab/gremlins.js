@@ -3,16 +3,24 @@ import gizmo from './gizmo';
 jest.useFakeTimers();
 
 describe('gizmo', () => {
+    let config;
+    let stopMock;
     let consoleErrorSpy;
     let windowErrorSpy = jest.fn();
 
     beforeEach(() => {
+        stopMock = jest.fn();
         consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
         window.onerror = windowErrorSpy;
+        config = {
+            logger: console,
+            stop: stopMock,
+            window,
+        };
     });
 
     it('should call console.error with right args', () => {
-        const mogwais = gizmo()(console);
+        const mogwais = gizmo()(config);
 
         mogwais();
 
@@ -23,7 +31,7 @@ describe('gizmo', () => {
     });
 
     it('should call window.error with right args', () => {
-        const mogwais = gizmo()(console);
+        const mogwais = gizmo()(config);
 
         mogwais();
 
@@ -34,8 +42,7 @@ describe('gizmo', () => {
     });
 
     it('should call stop when maxErrors is reached', () => {
-        const stop = jest.fn();
-        const mogwais = gizmo({ maxErrors: 2 })(console, null, stop);
+        const mogwais = gizmo({ maxErrors: 2 })(config);
 
         mogwais();
 
@@ -46,7 +53,7 @@ describe('gizmo', () => {
         expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, 'first error');
         expect(consoleErrorSpy).toHaveBeenNthCalledWith(2, 'second', 'error');
 
-        expect(stop).toHaveBeenCalledTimes(1);
+        expect(stopMock).toHaveBeenCalledTimes(1);
 
         expect(setTimeout).toHaveBeenCalledTimes(1);
         expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 4);

@@ -5,6 +5,7 @@ jest.useFakeTimers();
 describe('clicker', () => {
     const dispatchEventSpy = jest.fn();
     const initMouseEventSpy = jest.fn();
+    let config;
     let consoleMock;
     let chanceMock;
 
@@ -34,10 +35,15 @@ describe('clicker', () => {
             value: 11,
         });
         jest.spyOn(document, 'createEvent').mockImplementation(() => ({ initMouseEvent: initMouseEventSpy }));
+        config = {
+            logger: consoleMock,
+            randomizer: chanceMock,
+            window,
+        };
     });
 
     it('should log the cliker', () => {
-        const species = clicker({ log: true })(consoleMock, chanceMock);
+        const species = clicker({ log: true })(config);
 
         species();
 
@@ -46,7 +52,7 @@ describe('clicker', () => {
     });
 
     it("should click on element but don't show element", () => {
-        const species = clicker({ showAction: false })(consoleMock, chanceMock);
+        const species = clicker({ showAction: false })(config);
 
         species();
 
@@ -56,7 +62,7 @@ describe('clicker', () => {
 
     it("should try to click twice on element but can't click at the end", () => {
         const canClickSpy = jest.fn();
-        const species = clicker({ canClick: canClickSpy, maxNbTries: 2 })(consoleMock, chanceMock);
+        const species = clicker({ canClick: canClickSpy, maxNbTries: 2 })(config);
 
         species();
 
@@ -65,7 +71,7 @@ describe('clicker', () => {
     });
 
     it('should click on myid element and add new element', () => {
-        const species = clicker()(consoleMock, chanceMock);
+        const species = clicker()(config);
 
         species();
 
