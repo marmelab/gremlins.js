@@ -19,7 +19,6 @@
         "deploy-gh-pages": "gh-pages --dist bookmarklet",
         "doctoc": "doctoc README.md",
         "cypress:open": "cypress open",
-        "cypress:serve-demo": "serve cypress/demos",
         "cypress:run": "cypress run"
     },
     "repository": {
