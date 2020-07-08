@@ -41,3 +41,9 @@ publish-next: ## Publish on next tag
 
 deploy-gh-pages: ## Deploy bookmaklet to gh-pages
 	npm run deploy-gh-pages
+
+serve-cypress-demo: ## Serve cypress demo directory
+	npm run cypress:serve-demo
+
+test-cypress: ## Run cypress tests
+	npm run cypress:run
