@@ -64,7 +64,7 @@
         "rollup-plugin-commonjs": "^10.1.0",
         "rollup-plugin-terser": "^5.3.0",
         "serve": "^11.3.0",
-        "standard-version": "^7.1.0"
+        "standard-version": "^8.0.2"
     },
     "dependencies": {
         "chance": "^1.1.4",
