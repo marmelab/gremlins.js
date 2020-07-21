@@ -17,7 +17,9 @@
         "clear": "rimraf dist",
         "release": "standard-version",
         "deploy-gh-pages": "gh-pages --dist bookmarklet",
-        "doctoc": "doctoc README.md"
+        "doctoc": "doctoc README.md",
+        "cypress:open": "cypress open",
+        "cypress:run": "cypress run"
     },
     "repository": {
         "type": "git",
@@ -46,10 +48,12 @@
         "babel-eslint": "^10.1.0",
         "babel-jest": "^25.3.0",
         "cross-env": "^7.0.2",
+        "cypress": "^4.10.0",
         "doctoc": "^1.4.0",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.10.1",
         "eslint-plugin-babel": "^5.3.0",
+        "eslint-plugin-cypress": "^2.11.1",
         "eslint-plugin-import": "^2.20.2",
         "eslint-plugin-jest": "^23.8.2",
         "eslint-plugin-prettier": "^3.1.2",

@@ -18,9 +18,18 @@ module.exports = {
         'plugin:import/warnings',
         'plugin:jest/recommended',
         'plugin:jest/style',
+        'plugin:cypress/recommended',
     ],
     rules: {
         'prettier/prettier': 'error',
         'babel/no-unused-expressions': 'error',
     },
+    overrides: [
+        {
+            files: ['cypress/integration/*.spec.js'],
+            rules: {
+                'jest/expect-expect': 'off',
+            },
+        },
+    ],
 };

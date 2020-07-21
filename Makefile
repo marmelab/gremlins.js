@@ -16,6 +16,9 @@ clear: ## Clear dist directory
 test: ## Run whole tests
 	npm run test
 
+test-cypress: ## Run cypress tests
+	npm run cypress:run
+
 test-watch: ## Watch whole test suites
 	npm run test:watch
 
