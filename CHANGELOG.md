@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/marmelab/gremlins.js/compare/v2.1.1...v2.2.0) (2020-07-21)
+
+### Features
+
+-   add formFiller cypress test ([e278b5b](https://github.com/marmelab/gremlins.js/commit/e278b5bf10eec1ed7e71cae0dc7a641e7971540f))
+-   allow to pass a custom window to gremlins ([9a2084c](https://github.com/marmelab/gremlins.js/commit/9a2084c668f68be3285633e987889839dab190da))
+-   bump standard-version to 8.0.2 ([ed60ec6](https://github.com/marmelab/gremlins.js/commit/ed60ec6b0f1a498479c2eb29205eaaa81a2c5341))
+-   update readme with cypress usage ([005373e](https://github.com/marmelab/gremlins.js/commit/005373efd3cd52427b7220b3c3befe5a3d08053b))
+
+### Bug Fixes
+
+-   bad practice in readme ([d0528ab](https://github.com/marmelab/gremlins.js/commit/d0528ab60b1887c55a5226cf7a6d95b121fdf942))
+-   cypress plugins ([8ec3047](https://github.com/marmelab/gremlins.js/commit/8ec304755a3a8d1ae3d86da688c81b658d8158d3))
+-   linter conf ([22ca500](https://github.com/marmelab/gremlins.js/commit/22ca500d1d0d82e01ada08a800fbea37bc40d6d8))
+-   pass window to gremlins ([9898e41](https://github.com/marmelab/gremlins.js/commit/9898e41d53fe82a4b26145757816e07a754d7da5))
+-   remove useless command in package.json ([c7f3243](https://github.com/marmelab/gremlins.js/commit/c7f3243ee04d49c14efcabc9078c76e82e18ad16))
+-   remove useless fixture ([1166503](https://github.com/marmelab/gremlins.js/commit/11665031ef341d4bee9c5208604c7334bd27c3de))
+-   remove useless make command ([b00e703](https://github.com/marmelab/gremlins.js/commit/b00e703c74f3659246af627adf6476993fc92f70))
+
 ### [2.1.1](https://github.com/marmelab/gremlins.js/compare/v2.1.0...v2.1.1) (2020-04-27)
 
 ### Bug Fixes
