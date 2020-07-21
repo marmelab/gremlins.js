@@ -16,6 +16,9 @@ clear: ## Clear dist directory
 test: ## Run whole tests
 	npm run test
 
+test-cypress: ## Run cypress tests
+	npm run cypress:run
+
 test-watch: ## Watch whole test suites
 	npm run test:watch
 
@@ -41,6 +44,3 @@ publish-next: ## Publish on next tag
 
 deploy-gh-pages: ## Deploy bookmaklet to gh-pages
 	npm run deploy-gh-pages
-
-test-cypress: ## Run cypress tests
-	npm run cypress:run

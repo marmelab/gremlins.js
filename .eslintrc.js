@@ -3,14 +3,13 @@ module.exports = {
         node: true,
         browser: true,
         es2020: true,
-        'cypress/globals': true,
     },
     parser: 'babel-eslint',
     parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
     },
-    plugins: ['prettier', 'babel', 'cypress'],
+    plugins: ['prettier', 'babel'],
     extends: [
         'eslint:recommended',
         'prettier',
