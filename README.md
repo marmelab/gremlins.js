@@ -144,7 +144,7 @@ Gremlins, just like mogwais, are simple JavaScript functions. If `gremlins.js` d
 
 ```js
 // Create a new custom gremlin to blur an input randomly selected
-function customGremlin(logger, randomizer) {
+function customGremlin({ logger, randomizer, window }) {
     // Code executed once at initialization
     logger.log('Input blur gremlin initialized');
     // Return a function that will be executed at each attack
@@ -152,6 +152,7 @@ function customGremlin(logger, randomizer) {
         var inputs = document.querySelectorAll('input');
         var element = randomizer.pick(element);
         element.blur();
+        window.alert('attack done');
     };
 }
 
