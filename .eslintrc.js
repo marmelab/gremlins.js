@@ -26,9 +26,9 @@ module.exports = {
     },
     overrides: [
         {
-            files: ['cypress/integration/*.spec.js'],
+            files: ['cypress/integration/**/*.spec.js'],
             rules: {
-                'jest/expect-expect': 'off',
+                'jest/*': 'off',
             },
         },
     ],
