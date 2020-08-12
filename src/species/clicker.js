@@ -1,4 +1,6 @@
 const getDefaultConfig = (randomizer, window) => {
+    const document = window.document;
+
     const defaultClickTypes = [
         'click',
         'click',
@@ -29,7 +31,6 @@ const getDefaultConfig = (randomizer, window) => {
     };
 
     const defaultShowAction = (x, y) => {
-        const document = window.document;
         const body = document.body;
         const clickSignal = document.createElement('div');
         clickSignal.style.zIndex = 2000;
@@ -73,6 +74,8 @@ export default (userConfig) => ({ logger, randomizer, window }) => {
         ...getDefaultConfig(randomizer, window),
         ...userConfig,
     };
+
+    const document = window.document;
 
     return () => {
         let position;

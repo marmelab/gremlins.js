@@ -46,11 +46,16 @@ export const createHorde = (userConfig) => {
     const unleash = async () => {
         const beforeHorde = [...mogwais];
         const cleansUps = mogwais.map((mogwai) => mogwai.cleanUp).filter((cleanUp) => typeof cleanUp === 'function');
+        const mogwaisStats = mogwais.map((mogwai) => mogwai.stats).filter((stats) => typeof stats === 'function');
 
         await executeInSeries(beforeHorde, []);
         const unleashedStrategies = strategies.map((strat) => strat(species));
         await Promise.all(unleashedStrategies);
         await executeInSeries(cleansUps, []);
+
+        const stats = mogwaisStats.map((stat) => stat());
+
+        return stats;
     };
 
     return {

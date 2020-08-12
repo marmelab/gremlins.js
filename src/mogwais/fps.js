@@ -17,6 +17,7 @@ export default (userConfig) => ({ logger, window }) => {
 
     let initialTime = -Infinity; // force initial measure
     let enabled;
+    const fpsRecords = [];
 
     const loop = (time) => {
         if (time - initialTime > config.delay) {
@@ -39,6 +40,7 @@ export default (userConfig) => ({ logger, window }) => {
             if (logger) {
                 logger[level]('mogwai ', 'fps       ', fps);
             }
+            fpsRecords.push(fps);
         };
         window.requestAnimationFrame(init);
     };
@@ -51,6 +53,17 @@ export default (userConfig) => ({ logger, window }) => {
     fpsMogwai.cleanUp = () => {
         enabled = false;
         return fpsMogwai;
+    };
+
+    fpsMogwai.stats = () => {
+        if (!fpsRecords.length) {
+            return {};
+        }
+        return {
+            max: Math.max(...fpsRecords),
+            min: Math.min(...fpsRecords),
+            avg: fpsRecords.reduce((total, fps) => total + fps, 0) / fpsRecords.length,
+        };
     };
 
     return fpsMogwai;
