@@ -19,10 +19,12 @@
 
 <hr />
 
-[![version](https://img.shields.io/npm/v/gremlins.js.svg?style=flat-square)](https://www.npmjs.com/package/gremlins.js) [![downloads](https://img.shields.io/npm/dm/gremlins.js.svg?style=flat-square)](https://www.npmtrends.com/gremlins.js)
+[![version](https://img.shields.io/npm/v/gremlins.js.svg?style=flat-square)](https://www.npmjs.com/package/gremlins.js)
+[![downloads](https://img.shields.io/npm/dm/gremlins.js.svg?style=flat-square)](https://www.npmtrends.com/gremlins.js)
 [![Build Status](https://img.shields.io/travis/marmelab/gremlins.js.svg?style=flat-square)](https://travis-ci.org/github/marmelab/gremlins.js)
 
-[![PRs Welcome](https://img.shields.io/badge/prs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![Code of Conduct](https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square)](https://github.com/marmelab/gremlins.js/blob/master/code_of_conduct.md)
+[![PRs Welcome](https://img.shields.io/badge/prs-welcome-brightgreen.svg?style=flat-square)](https://github.com/marmelab/gremlins.js/pulls?q=is%3Apr+is%3Aopen+sort%3Aupdated-desc)
+[![Code of Conduct](https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square)](https://github.com/marmelab/gremlins.js/blob/master/code_of_conduct.md)
 [![MIT License](https://img.shields.io/npm/l/gremlins.js.svg?style=flat-square)](https://github.com/marmelab/gremlins.js/blob/master/license)
 
 [![Tweet](https://img.shields.io/twitter/url/https/github.com/marmelab/gremlins.js.svg?style=social)](https://twitter.com/intent/tweet?text=check%20out%20gremlins.js%20by%20%40marmelab%20https%3a%2f%2fgithub.com%2fmarmelab%2fgremlins.js%20%f0%9f%91%8d)
