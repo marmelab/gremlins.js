@@ -20,10 +20,10 @@ const getDefaultConfig = (randomizer, window) => {
     const defaultPositionSelector = () => {
         return [
             randomizer.natural({
-                max: Math.max(0, document.documentElement.clientWidth - 1),
+                max: Math.max(0, window.document.documentElement.clientWidth - 1),
             }),
             randomizer.natural({
-                max: Math.max(0, document.documentElement.clientHeight - 1),
+                max: Math.max(0, window.document.documentElement.clientHeight - 1),
             }),
         ];
     };
@@ -85,12 +85,12 @@ export default (userConfig) => ({ logger, randomizer, window }) => {
             position = config.positionSelector();
             posX = position[0];
             posY = position[1];
-            targetElement = document.elementFromPoint(posX, posY);
+            targetElement = window.document.elementFromPoint(posX, posY);
             nbTries++;
             if (nbTries > config.maxNbTries) return;
         } while (!targetElement || !config.canClick(targetElement));
 
-        const evt = document.createEvent('MouseEvents');
+        const evt = window.document.createEvent('MouseEvents');
         const clickType = randomizer.pick(config.clickTypes);
         // todo remove deprecated https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/initMouseEvent
         evt.initMouseEvent(clickType, true, true, window, 0, 0, 0, posX, posY, false, false, false, false, 0, null);
