@@ -135,7 +135,7 @@ After 10 errors, a special mogwai stops the test. He's called _Gizmo_, and he pr
 If not stopped by Gizmo, the default horde stops after roughly 1 minute. You can increase the number of gremlins actions to make the attack last longer:
 
 ```js
-horde.createHorde({
+const horde = gremlins.createHorde({
     strategies: [gremlins.strategies.allTogether({ nb: 10000 })],
 });
 horde.unleash();
@@ -159,7 +159,7 @@ function customGremlin({ logger, randomizer, window }) {
 }
 
 // Add it to your horde
-horde.createHorde({
+const horde = gremlins.createHorde({
     species: [customGremlin],
 });
 ```
