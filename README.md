@@ -60,6 +60,7 @@
   - [Stopping The Attack](#stopping-the-attack)
   - [Customizing The Logger](#customizing-the-logger)
   - [Cypress](#cypress)
+  - [Playwright](#playwright)
 - [Docs](#docs)
   - [Issues](#issues)
   - [🐛 Bugs](#-bugs)
@@ -324,6 +325,22 @@ describe('Run gremlins.js inside a cypress test', () => {
             /* ... */
         });
     });
+});
+```
+
+### Playwright
+
+To run gremlin.js with Playwright, you can load it as an init script.
+
+```js
+const { test } = require('@playwright/test');
+
+test('run gremlins.js', async ({ page }) => {
+    await page.addInitScript({
+        path: './node_modules/gremlins.js/dist/gremlins.min.js',
+    });
+    await page.goto('https://playwright.dev');
+    await page.evaluate(() => gremlins.createHorde().unleash());
 });
 ```
 
