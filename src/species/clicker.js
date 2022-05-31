@@ -46,7 +46,7 @@ const getDefaultConfig = (randomizer, window) => {
         clickSignal.style.mozTransition = 'opacity 1s ease-out';
         clickSignal.style.transition = 'opacity 1s ease-out';
         clickSignal.style.left = x - 20 + 'px';
-        clickSignal.style.top = y - 20 + 'px';
+        clickSignal.style.top = y + document.documentElement.scrollTop - 20 + 'px';
         const element = body.appendChild(clickSignal);
         setTimeout(() => {
             body.removeChild(element);
